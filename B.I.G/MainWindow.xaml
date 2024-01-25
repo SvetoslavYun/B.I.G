@@ -1,0 +1,30 @@
+﻿<Window x:Class="B.I.G.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:B.I.G"
+        mc:Ignorable="d"
+        Title="Авторизация пользователя" Height="450" Width="600">
+    <Window.Icon>
+        <BitmapImage UriSource="/image/big3.ico"/>
+    </Window.Icon>
+
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="163*"/>
+                <RowDefinition Height="221*"/>
+            </Grid.RowDefinitions>
+            <Image Source="Image/BIG.jpg" Stretch="UniformToFill" Grid.RowSpan="2"/>
+            <PasswordBox x:Name="passwordBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Margin="0,155,0,0" Grid.RowSpan="2"/>
+            <CheckBox VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="230,158,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="16" />
+            <TextBox x:Name="visiblePasswordTextBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Visibility="Collapsed" Margin="0,155,0,0" Grid.RowSpan="2"/>
+        </Grid>
+
+        <TextBox HorizontalAlignment="Center" x:Name="login" VerticalAlignment="Top" Width="206" Margin="0,101,0,0"/>
+        <Button Content="Подтвердить" HorizontalAlignment="Center" Margin="0,207,0,0" VerticalAlignment="Top" Width="104" Click="Button_Click" Background="#FFF1B255"/>
+
+    </Grid>
+</Window>
