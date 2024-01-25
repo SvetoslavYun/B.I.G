@@ -3,8 +3,11 @@ using B.I.G.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SQLite;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +35,30 @@ namespace B.I.G
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
+            GetUsernames();
+        }
+
+
+        public void GetUsernames()//заполнить список
+        {
+            var connString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+            string sqlExpression = "SELECT username FROM user_accounts";
+            using (SQLiteConnection connection = new SQLiteConnection(connString))
+            {
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                SQLiteDataReader reader = command.ExecuteReader();
+
+
+                if (reader.HasRows) // если есть данные
+                {
+                    while (reader.Read()) // построчно считываем данные
+                    {
+                        login.Items.Add(reader.GetValue(0).ToString());
+
+                    }
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -39,19 +66,27 @@ namespace B.I.G
             string Login = login.Text;
             string Password = passwordBox.Password;
 
-            var searchResults = user_AccountController.Authorization(Login, Password);
-
-            if (searchResults.Any()) // Если найдено хотя бы одно совпадение
+            if (!string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password))
             {
-                Window1 mainWindow1 = new Window1();
-                mainWindow1.Show();
-                Close(); // Закрыть текущее окно авторизации
+                var searchResults = user_AccountController.Authorization(Login, Password);
+
+                if (searchResults.Any())
+                {
+                    Window1 mainWindow1 = new Window1();
+                    mainWindow1.Show();
+                    Close(); // Закрыть текущее окно авторизации
+                }
+                else
+                {
+                    MessageBox.Show("Неверное 'Имя пользователя' или 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Введите 'Имя пользователя' и 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
 
 

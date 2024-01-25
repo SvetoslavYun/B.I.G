@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Data.SQLite;
 using B.I.G.Model;
-using Microsoft.Data.Sqlite;
+
 
 namespace B.I.G.Controller
 {
@@ -45,5 +45,6 @@ namespace B.I.G.Controller
             }
             connection.Close();
         }
+
     }
 }
