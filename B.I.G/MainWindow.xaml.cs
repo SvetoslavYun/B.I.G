@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
@@ -28,15 +29,27 @@ namespace B.I.G
     /// </summary>
     public partial class MainWindow : Window
     {
+        ObservableCollection<log> Logs;
+        private Log_Controller log_Controller;
         ObservableCollection<user_account> Users;
         private User_accountController user_AccountController;
         public MainWindow()
         {
+            Logs = new ObservableCollection<log>();
+            log_Controller = new Log_Controller();
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
             GetUsernames();
+            Get();
         }
+        public void Get()//заполнить список
+        {
+            LogWindow logWindow = new LogWindow();
+            logWindow.Show();
+            Close(); // Закрыть текущее окно авторизации
+        }
+
 
 
         public void GetUsernames()//заполнить список
@@ -72,8 +85,20 @@ namespace B.I.G
 
                 if (searchResults.Any())
                 {
-                    Window1 mainWindow1 = new Window1();
-                    mainWindow1.Show();
+                    DateTime Date = DateTime.Now;
+                    string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                    string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                    var Log = new log()
+                    {
+                        username = login.Text,
+                        process = "Вход в систему",
+                        date = Convert.ToDateTime(formattedDate),
+                        date2 = Convert.ToDateTime(formattedDate2)
+                    };
+                    log_Controller.Insert(Log); 
+                    
+                    LogWindow logWindow = new LogWindow();
+                    logWindow.Show();
                     Close(); // Закрыть текущее окно авторизации
                 }
                 else

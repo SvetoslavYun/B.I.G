@@ -25,26 +25,33 @@ namespace B.I.G.Controller
         {
             var commandString = "SELECT * FROM user_accounts WHERE username LIKE @login AND password_hash LIKE @password ;";
 
-            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
-            getAllCommand.Parameters.AddWithValue("@login", "%" + login + "%");
-            getAllCommand.Parameters.AddWithValue("@password", "%" + password + "%");
-            connection.Open();
-            var reader = getAllCommand.ExecuteReader();
-            while (reader.Read())
+            using (SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection))
             {
-                var Id = reader.GetInt32(0);
-                var Username = reader.GetString(1);
-                var Password_hash = reader.GetString(2);
-                var User = new user_account
+                getAllCommand.Parameters.AddWithValue("@login", "%" + login + "%");
+                getAllCommand.Parameters.AddWithValue("@password", "%" + password + "%");
+
+                connection.Open();
+
+                using (var reader = getAllCommand.ExecuteReader())
                 {
-                    id = Id,
-                    username = Username,
-                    password_hash= Password_hash
-                };
-                yield return User;
+                    while (reader.Read())
+                    {
+                        var Id = reader.GetInt32(0);
+                        var Username = reader.GetString(1);
+                        var Password_hash = reader.GetString(2);
+                        var User = new user_account
+                        {
+                            id = Id,
+                            username = Username,
+                            password_hash = Password_hash
+                        };
+                        yield return User;
+                    }
+                }
             }
-            connection.Close();
+            // connection.Close(); // Закрытие соединения не требуется, так как using автоматически закроет его при выходе из блока.
         }
+
 
     }
 }

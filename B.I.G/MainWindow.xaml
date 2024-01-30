@@ -17,7 +17,7 @@
                 <RowDefinition Height="163*"/>
                 <RowDefinition Height="221*"/>
             </Grid.RowDefinitions>
-            <Image Source="Image/BIG.jpg" Stretch="UniformToFill" Grid.RowSpan="2"/>
+            <Image Source="Image/Big.png" Stretch="UniformToFill" Grid.RowSpan="2"/>
             <PasswordBox x:Name="passwordBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Margin="0,155,0,0" Grid.RowSpan="2"/>
             <CheckBox VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="230,158,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="16" />
             <TextBox x:Name="visiblePasswordTextBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Visibility="Collapsed" Margin="0,155,0,0" Grid.RowSpan="2"/>
