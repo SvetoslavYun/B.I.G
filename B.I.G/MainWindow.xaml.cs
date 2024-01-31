@@ -29,6 +29,7 @@ namespace B.I.G
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string LogS = "";
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
         ObservableCollection<user_account> Users;
@@ -45,7 +46,7 @@ namespace B.I.G
         }
         public void Get()//заполнить список
         {
-            LogWindow logWindow = new LogWindow();
+            Add_User logWindow = new Add_User();
             logWindow.Show();
             Close(); // Закрыть текущее окно авторизации
         }
@@ -95,8 +96,8 @@ namespace B.I.G
                         date = Convert.ToDateTime(formattedDate),
                         date2 = Convert.ToDateTime(formattedDate2)
                     };
-                    log_Controller.Insert(Log); 
-                    
+                    log_Controller.Insert(Log);
+                    LogS = login.Text;
                     LogWindow logWindow = new LogWindow();
                     logWindow.Show();
                     Close(); // Закрыть текущее окно авторизации

@@ -1,0 +1,35 @@
+﻿<Window x:Class="B.I.G.Add_User"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:B.I.G"
+        mc:Ignorable="d"
+        Title="Редактор пользователя" Height="300" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="337*"/>
+            <ColumnDefinition Width="163*"/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="Name" Text="{Binding Path=username}" HorizontalAlignment="Left" Margin="248,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Grid.ColumnSpan="2" Height="22"/>
+        <TextBox x:Name="Password" Text="{Binding Path=password_hash}" HorizontalAlignment="Left" Margin="248,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Grid.ColumnSpan="2" Height="22"/>
+        <ComboBox x:Name="Access" Text="{Binding Path=access}" HorizontalAlignment="Left" Margin="250,145,0,0" VerticalAlignment="Top" Width="211" Grid.ColumnSpan="2" Height="22"/>
+        <Button Content="Добавить" Margin="288,210,80,0" VerticalAlignment="Top" FontFamily="Arial" Grid.ColumnSpan="2" Height="18" Click="Button_Save">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="#FE54BB11" Offset="0.015"/>
+                    <GradientStop Color="#FE75D82B" Offset="0.956"/>
+                    <GradientStop Color="#FE88D84B" Offset="0.933"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBlock HorizontalAlignment="Left" Margin="248,1,0,0" TextWrapping="Wrap" Text="Имя пользователя" VerticalAlignment="Top" Height="16" Width="104" Grid.ColumnSpan="2"/>
+        <TextBlock HorizontalAlignment="Left" Margin="250,58,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Height="16" Width="41"/>
+        <TextBlock HorizontalAlignment="Left" Margin="250,126,0,0" TextWrapping="Wrap" Text="Права пользователя" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2"/>
+
+    </Grid>
+</Window>

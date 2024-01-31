@@ -179,11 +179,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\Add_User.xaml.cs">
+      <DependentUpon>Add_User.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controller\Log_Controller.cs" />
     <Compile Include="Model\log.cs" />
     <Compile Include="View\LogWindow .xaml.cs">
       <DependentUpon>LogWindow .xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\UsersWindow.xaml.cs">
+      <DependentUpon>UsersWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="View\Add_User.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -200,6 +210,10 @@
     <Page Include="View\LogWindow .xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UsersWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -229,10 +243,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\eye_closed.png" />
-    <Resource Include="Image\eye_open.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Image\BIG.jpg" />
@@ -266,22 +276,19 @@
     <Resource Include="Image\Edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\ButtonExcel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\ButtonExcel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Excel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\Excel.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Image\images.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="View\images.png" />
+    <Resource Include="View\Сleaning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Cleaning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Button-Add-icon-1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

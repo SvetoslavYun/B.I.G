@@ -13,13 +13,11 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 namespace B.I.G
+
 {
-    /// <summary>
-    /// Логика взаимодействия для Window1.xaml
-    /// </summary>
     public partial class LogWindow : System.Windows.Window
     {
-        private int I = 1;
+       public static string names= MainWindow.LogS;
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
         public LogWindow()
@@ -63,10 +61,10 @@ namespace B.I.G
                 var result = MessageBox.Show("Вы уверены?", "Удалить запись", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 { // получение выбранных строк
-                    List<log> stock = dGridLog.SelectedItems.Cast<log>().ToList();
+                    List<log> logs = dGridLog.SelectedItems.Cast<log>().ToList();
                     {
                         // проход по списку выбранных строк
-                        foreach (log Log in stock)
+                        foreach (log Log in logs)
                         {
                             var Id = Log.id;
                             log_Controller.Delete(Id);
@@ -167,12 +165,12 @@ namespace B.I.G
 
         private void Date_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Ваш код обработки изменения даты
+            //Обработки изменения даты
             Search(sender, e);
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_export_to_excel(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -214,14 +212,15 @@ namespace B.I.G
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
 
-                worksheet.HeaderFooter.OddHeader.RightAlignedText = "&\"Arial\"&10&K000000 sviatoslavyun@gmail.com";
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial\"&10&K000000 Журнал событий 'B.I.G'";
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "Excel Files|*.xlsx",
-                    DefaultExt = ".xlsx"
+                    DefaultExt = ".xlsx",
+                    FileName = "Журнал событий 'B.I.G'"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -356,6 +355,12 @@ namespace B.I.G
             }
         }
 
-
+        private void Button_cleaning(object sender, RoutedEventArgs e)
+        {
+            Name.Text = string.Empty;
+            Date.Text = string.Empty;
+            Date2.Text = string.Empty;
+            FillData();
+        }
     }
 }

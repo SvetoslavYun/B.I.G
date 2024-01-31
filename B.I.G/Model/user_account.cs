@@ -11,5 +11,7 @@ namespace B.I.G.Model
         public int id { get; set; }
         public string username { get; set; }
         public string password_hash { get; set; }
+        public string access { get; set; }
+        public byte[] image { get; set; }
     }
 }
