@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Data.SQLite;
 using B.I.G.Model;
-
+using System.Windows.Media.Imaging;
+using System.IO;
+using System.Windows;
 
 namespace B.I.G.Controller
 {
@@ -34,14 +36,14 @@ namespace B.I.G.Controller
                 var Username = reader.GetString(1);
                 var Password_hash = reader.GetString(2);
                 var Access = reader.GetString(3);
-                //var Image = (byte[])reader.GetValue(4);
+                var Image = (byte[])reader.GetValue(4);
                 var User_account = new user_account
                 {
                     id = Id,
                     username = Username,
                     password_hash = Password_hash,
                     access= Access,
-                    //image = Image
+                    image = Image
                 };
                 yield return User_account;
             }
@@ -50,18 +52,20 @@ namespace B.I.G.Controller
 
         public void Insert(user_account User)
         {
-            var commandString = "INSERT INTO user_accounts (username, password_hash,access) VALUES (@Username, @Password_hash,@Access)";
-            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+            var commandString = "INSERT INTO user_accounts (username, password_hash,access, image) VALUES (@Username, @Password_hash,@Access, @Image)";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);            
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
                 new SQLiteParameter("Username", User.username),
                 new SQLiteParameter("Password_hash", User.password_hash),
                 new SQLiteParameter("Access", User.access),
+                new SQLiteParameter("Image", User.image),
             });
 
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
         }
+  
 
         public void Delete(int id)
         {

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
         Title="Редактор пользователя" Height="300" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="337*"/>
@@ -30,6 +30,11 @@
         <TextBlock HorizontalAlignment="Left" Margin="248,1,0,0" TextWrapping="Wrap" Text="Имя пользователя" VerticalAlignment="Top" Height="16" Width="104" Grid.ColumnSpan="2"/>
         <TextBlock HorizontalAlignment="Left" Margin="250,58,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Height="16" Width="41"/>
         <TextBlock HorizontalAlignment="Left" Margin="250,126,0,0" TextWrapping="Wrap" Text="Права пользователя" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2"/>
+
+        <Button Content="Загрузить фото" Margin="66,0,151,22" VerticalAlignment="Bottom" Click="Button_Foto"/>
+        <Image HorizontalAlignment="Left" Height="200" Margin="20,0,0,62" VerticalAlignment="Bottom" Width="199" Source="/image/NoFoto.jpg"/>
+        <Image x:Name="imgBox" Margin="16,1,96,50" Source="{Binding SelectedProduct.Image}"/>
+
 
     </Grid>
 </Window>

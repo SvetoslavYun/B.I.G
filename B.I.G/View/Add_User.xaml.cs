@@ -1,8 +1,12 @@
 ﻿using B.I.G.Controller;
 using B.I.G.Model;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,6 +20,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Brushes = System.Windows.Media.Brushes;
+using Path = System.IO.Path;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace B.I.G
 {
@@ -26,12 +33,12 @@ namespace B.I.G
     {
         ObservableCollection<user_account> Users;
         private User_accountController user_AccountController;
+        private byte[] image_bytes;
         public Add_User()
         {
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
-
             Loaded += AddUserWindow_Loaded;
         }
 
@@ -52,17 +59,35 @@ namespace B.I.G
                 return;
             }
 
-            var User = new user_account()
+            if (image_bytes == null)
             {
-                username = Name.Text,
-                password_hash = Password.Text,
-                access = Access.Text
-            };
+                string defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            if (IsPasswordValid(User.password_hash))
-            {
-                user_AccountController.Insert(User);
+                if (File.Exists(defaultImagePath))
+                {
+                    image_bytes = File.ReadAllBytes(defaultImagePath);
+                }
+                else
+                {
+                    MessageBox.Show("Изображение по умолчанию не найдено.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
             }
+
+            var User = new user_account()
+                {
+                    username = Name.Text,
+                    password_hash = Password.Text,
+                    access = Access.Text,
+                    image = image_bytes
+                };
+
+                if (IsPasswordValid(User.password_hash))
+                {
+                    user_AccountController.Insert(User);
+                }
+            
         }
 
 
@@ -88,6 +113,66 @@ namespace B.I.G
             // Пароль прошел все проверки
             return true;
         }
+
+        private void Button_Foto(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    using (var originalImage = System.Drawing.Image.FromFile(openFileDialog.FileName))
+                    {
+                        int targetSize = 800; // Желаемый размер (ширина и высота одинаковые)
+
+                        int sourceWidth = originalImage.Width;
+                        int sourceHeight = originalImage.Height;
+
+                        int cropX = 0;
+                        int cropY = 0;
+
+                        if (sourceWidth > sourceHeight)
+                        {
+                            // Исходное изображение шире, обрезаем сверху и снизу
+                            sourceWidth = sourceHeight;
+                            cropX = (originalImage.Width - sourceWidth) / 2;
+                        }
+                        else
+                        {
+                            // Исходное изображение выше, обрезаем справа и слева
+                            sourceHeight = sourceWidth;
+                            cropY = (originalImage.Height - sourceHeight) / 2;
+                        }
+
+                        using (var croppedImage = new Bitmap(sourceWidth, sourceHeight))
+                        using (var graphics = Graphics.FromImage(croppedImage))
+                        {
+                            graphics.DrawImage(originalImage, new Rectangle(0, 0, sourceWidth, sourceHeight), cropX, cropY, sourceWidth, sourceHeight, GraphicsUnit.Pixel);
+                            graphics.Save();
+
+                            // Преобразовать Bitmap в массив байтов
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                croppedImage.Save(ms, ImageFormat.Jpeg); // Замените Jpeg на нужный вам формат
+                                image_bytes = ms.ToArray();
+                            }
+                        }
+
+                        // Загрузить изображение в Image элемент
+                        BitmapImage bitmapImage = new BitmapImage();
+                        bitmapImage.BeginInit();
+                        bitmapImage.StreamSource = new MemoryStream(image_bytes);
+                        bitmapImage.EndInit();
+                        imgBox.Source = bitmapImage;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при обработке изображения: " + ex.Message);
+                }
+            }
+        }
+
 
     }
 }
