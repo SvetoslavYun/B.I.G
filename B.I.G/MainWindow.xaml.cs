@@ -28,7 +28,7 @@ namespace B.I.G
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
+    {       
         public static string LogS = "";
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
@@ -46,7 +46,7 @@ namespace B.I.G
         }
         public void Get()//заполнить список
         {
-            Add_User logWindow = new Add_User();
+            UsersWindow logWindow = new UsersWindow();
             logWindow.Show();
             Close(); // Закрыть текущее окно авторизации
         }

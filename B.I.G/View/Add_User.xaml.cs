@@ -23,6 +23,8 @@ using System.Windows.Shapes;
 using Brushes = System.Windows.Media.Brushes;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using Microsoft.Graph.Models;
 
 namespace B.I.G
 {
@@ -31,16 +33,19 @@ namespace B.I.G
     /// </summary>
     public partial class Add_User : Window
     {
+        public user_account SelectedProduct { get; set; }
         ObservableCollection<user_account> Users;
         private User_accountController user_AccountController;
-        private byte[] image_bytes;
+        public static byte[] image_bytes;
         public Add_User()
         {
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
             Loaded += AddUserWindow_Loaded;
+            grid.DataContext = UsersWindow.User;
         }
+
 
         private void AddUserWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -58,9 +63,11 @@ namespace B.I.G
                 if (string.IsNullOrWhiteSpace(Access.Text)) { Access.BorderBrush = Brushes.Red; } else { Access.BorderBrush = Brushes.Black; }
                 return;
             }
-
-            if (image_bytes == null)
+            if (UsersWindow.flag)
             {
+                if (image_bytes == null)
+            {
+                
                 string defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
                 if (File.Exists(defaultImagePath))
@@ -72,10 +79,8 @@ namespace B.I.G
                     MessageBox.Show("Изображение по умолчанию не найдено.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-
-            }
-
-            var User = new user_account()
+            }        
+                var User = new user_account()
                 {
                     username = Name.Text,
                     password_hash = Password.Text,
@@ -83,11 +88,47 @@ namespace B.I.G
                     image = image_bytes
                 };
 
-                if (IsPasswordValid(User.password_hash))
+                if (!user_AccountController.IsUsernameExists(User.username))
                 {
-                    user_AccountController.Insert(User);
+                    if (IsPasswordValid(User.password_hash))
+                    {
+                        user_AccountController.Insert(User);
+                        Close();
+                    }
                 }
-            
+                else
+                {
+                    MessageBox.Show("Пользователь с таким именем уже существует.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                if (image_bytes == null)
+                {
+                    int id = UsersWindow.User.id;
+                    user_AccountController.SearchFoto(id);
+                }
+                UsersWindow.User.username = Name.Text;
+                UsersWindow.User.password_hash = Password.Text;
+                UsersWindow.User.access = Access.Text;
+                UsersWindow.User.image = image_bytes;
+
+               if (!user_AccountController.IsUsernameExists(UsersWindow.User.username, UsersWindow.User.id))
+    {
+        if (IsPasswordValid(UsersWindow.User.password_hash))
+        {
+            user_AccountController.Update(UsersWindow.User);
+            image_bytes = null;
+            Close();
+        }
+    }
+    else
+    {
+        MessageBox.Show("Пользователь с таким именем уже существует.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+            }
+
+
         }
 
 

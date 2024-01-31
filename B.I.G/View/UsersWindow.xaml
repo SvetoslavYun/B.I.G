@@ -21,12 +21,18 @@
           Background="Transparent"
           Foreground="Black"
           BorderBrush="Transparent"
-          AlternatingRowBackground="#F0F0F0">
+          AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
+            
             <DataGrid.Resources>
                 <ContextMenu x:Key="RowContextMenu">
                     <MenuItem Header="Удалить" Click="DeleteMenuItem">
                         <MenuItem.Icon>
                             <Image Source="/image/Delete.png" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Редактировать" Click="EditMenuItem">
+                        <MenuItem.Icon>
+                            <Image Source="/image/edit2.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -37,7 +43,15 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id №" Binding="{Binding id}" IsReadOnly="True" Width="60"/>
+                
+                    <DataGridTemplateColumn Header="" Width="30">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Height="30" Width="80" Source="{Binding image}"  />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Id №" Binding="{Binding id}" IsReadOnly="True" Width="60"/>
                 <DataGridTextColumn Header="Имя пользователя" Binding="{Binding username}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Пароль" Binding="{Binding password_hash}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Права доступа"  Binding="{Binding access}" IsReadOnly="True" Width="*"/>

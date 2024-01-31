@@ -299,6 +299,12 @@
   <ItemGroup>
     <Resource Include="Image\NoFoto2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\edit2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Download.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

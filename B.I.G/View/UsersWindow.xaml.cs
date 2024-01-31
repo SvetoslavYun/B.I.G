@@ -12,11 +12,14 @@ using OfficeOpenXml.Style;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Windows.Media.Media3D;
+
 namespace B.I.G
 
 {
     public partial class UsersWindow : System.Windows.Window
     {
+        public static user_account User;
         public static bool flag;
         public static string names = MainWindow.LogS;
         ObservableCollection<user_account> User_Accounts;
@@ -54,6 +57,62 @@ namespace B.I.G
             }
         }
 
+        private void Button_Add(object sender, RoutedEventArgs e)
+        {
+            flag = true;
+            Add_User add_User = new Add_User();
+            add_User.Owner = this;
+            add_User.ShowDialog();
+            Search(sender, e);
+            FillData();
+        }
+
+        private void DoubleClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                if (dGridUser.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                var id = ((user_account)dGridUser.SelectedItem).id;
+                flag = false;
+                User = (user_account)dGridUser.SelectedItem;
+                Add_User add_User = new Add_User();
+                add_User.Owner = this;
+                add_User.ShowDialog();
+                Search(sender, e);
+                FillData();
+                User = null;
+
+            }
+            catch (Exception h)
+            {
+                MessageBox.Show(h.Message);
+            }
+        }
+
+        private void EditMenuItem(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                if (dGridUser.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                var id = ((user_account)dGridUser.SelectedItem).id;
+                flag = false;
+                User = (user_account)dGridUser.SelectedItem;
+                Add_User add_User = new Add_User();
+                add_User.Owner = this;
+                add_User.ShowDialog();
+                Search(sender, e);
+                FillData();
+                User = null;
+
+            }
+            catch (Exception h)
+            {
+                MessageBox.Show(h.Message);
+            }
+        }
+
         private void DeleteMenuItem(object sender, RoutedEventArgs e)
         {
             try
@@ -83,150 +142,87 @@ namespace B.I.G
 
         private void Search(object sender, RoutedEventArgs e)
         {
-            //try
+            try
 
-            //{
-            //    if (!string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && !string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var searchResults = log_Controller.Search_Name_Between_dates(Name.Text, Convert.ToDateTime(Date.Text), Convert.ToDateTime(Date2.Text));
+            {
+               
+                    var searchResults = user_AccountController.SearchUsername(Name.Text);
 
-            //        Logs.Clear();
-            //        foreach (var result in searchResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-            //    if (string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && !string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var searchResults = log_Controller.Search_Between_dates(Convert.ToDateTime(Date.Text), Convert.ToDateTime(Date2.Text));
-
-            //        Logs.Clear();
-            //        foreach (var result in searchResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-
-            //    if (string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var searchResults = log_Controller.SearchDate(Convert.ToDateTime(Date.Text));
-
-            //        Logs.Clear();
-            //        foreach (var result in searchResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-            //    if (!string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var searchResults = log_Controller.SearchNameDate(Name.Text, Convert.ToDateTime(Date.Text));
-
-            //        Logs.Clear();
-            //        foreach (var result in searchResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-            //    if (string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var searchResults = log_Controller.SearchDate(Convert.ToDateTime(Date.Text));
-
-            //        Logs.Clear();
-            //        foreach (var result in searchResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-            //    if (string.IsNullOrEmpty(Name.Text) && string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var allResults = log_Controller.GetAllLogs();
-
-            //        Logs.Clear();
-            //        foreach (var result in allResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-            //    else if (!string.IsNullOrEmpty(Name.Text) && string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
-            //    {
-            //        var searchResults = log_Controller.SearchUsername(Name.Text);
-
-            //        Logs.Clear();
-            //        foreach (var result in searchResults)
-            //        {
-            //            Logs.Add(result);
-            //        }
-            //    }
-            //}
-            //catch (Exception h)
-            //{
-            //    MessageBox.Show(h.Message);
-            //}
+                User_Accounts.Clear();
+                    foreach (var result in searchResults)
+                    {
+                    User_Accounts.Add(result);
+                    }
+                
+            }
+            catch (Exception h)
+            {
+                MessageBox.Show(h.Message);
+            }
         }
 
 
         private void Button_export_to_excel(object sender, RoutedEventArgs e)
         {
-            //try
-            //{
-            //    var excelPackage = new ExcelPackage();
-            //    var worksheet = excelPackage.Workbook.Worksheets.Add("Logs");
+            try
+            {
+                var excelPackage = new ExcelPackage();
+                var worksheet = excelPackage.Workbook.Worksheets.Add("User_Accounts");
 
-            //    // Установка стилей для линий ячеек, ширины колонок и выравнивания
-            //    using (var cells = worksheet.Cells[1, 1, dGridLog.Items.Count + 1, dGridLog.Columns.Count])
-            //    {
-            //        cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-            //        cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-            //        cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-            //        cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                // Установка стилей для линий ячеек, ширины колонок и выравнивания
+                using (var cells = worksheet.Cells[1, 1, dGridUser.Items.Count + 1, dGridUser.Columns.Count])
+                {
+                    cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
 
-            //        cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            //        cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                    cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
 
-            //    }
+                }
 
-            //    // Добавление заголовков столбцов и порядковых номеров
+                // Добавление заголовков столбцов и порядковых номеров
 
-            //    for (int i = 1; i <= dGridLog.Columns.Count; i++)
-            //    {
-            //        worksheet.Cells[1, i].Value = dGridLog.Columns[i - 1].Header;
-            //    }
+                for (int i = 1; i <= dGridUser.Columns.Count; i++)
+                {
+                    worksheet.Cells[1, i].Value = dGridUser.Columns[i - 1].Header;
+                }
 
-            //    // Добавление данных
-            //    for (int i = 0; i < dGridLog.Items.Count; i++)
-            //    {
-            //        var logItem = (log)dGridLog.Items[i];
+                // Добавление данных
+                for (int i = 0; i < dGridUser.Items.Count; i++)
+                {
+                    var logItem = (user_account)dGridUser.Items[i];
+                    worksheet.Cells[i + 2, 2].Value = logItem.id;
+                    worksheet.Cells[i + 2, 3].Value = logItem.username;
+                    worksheet.Cells[i + 2, 4].Value = logItem.password_hash;
+                    worksheet.Cells[i + 2, 5].Value = logItem.access;
 
-            //        worksheet.Cells[i + 2, 1].Value = logItem.id;
-            //        worksheet.Cells[i + 2, 2].Value = logItem.username;
-            //        worksheet.Cells[i + 2, 3].Value = logItem.process;
-            //        worksheet.Cells[i + 2, 4].Value = logItem.date.ToString("dd.MM.yyyy HH:mm");
+                }
+                worksheet.DeleteColumn(1);
+                // Автоподгон ширины колонок
+                worksheet.Cells.AutoFitColumns();
 
-            //    }
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial\"&10&K000000 Список пользователей 'B.I.G'";
 
-            //    // Автоподгон ширины колонок
-            //    worksheet.Cells.AutoFitColumns();
+                worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
-            //    worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial\"&10&K000000 Журнал событий 'B.I.G'";
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Excel Files|*.xlsx",
+                    DefaultExt = ".xlsx",
+                    FileName = "Список пользователей 'B.I.G'"
+                };
 
-            //    worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
-
-            //    var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-            //    {
-            //        Filter = "Excel Files|*.xlsx",
-            //        DefaultExt = ".xlsx",
-            //        FileName = "Журнал событий 'B.I.G'"
-            //    };
-
-            //    if (saveFileDialog.ShowDialog() == true)
-            //    {
-            //        SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 
@@ -263,16 +259,6 @@ namespace B.I.G
             Name.Text = string.Empty;
            
             FillData();
-        }
-
-        private void Button_Add(object sender, RoutedEventArgs e)
-        {
-            flag = true;
-            Add_User add_User = new Add_User();
-            add_User.Owner = this;
-            add_User.ShowDialog();
-            Search(sender, e);
-
-        }
+        }   
     }
 }
