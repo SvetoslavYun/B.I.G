@@ -42,7 +42,7 @@ namespace B.I.G
             user_AccountController = new User_accountController();
             InitializeComponent();
             GetUsernames();
-            Get();
+            //Get();
         }
         public void Get()//заполнить список
         {
@@ -98,7 +98,7 @@ namespace B.I.G
                     };
                     log_Controller.Insert(Log);
                     LogS = login.Text;
-                    LogWindow logWindow = new LogWindow();
+                    UsersWindow logWindow = new UsersWindow();
                     logWindow.Show();
                     Close(); // Закрыть текущее окно авторизации
                 }

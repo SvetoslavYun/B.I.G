@@ -75,7 +75,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <TextBlock HorizontalAlignment="Left" Margin="10,40,0,0" TextWrapping="Wrap" Text="{x:Static local:LogWindow.names}" VerticalAlignment="Top" Foreground="#FFF3EFEB"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,40,0,0" TextWrapping="Wrap" Text="{x:Static local:UsersWindow.names}" VerticalAlignment="Top" Foreground="#FFF3EFEB"/>
 
     </Grid>
 </Window>

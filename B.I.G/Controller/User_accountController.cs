@@ -26,7 +26,7 @@ namespace B.I.G.Controller
             connection = new SQLiteConnection(connString);
         }
 
-
+    
         public IEnumerable<user_account> GetAllUsers()
         {
             var commandString = "SELECT * FROM user_accounts ";
@@ -125,6 +125,7 @@ namespace B.I.G.Controller
 
         public IEnumerable<user_account> Authorization(string login, string password)
         {
+            connection.Close();
             var commandString = "SELECT * FROM user_accounts WHERE username LIKE @login AND password_hash LIKE @password ;";
 
             using (SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection))
@@ -147,7 +148,7 @@ namespace B.I.G.Controller
                             username = Username,
                             password_hash = Password_hash
                         };
-                        yield return User;
+                        yield return User;                     
                     }
                 }
             }
@@ -202,5 +203,25 @@ namespace B.I.G.Controller
 
             connection.Close();
         }
+
+        public void SearchFoto2(string name)
+        {
+            connection.Open();
+            var commandString = "SELECT image, access FROM user_accounts WHERE username = @Username;";
+
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Username", name);
+            using (SQLiteDataReader reader = getAllCommand.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    UsersWindow.image_Profil = (byte[])reader.GetValue(0); // Значение image (первый столбец)
+                    UsersWindow.acces = reader.GetString(1); // Значение access (второй столбец)
+                }
+            }
+
+            connection.Close();
+        }
+
     }
 }

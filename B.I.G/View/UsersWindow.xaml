@@ -17,12 +17,12 @@
         </Grid.Background>
         <DataGrid x:Name="dGridUser" ItemsSource="{Binding}" 
           AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" 
-          RowHeaderWidth="50" CanUserAddRows="False" Margin="160,40,10,10" 
+          RowHeaderWidth="50" CanUserAddRows="False" Margin="189,40,10,10" 
           Background="Transparent"
           Foreground="Black"
           BorderBrush="Transparent"
           AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
-            
+
             <DataGrid.Resources>
                 <ContextMenu x:Key="RowContextMenu">
                     <MenuItem Header="Удалить" Click="DeleteMenuItem">
@@ -43,15 +43,15 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                
-                    <DataGridTemplateColumn Header="" Width="30">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Image Height="30" Width="80" Source="{Binding image}"  />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Id №" Binding="{Binding id}" IsReadOnly="True" Width="60"/>
+
+                <DataGridTemplateColumn Header="" Width="30">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="30" Width="80" Source="{Binding image}"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Id №" Binding="{Binding id}" IsReadOnly="True" Width="60"/>
                 <DataGridTextColumn Header="Имя пользователя" Binding="{Binding username}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Пароль" Binding="{Binding password_hash}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Права доступа"  Binding="{Binding access}" IsReadOnly="True" Width="*"/>
@@ -85,9 +85,9 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <TextBlock HorizontalAlignment="Left" Margin="10,40,0,0" TextWrapping="Wrap" Text="{x:Static local:UsersWindow.names}" VerticalAlignment="Top" Foreground="#FFF3EFEB"/>
 
-        <Button Content="" HorizontalAlignment="Left" Margin="166,8,0,0" VerticalAlignment="Top" Click="Button_Add" Width="26" Height="26">
+
+        <Button Content="" HorizontalAlignment="Left" Margin="189,8,0,0" VerticalAlignment="Top" Click="Button_Add" Width="26" Height="26">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">
@@ -103,7 +103,10 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-
+        <Image x:Name="imgBox" Margin="10,40,0,0" Source="{Binding SelectedProduct.image}" Height="171" VerticalAlignment="Top" HorizontalAlignment="Left" Width="172"/>
+        <TextBlock HorizontalAlignment="Left" Margin="50,12,0,0" TextWrapping="Wrap" Text="Пользователь" VerticalAlignment="Top" Foreground="#FFF7F3EF" FontFamily="Cooper Black" FontSize="14"/>
+        <TextBlock Margin="26,224,1096,0" TextWrapping="Wrap" Text="{x:Static local:UsersWindow.names}" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB"/>
+        <TextBlock x:Name="imgBox2" Margin="26,247,1096,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB"/>
 
     </Grid>
 </Window>
