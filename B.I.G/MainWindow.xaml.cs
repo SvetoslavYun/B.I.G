@@ -28,7 +28,13 @@ namespace B.I.G
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {       
+    {
+        public static string LogDate;
+        public static string LogDate2;
+        public static string nameUser;
+        public static string LognameUser;
+        public static byte[] image_Profil;
+        public static string acces;
         public static string LogS = "";
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
@@ -46,12 +52,15 @@ namespace B.I.G
         }
         public void Get()//заполнить список
         {
-            UsersWindow logWindow = new UsersWindow();
-            logWindow.Show();
+            //LogWindow logWindow = new LogWindow();
+            //logWindow.Show();
+
+            UsersWindow usersWindow = new UsersWindow();
+            usersWindow.Show();
+
+
             Close(); // Закрыть текущее окно авторизации
         }
-
-
 
         public void GetUsernames()//заполнить список
         {
@@ -77,6 +86,7 @@ namespace B.I.G
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            CheckBox.IsChecked = false;
             string Login = login.Text;
             string Password = passwordBox.Password;
 
@@ -96,14 +106,16 @@ namespace B.I.G
                         date = Convert.ToDateTime(formattedDate),
                         date2 = Convert.ToDateTime(formattedDate2)
                     };
-                    log_Controller.Insert(Log);
+                    log_Controller.Insert(Log);                  
                     LogS = login.Text;
+                    user_AccountController.MainPhoto(LogS);
                     UsersWindow logWindow = new UsersWindow();
                     logWindow.Show();
                     Close(); // Закрыть текущее окно авторизации
                 }
                 else
                 {
+                    
                     MessageBox.Show("Неверное 'Имя пользователя' или 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

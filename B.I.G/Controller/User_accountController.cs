@@ -85,11 +85,12 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public void Delete(int id)
+        public void Delete(int id, string username)
         {
-            var commandString = "DELETE FROM user_accounts WHERE(id = @Id)";
+            var commandString = "DELETE FROM user_accounts WHERE(id = @Id) and username !=@Username";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
             deleteCommand.Parameters.AddWithValue("Id", id);
+            deleteCommand.Parameters.AddWithValue("@Username", username);
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
@@ -97,6 +98,7 @@ namespace B.I.G.Controller
 
         public IEnumerable<user_account> SearchUsername(string name)
         {
+            connection.Close();
             var commandString = "SELECT * FROM user_accounts WHERE username LIKE @Name;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
@@ -126,12 +128,13 @@ namespace B.I.G.Controller
         public IEnumerable<user_account> Authorization(string login, string password)
         {
             connection.Close();
-            var commandString = "SELECT * FROM user_accounts WHERE username LIKE @login AND password_hash LIKE @password ;";
+
+            var commandString = "SELECT * FROM user_accounts WHERE username = @login AND password_hash = @password ;";
 
             using (SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection))
             {
-                getAllCommand.Parameters.AddWithValue("@login", "%" + login + "%");
-                getAllCommand.Parameters.AddWithValue("@password", "%" + password + "%");
+                getAllCommand.Parameters.AddWithValue("@login", login );
+                getAllCommand.Parameters.AddWithValue("@password", password );
 
                 connection.Open();
 
@@ -148,8 +151,10 @@ namespace B.I.G.Controller
                             username = Username,
                             password_hash = Password_hash
                         };
-                        yield return User;                     
+                        connection.Close();
+                        yield return User;
                     }
+                   
                 }
             }
            
@@ -204,7 +209,7 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public void SearchFoto2(string name)
+        public void MainPhoto(string name)
         {
             connection.Open();
             var commandString = "SELECT image, access FROM user_accounts WHERE username = @Username;";
@@ -215,8 +220,8 @@ namespace B.I.G.Controller
             {
                 if (reader.Read())
                 {
-                    UsersWindow.image_Profil = (byte[])reader.GetValue(0); // Значение image (первый столбец)
-                    UsersWindow.acces = reader.GetString(1); // Значение access (второй столбец)
+                    MainWindow.image_Profil = (byte[])reader.GetValue(0); // Значение image (первый столбец)
+                    MainWindow.acces = reader.GetString(1); // Значение access (второй столбец)
                 }
             }
 

@@ -117,9 +117,12 @@ namespace B.I.G
     {
         if (IsPasswordValid(UsersWindow.User.password_hash))
         {
-            user_AccountController.Update(UsersWindow.User);
-            image_bytes = null;
-            Close();
+                MainWindow.LogS = Name.Text;
+                MainWindow.image_Profil = image_bytes;
+                MainWindow.acces = Access.Text;
+                user_AccountController.Update(UsersWindow.User);
+                  image_bytes = null;
+                  Close();
         }
     }
     else

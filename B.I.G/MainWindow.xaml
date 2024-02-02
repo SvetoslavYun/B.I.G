@@ -19,7 +19,7 @@
             </Grid.RowDefinitions>
             <Image Source="Image/Big.png" Stretch="UniformToFill" Grid.RowSpan="2"/>
             <PasswordBox x:Name="passwordBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Margin="0,155,0,0" Grid.RowSpan="2"/>
-            <CheckBox VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="230,158,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="16" />
+            <CheckBox x:Name="CheckBox" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="230,158,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="16" />
             <TextBox x:Name="visiblePasswordTextBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Visibility="Collapsed" Margin="0,155,0,0" Grid.RowSpan="2"/>
             <TextBlock HorizontalAlignment="Center" Margin="-100,76,0,0" TextWrapping="Wrap" Text="Имя пользователя" VerticalAlignment="Top" Foreground="#FFFDFAFA" Width="102"/>
             <TextBlock HorizontalAlignment="Center" Margin="-109,132,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Foreground="#FFFDF9F9" Width="94"/>

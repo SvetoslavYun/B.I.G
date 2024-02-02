@@ -57,8 +57,8 @@
                 <DataGridTextColumn Header="Права доступа"  Binding="{Binding access}" IsReadOnly="True" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Name" Margin="0,10,660,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" Width="174" Height="22"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,12,839,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
+        <TextBox x:Name="Name" Margin="0,10,795,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" Width="174" Height="22"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,13,984,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
         <Button Content="Экспорт в Excel" HorizontalAlignment="Right" Margin="0,9,104,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_export_to_excel">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -69,7 +69,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <Button Content="" HorizontalAlignment="Right" Margin="0,8,628,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
+        <Button Content="" HorizontalAlignment="Right" Margin="0,8,756,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">
@@ -87,7 +87,7 @@
         </Button>
 
 
-        <Button Content="" HorizontalAlignment="Left" Margin="189,8,0,0" VerticalAlignment="Top" Click="Button_Add" Width="26" Height="26">
+        <Button Content="" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Click="Button_Add" Width="26" Height="26" RenderTransformOrigin="4.423,0.386">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">
@@ -103,10 +103,11 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Image x:Name="imgBox" Margin="10,40,0,0" Source="{Binding SelectedProduct.image}" Height="171" VerticalAlignment="Top" HorizontalAlignment="Left" Width="172"/>
+        <Image x:Name="ImgBox" Margin="10,40,0,0" Source="{Binding SelectedProduct.image}" Height="171" VerticalAlignment="Top" HorizontalAlignment="Left" Width="172"/>
         <TextBlock HorizontalAlignment="Left" Margin="50,12,0,0" TextWrapping="Wrap" Text="Пользователь" VerticalAlignment="Top" Foreground="#FFF7F3EF" FontFamily="Cooper Black" FontSize="14"/>
-        <TextBlock Margin="26,224,1096,0" TextWrapping="Wrap" Text="{x:Static local:UsersWindow.names}" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB"/>
-        <TextBlock x:Name="imgBox2" Margin="26,247,1096,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB"/>
+        <TextBlock x:Name="NameText" Margin="10,224,1096,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
+        <TextBlock x:Name="AccesText" Margin="10,252,1091,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
+        <Button Content="События логи" HorizontalAlignment="Left" Margin="15,297,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow"/>
 
     </Grid>
 </Window>

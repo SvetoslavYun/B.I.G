@@ -20,52 +20,31 @@ namespace B.I.G
 
 {
     public partial class UsersWindow : System.Windows.Window
-    {
-        public static byte[] image_Profil;
+    {   
         public static user_account User;
-        public static bool flag;
-        public static string names = MainWindow.LogS;
-        public static string acces;
+        public static bool flag;       
         ObservableCollection<user_account> User_Accounts;
         private User_accountController user_AccountController;
         public user_account SelectedProduct { get; set; }
         public UsersWindow()
         {
+           
             User_Accounts = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
             dGridUser.DataContext = User_Accounts;
             FillData();
-            GetFoto();
-            imgBox.DataContext = this;
+            ImgBox.DataContext = this;
             Name.TextChanged += Search;
-
+            SelectedProduct = new user_account { image = MainWindow.image_Profil };
+            AccesText.Text = MainWindow.acces;
+            NameText.Text = MainWindow.LogS;
+            Name.Text = MainWindow.nameUser;
         }
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = e.Row.GetIndex() + 1;
-        }
-
-        public void GetFoto()
-        {
-            try
-            {
-                
-                user_AccountController.SearchFoto2(names);
-                SelectedProduct = new user_account
-                {
-                    image = image_Profil,
-                  
-                    
-                };
-                imgBox2.Text = acces;
-            }
-            catch (Exception h)
-            {
-                MessageBox.Show(h.Message);
-            }
-        }
-
+        }      
 
         public void FillData()
         {
@@ -107,7 +86,9 @@ namespace B.I.G
                 Add_User add_User = new Add_User();
                 add_User.Owner = this;
                 add_User.ShowDialog();
-                Search(sender, e);              
+                UsersWindow usersWindow = new UsersWindow();
+                usersWindow.Show();
+                Close();
                 User = null;
 
             }
@@ -129,7 +110,9 @@ namespace B.I.G
                 Add_User add_User = new Add_User();
                 add_User.Owner = this;
                 add_User.ShowDialog();
-                Search(sender, e);
+                UsersWindow usersWindow = new UsersWindow();
+                usersWindow.Show();
+                Close();
                 User = null;
 
             }
@@ -153,7 +136,7 @@ namespace B.I.G
                         foreach (user_account Users in user)
                         {
                             var Id = Users.id;
-                            user_AccountController.Delete(Id);
+                            user_AccountController.Delete(Id, NameText.Text);
                             FillData();
                         }
                     }
@@ -171,14 +154,18 @@ namespace B.I.G
             try
 
             {
-               
-                    var searchResults = user_AccountController.SearchUsername(Name.Text);
+                SelectedProduct = new user_account { image = MainWindow.image_Profil };
+                AccesText.Text = MainWindow.acces;
+                NameText.Text = MainWindow.LogS;
+                MainWindow.nameUser = Name.Text;
+                var searchResults = user_AccountController.SearchUsername(Name.Text);
 
                 User_Accounts.Clear();
                     foreach (var result in searchResults)
                     {
                     User_Accounts.Add(result);
                     }
+                    
                 
             }
             catch (Exception h)
@@ -285,6 +272,13 @@ namespace B.I.G
             Name.Text = string.Empty;
            
             FillData();
-        }   
+        }
+
+        private void Button_LogWindow(object sender, RoutedEventArgs e)
+        {
+            LogWindow logWindow = new LogWindow();
+            logWindow.Show();
+            Close();
+        }
     }
 }

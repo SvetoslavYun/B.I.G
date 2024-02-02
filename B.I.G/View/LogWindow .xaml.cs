@@ -12,6 +12,8 @@ using OfficeOpenXml.Style;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Windows.Input;
+
 namespace B.I.G
 
 {
@@ -20,6 +22,7 @@ namespace B.I.G
        public static string names= MainWindow.LogS;
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
+        public user_account SelectedProduct { get; set; }
         public LogWindow()
         {
             Logs = new ObservableCollection<log>();
@@ -27,9 +30,22 @@ namespace B.I.G
             InitializeComponent();
             dGridLog.DataContext = Logs;
             FillData();
+            ImgBox.DataContext = this;
+            Name.Text = MainWindow.LognameUser;
+            Date.Text = MainWindow.LogDate;
+            Date2.Text = MainWindow.LogDate2;
             Name.TextChanged += Search;
-            
+            SelectedProduct = new user_account { image = MainWindow.image_Profil };
+            AccesText.Text = MainWindow.acces;
+            NameText.Text = MainWindow.LogS;
+                     
         }
+
+        private void Date_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true; // Отменить обработку события, чтобы предотвратить ввод текста
+        }
+
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = e.Row.GetIndex() + 1;
@@ -68,7 +84,7 @@ namespace B.I.G
                         {
                             var Id = Log.id;
                             log_Controller.Delete(Id);
-                            FillData();
+                            Search(sender, e);
                         }
                     }
                 }
@@ -85,8 +101,14 @@ namespace B.I.G
             try
 
             {
+                if (string.IsNullOrEmpty(Name.Text)) { MainWindow.LognameUser = Name.Text; }
+               
+
                 if (!string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && !string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LogDate = Date.Text;
+                    MainWindow.LogDate2 = Date2.Text;
+                    MainWindow.LognameUser = Name.Text;
                     var searchResults = log_Controller.Search_Name_Between_dates (Name.Text,Convert.ToDateTime(Date.Text), Convert.ToDateTime(Date2.Text));
 
                     Logs.Clear();
@@ -97,6 +119,8 @@ namespace B.I.G
                 }
                 if (string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && !string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LogDate = Date.Text;
+                    MainWindow.LogDate2 = Date2.Text;
                     var searchResults = log_Controller.Search_Between_dates(Convert.ToDateTime(Date.Text), Convert.ToDateTime(Date2.Text));
 
                     Logs.Clear();
@@ -108,6 +132,7 @@ namespace B.I.G
 
                 if (string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LogDate = Date.Text;
                     var searchResults = log_Controller.SearchDate(Convert.ToDateTime(Date.Text));
 
                     Logs.Clear();
@@ -118,6 +143,8 @@ namespace B.I.G
                 }
                 if (!string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LognameUser = Name.Text;
+                    MainWindow.LogDate = Date.Text;
                     var searchResults = log_Controller.SearchNameDate(Name.Text,Convert.ToDateTime(Date.Text));
 
                     Logs.Clear();
@@ -128,6 +155,7 @@ namespace B.I.G
                 }
                 if (string.IsNullOrEmpty(Name.Text) && !string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LogDate = Date.Text;
                     var searchResults = log_Controller.SearchDate(Convert.ToDateTime(Date.Text));
 
                     Logs.Clear();
@@ -138,6 +166,8 @@ namespace B.I.G
                 }
                 if (string.IsNullOrEmpty(Name.Text) && string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LogDate = string.Empty;
+                    MainWindow.LogDate2 = string.Empty;
                     var allResults = log_Controller.GetAllLogs();
 
                     Logs.Clear();
@@ -148,6 +178,7 @@ namespace B.I.G
                 }
                 else if (!string.IsNullOrEmpty(Name.Text) && string.IsNullOrEmpty(Date.Text) && string.IsNullOrEmpty(Date2.Text))
                 {
+                    MainWindow.LognameUser = Name.Text;
                     var searchResults = log_Controller.SearchUsername(Name.Text);
 
                     Logs.Clear();
@@ -356,11 +387,18 @@ namespace B.I.G
         }
 
         private void Button_cleaning(object sender, RoutedEventArgs e)
-        {
+        {         
             Name.Text = string.Empty;
             Date.Text = string.Empty;
             Date2.Text = string.Empty;
-            FillData();
+            Search(sender, e);
+        }
+
+        private void Button_UsersWindow(object sender, RoutedEventArgs e)
+        {
+            UsersWindow usersWindow = new UsersWindow();
+            usersWindow.Show();
+            Close();
         }
     }
 }
