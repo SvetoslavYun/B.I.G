@@ -33,19 +33,29 @@ namespace B.I.G
     /// </summary>
     public partial class Add_User : Window
     {
+        private Log_Controller log_Controller;
+        ObservableCollection<log> Logs;
+        private string originalName;
         public user_account SelectedProduct { get; set; }
         ObservableCollection<user_account> Users;
         private User_accountController user_AccountController;
         public static byte[] image_bytes;
         public Add_User()
         {
+            Logs = new ObservableCollection<log>();
+            log_Controller = new Log_Controller();
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
             Loaded += AddUserWindow_Loaded;
             grid.DataContext = UsersWindow.User;
+            Loaded += BD_Form_Loaded;
         }
 
+        private void BD_Form_Loaded(object sender, RoutedEventArgs e)
+        {
+            originalName = Name.Text;
+        }
 
         private void AddUserWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -92,7 +102,19 @@ namespace B.I.G
                 {
                     if (IsPasswordValid(User.password_hash))
                     {
+                                          
                         user_AccountController.Insert(User);
+                        DateTime Date = DateTime.Now;
+                        string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                        string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                        var Log = new log()
+                        {
+                            username = MainWindow.LogS,
+                            process = "Добавил пользователя " + "'" + Name.Text + "'",
+                            date = Convert.ToDateTime(formattedDate),
+                            date2 = Convert.ToDateTime(formattedDate2)
+                        };
+                        log_Controller.Insert(Log);
                         Close();
                     }
                 }
@@ -104,7 +126,7 @@ namespace B.I.G
             else
             {
                 if (image_bytes == null)
-                {
+                {                    
                     int id = UsersWindow.User.id;
                     user_AccountController.SearchFoto(id);
                 }
@@ -116,12 +138,28 @@ namespace B.I.G
                if (!user_AccountController.IsUsernameExists(UsersWindow.User.username, UsersWindow.User.id))
     {
         if (IsPasswordValid(UsersWindow.User.password_hash))
-        {
-                MainWindow.LogS = Name.Text;
-                MainWindow.image_Profil = image_bytes;
-                MainWindow.acces = Access.Text;
-                user_AccountController.Update(UsersWindow.User);
-                  image_bytes = null;
+                    {
+                                        
+                        if (originalName == MainWindow.LogS)
+                        {
+                            UsersWindow.flagEdit = true;
+                            MainWindow.LogS = Name.Text;
+                            MainWindow.image_Profil = image_bytes;
+                            MainWindow.acces = Access.Text;
+                        }
+                        user_AccountController.Update(UsersWindow.User);
+                        DateTime Date = DateTime.Now;
+                        string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                        string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                        var Log = new log()
+                        {
+                            username = MainWindow.LogS,
+                            process = "Изменил пользователя " + "'" + Name.Text + "'",
+                            date = Convert.ToDateTime(formattedDate),
+                            date2 = Convert.ToDateTime(formattedDate2)
+                        };
+                        log_Controller.Insert(Log);
+                        image_bytes = null;
                   Close();
         }
     }

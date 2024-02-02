@@ -74,6 +74,15 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+        public void DeleteAfterSixMonthsLog()
+        {
+            var commandString = "DELETE FROM logs WHERE date2 <= date('now', '-6 months')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            connection.Open();
+            deleteCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
         public IEnumerable<log> SearchUsername(string name)
         {
             var commandString = "SELECT * FROM logs WHERE username LIKE @Name;";

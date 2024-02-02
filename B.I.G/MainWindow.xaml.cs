@@ -1,5 +1,7 @@
 ﻿using B.I.G.Controller;
 using B.I.G.Model;
+using Microsoft.Graph.Models.Security;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -48,8 +50,9 @@ namespace B.I.G
             user_AccountController = new User_accountController();
             InitializeComponent();
             GetUsernames();
+            log_Controller.DeleteAfterSixMonthsLog();
             //Get();
-        }
+        }   
         public void Get()//заполнить список
         {
             //LogWindow logWindow = new LogWindow();
@@ -108,6 +111,7 @@ namespace B.I.G
                     };
                     log_Controller.Insert(Log);                  
                     LogS = login.Text;
+                    App.nameUserApp = LogS;
                     user_AccountController.MainPhoto(LogS);
                     UsersWindow logWindow = new UsersWindow();
                     logWindow.Show();

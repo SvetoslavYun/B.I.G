@@ -20,15 +20,19 @@ namespace B.I.G
 
 {
     public partial class UsersWindow : System.Windows.Window
-    {   
+    {
         public static user_account User;
-        public static bool flag;       
+        public static bool flag;
+        public static bool flagEdit;
+        private Log_Controller log_Controller;
+        ObservableCollection<log> Logs;
         ObservableCollection<user_account> User_Accounts;
         private User_accountController user_AccountController;
         public user_account SelectedProduct { get; set; }
         public UsersWindow()
         {
-           
+            Logs = new ObservableCollection<log>();
+            log_Controller = new Log_Controller();
             User_Accounts = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
@@ -40,7 +44,13 @@ namespace B.I.G
             AccesText.Text = MainWindow.acces;
             NameText.Text = MainWindow.LogS;
             Name.Text = MainWindow.nameUser;
+            if (AccesText.Text != "Администратор")
+            {
+                logButton.Visibility = Visibility.Collapsed;
+                logButton.IsEnabled = false;
+            }
         }
+
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = e.Row.GetIndex() + 1;
@@ -78,6 +88,7 @@ namespace B.I.G
         {
             try
             {
+                
 
                 if (dGridUser.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
                 var id = ((user_account)dGridUser.SelectedItem).id;
@@ -86,9 +97,18 @@ namespace B.I.G
                 Add_User add_User = new Add_User();
                 add_User.Owner = this;
                 add_User.ShowDialog();
-                UsersWindow usersWindow = new UsersWindow();
-                usersWindow.Show();
-                Close();
+                if (flagEdit)
+                {
+                    flagEdit = false;
+                    UsersWindow usersWindow = new UsersWindow();
+                    usersWindow.Show();
+                    Close();                   
+                }
+                else 
+                { 
+                    Search(sender, e); 
+                }
+               
                 User = null;
 
             }
@@ -110,9 +130,17 @@ namespace B.I.G
                 Add_User add_User = new Add_User();
                 add_User.Owner = this;
                 add_User.ShowDialog();
-                UsersWindow usersWindow = new UsersWindow();
-                usersWindow.Show();
-                Close();
+                if (flagEdit)
+                {
+                    flagEdit = false;
+                    UsersWindow usersWindow = new UsersWindow();
+                    usersWindow.Show();
+                    Close();
+                }
+                else
+                {
+                    Search(sender, e);
+                }
                 User = null;
 
             }
@@ -136,8 +164,21 @@ namespace B.I.G
                         foreach (user_account Users in user)
                         {
                             var Id = Users.id;
+                            string name = Users.username;
                             user_AccountController.Delete(Id, NameText.Text);
-                            FillData();
+
+                            DateTime Date = DateTime.Now;
+                            string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                            string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                            var Log = new log()
+                            {
+                                username = MainWindow.LogS,
+                                process = "Удалил пользователя " + "'" + name + "'",
+                                date = Convert.ToDateTime(formattedDate),
+                                date2 = Convert.ToDateTime(formattedDate2)
+                            };
+                            log_Controller.Insert(Log);
+                            Search(sender, e);
                         }
                     }
                 }

@@ -27,7 +27,7 @@
             <TextBlock Margin="10,0,526,22" Grid.Row="1" TextWrapping="Wrap" Text="v. 0.0.1" VerticalAlignment="Bottom"/>
         </Grid>
 
-        <ComboBox HorizontalAlignment="Center" x:Name="login" VerticalAlignment="Top" Width="206" Margin="0,101,0,0"/>
+        <ComboBox  HorizontalAlignment="Center" x:Name="login" VerticalAlignment="Top" Width="206" Margin="0,101,0,0"/>
         <Button Content="Подтвердить" HorizontalAlignment="Center" Margin="0,207,0,0" VerticalAlignment="Top" Width="104" Click="Button_Click" Background="#FFF1B255"/>
 
     </Grid>
