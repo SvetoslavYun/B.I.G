@@ -446,6 +446,24 @@ namespace B.I.G
                             }
                         }
 
+
+                        // Здесь вы можете добавить проверку наличия записи в базе данных по полю @Name. Это можно сделать путем выполнения запроса SELECT перед выполнением INSERT.
+
+                        // проверка наличия записи в базе данных по полю @Name
+                        string selectQuery = "SELECT COUNT(*) FROM cashCollectors WHERE Name = @Name";
+                        using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                        {
+                            selectCommand.Parameters.AddWithValue("@Name", rowValues[0].ToString());
+                            long existingRecords = (long)selectCommand.ExecuteScalar();
+                            if (existingRecords > 0)
+                            {
+                                СashCollectorController cashCollectorController = new СashCollectorController();
+                                cashCollectorController.Update2(rowValues[0].ToString(), rowValues[1].ToString(), rowValues[2].ToString(), rowValues[3].ToString(), rowValues[4].ToString(), rowValues[5].ToString(), rowValues[6].ToString(), rowValues[7].ToString(), rowValues[8].ToString());
+
+                                continue;
+                            }
+                        }
+
                         // проверка, что все необходимые ячейки в строке не пустые
                         if (rowValues[0] != null && rowValues[1] != null && rowValues[2] != null && rowValues[3] != null && rowValues[4] != null && rowValues[5] != null && rowValues[6] != null && rowValues[7] != null && rowValues[8] != null && rowValues[9] != null && rowValues[10] != null && rowValues[11] != null && rowValues[12] != null)
                         {
@@ -468,8 +486,6 @@ namespace B.I.G
                             // выполнение SQL-запроса
                             command.ExecuteNonQuery();
                         }
-                      
-
                     }
 
                     // закрытие книги Excel
@@ -477,14 +493,14 @@ namespace B.I.G
 
                     // закрытие приложения Excel
                     excel.Quit();
-                    MessageBox.Show("Данные добавленны");
+                    MessageBox.Show("Данные добавлены");
                 }
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-        }
+        
+    }
     }
 }

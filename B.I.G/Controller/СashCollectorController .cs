@@ -131,6 +131,31 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+
+        public void Update2(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power)
+        {
+            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power WHERE name=@Name";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+            new SQLiteParameter("Name", name),
+            new SQLiteParameter("Gun", gun),
+            new SQLiteParameter("AutomatonSerial", automaton_serial),
+            new SQLiteParameter("Automaton", automaton),
+            new SQLiteParameter("Permission", permission),
+            new SQLiteParameter("Meaning", meaning),
+            new SQLiteParameter("Certificate", certificate),
+            new SQLiteParameter("Token", token),
+            new SQLiteParameter("Power", power),
+
+        });
+
+            connection.Open();
+            updateCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
         public void Delete(int id, string name)
         {
             var commandString = "DELETE FROM cashCollectors WHERE (id = @Id) AND (name != @Name)";

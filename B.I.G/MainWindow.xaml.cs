@@ -51,7 +51,7 @@ namespace B.I.G
             InitializeComponent();
             GetUsernames();
             log_Controller.DeleteAfterSixMonthsLog();
-            Get();
+            //Get();
         }
         public void Get()//заполнить список
         {
