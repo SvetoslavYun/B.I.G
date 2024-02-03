@@ -19,33 +19,45 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 namespace B.I.G
 
 {
-    public partial class UsersWindow : System.Windows.Window
+    public partial class CashCollectorWindow : System.Windows.Window
     {
-        public static user_account User;
-        public static bool flag;
-        public static bool flagEdit;
-        private Log_Controller log_Controller;
-        ObservableCollection<log> Logs;
+        public static cashCollector CashCollector;
+        ObservableCollection<cashCollector> CashCollectors;
+        private СashCollectorController сashCollectorController;
+        public cashCollector SelectedProduct { get; set; }
+
+
         ObservableCollection<user_account> User_Accounts;
         private User_accountController user_AccountController;
-        public user_account SelectedProduct { get; set; }
-        public UsersWindow()
+
+        private Log_Controller log_Controller;
+        ObservableCollection<log> Logs;
+        public static bool flag;
+        public static bool flagEdit;         
+        public CashCollectorWindow()
         {
+            CashCollectors = new ObservableCollection<cashCollector>();
+            сashCollectorController = new СashCollectorController();
+
             Logs = new ObservableCollection<log>();
             log_Controller = new Log_Controller();
+
             User_Accounts = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
+            
             InitializeComponent();
-            dGridUser.DataContext = User_Accounts;
+            dGridCollector.DataContext = CashCollectors;
             FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
-            SelectedProduct = new user_account { image = MainWindow.image_Profil };
+            SelectedProduct = new cashCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
             NameText.Text = MainWindow.LogS;
             Name.Text = MainWindow.nameUser;
             if (AccesText.Text != "Администратор")
             {
+                UserButton.Visibility = Visibility.Collapsed;
+                UserButton.IsEnabled = false;
                 logButton.Visibility = Visibility.Collapsed;
                 logButton.IsEnabled = false;
             }
@@ -61,10 +73,10 @@ namespace B.I.G
             try
 
             {
-                User_Accounts.Clear();
-                foreach (var item in user_AccountController.GetAllUsers())
+                CashCollectors.Clear();
+                foreach (var item in сashCollectorController.GetAllCashCollectors())
                 {
-                    User_Accounts.Add(item);
+                    CashCollectors.Add(item);
                 }
 
             }
@@ -77,39 +89,25 @@ namespace B.I.G
         private void Button_Add(object sender, RoutedEventArgs e)
         {
             flag = true;
-            Add_User add_User = new Add_User();
-            add_User.Owner = this;
-            add_User.ShowDialog();
+            Add_СashCollector add_СashCollector = new Add_СashCollector();
+            add_СashCollector.Owner = this;
+            add_СashCollector.ShowDialog();
             Search(sender, e);        
         }
 
         private void DoubleClick(object sender, RoutedEventArgs e)
         {
             try
-            {
-                
-
-                if (dGridUser.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var id = ((user_account)dGridUser.SelectedItem).id;
+            {                
+                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                var id = ((cashCollector)dGridCollector.SelectedItem).id;
                 flag = false;
-                User = (user_account)dGridUser.SelectedItem;
-                Add_User add_User = new Add_User();
-                add_User.Owner = this;
-                add_User.ShowDialog();
-                if (flagEdit)
-                {
-                    flagEdit = false;
-                    UsersWindow usersWindow = new UsersWindow();
-                    usersWindow.Show();
-                    Close();                   
-                }
-                else 
-                { 
-                    Search(sender, e); 
-                }
-               
-                User = null;
-
+                CashCollector = (cashCollector)dGridCollector.SelectedItem;
+                Add_СashCollector add_СashCollector = new Add_СashCollector();
+                add_СashCollector.Owner = this;
+                add_СashCollector.ShowDialog();
+                Search(sender, e);                            
+                CashCollector = null;
             }
             catch (Exception h)
             {
@@ -122,26 +120,15 @@ namespace B.I.G
             try
             {
 
-                if (dGridUser.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var id = ((user_account)dGridUser.SelectedItem).id;
+                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                var id = ((cashCollector)dGridCollector.SelectedItem).id;
                 flag = false;
-                User = (user_account)dGridUser.SelectedItem;
-                Add_User add_User = new Add_User();
-                add_User.Owner = this;
-                add_User.ShowDialog();
-                if (flagEdit)
-                {
-                    flagEdit = false;
-                    UsersWindow usersWindow = new UsersWindow();
-                    usersWindow.Show();
-                    Close();
-                }
-                else
-                {
-                    Search(sender, e);
-                }
-                User = null;
-
+                CashCollector = (cashCollector)dGridCollector.SelectedItem;
+                Add_СashCollector add_СashCollector = new Add_СashCollector();
+                add_СashCollector.Owner = this;
+                add_СashCollector.ShowDialog();
+                    Search(sender, e);               
+                CashCollector = null;
             }
             catch (Exception h)
             {
@@ -153,18 +140,18 @@ namespace B.I.G
         {
             try
             {
-                if (dGridUser.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
                 var result = MessageBox.Show("Вы уверены?", "Удалить запись", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 { // получение выбранных строк
-                    List<user_account> user = dGridUser.SelectedItems.Cast<user_account>().ToList();
+                    List<cashCollector> cashCollectors = dGridCollector.SelectedItems.Cast<cashCollector>().ToList();
                     {
                         // проход по списку выбранных строк
-                        foreach (user_account Users in user)
+                        foreach (cashCollector CashCollectors in cashCollectors)
                         {
-                            var Id = Users.id;
-                            string name = Users.username;
-                            user_AccountController.Delete(Id, NameText.Text);
+                            var Id = CashCollectors.id;
+                            string name = CashCollectors.fullname;
+                            сashCollectorController.Delete(Id, NameText.Text);
 
                             DateTime Date = DateTime.Now;
                             string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
@@ -172,7 +159,7 @@ namespace B.I.G
                             var Log = new log()
                             {
                                 username = MainWindow.LogS,
-                                process = "Удалил пользователя: " + name + "",
+                                process = "Удалил сотрудника: " + name + "",
                                 date = Convert.ToDateTime(formattedDate),
                                 date2 = Convert.ToDateTime(formattedDate2)
                             };
@@ -194,16 +181,16 @@ namespace B.I.G
             try
 
             {
-                SelectedProduct = new user_account { image = MainWindow.image_Profil };
+                SelectedProduct = new cashCollector { image = MainWindow.image_Profil };
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
                 MainWindow.nameUser = Name.Text;
-                var searchResults = user_AccountController.SearchUsername(Name.Text);
+                var searchResults = сashCollectorController.SearchCollectorName(Name.Text);
 
-                User_Accounts.Clear();
+                CashCollectors.Clear();
                     foreach (var result in searchResults)
                     {
-                    User_Accounts.Add(result);
+                    CashCollectors.Add(result);
                     }
                     
                 
@@ -225,17 +212,17 @@ namespace B.I.G
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
-                    process = "Сформировал: Список пользователей 'B.I.G'",
+                    process = "Сформировал: Список инкассаторов и водителей 'B.I.G'",
                     date = Convert.ToDateTime(formattedDate),
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
                 log_Controller.Insert(Log2);
                
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("User_Accounts");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("CashCollectors");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridUser.Items.Count + 1, dGridUser.Columns.Count])
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -245,38 +232,52 @@ namespace B.I.G
                     cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
 
+                    cells.Style.Font.Size = 10; // Установите нужный размер шрифта
+
                 }
 
                 // Добавление заголовков столбцов и порядковых номеров
 
-                for (int i = 1; i <= dGridUser.Columns.Count; i++)
+                for (int i = 1; i <= dGridCollector.Columns.Count; i++)
                 {
-                    worksheet.Cells[1, i].Value = dGridUser.Columns[i - 1].Header;
+                    worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
                 }
 
+             
                 // Добавление данных
-                for (int i = 0; i < dGridUser.Items.Count; i++)
-                {
-                    var logItem = (user_account)dGridUser.Items[i];
-                    worksheet.Cells[i + 2, 2].Value = logItem.id;
-                    worksheet.Cells[i + 2, 3].Value = logItem.username;
-                    worksheet.Cells[i + 2, 4].Value = logItem.password_hash;
-                    worksheet.Cells[i + 2, 5].Value = logItem.access;
+                for (int i = 0; i < dGridCollector.Items.Count; i++)
+                {               
+                    var collectorItem = (cashCollector)dGridCollector.Items[i];
+                    worksheet.Cells[i + 2, 2].Value = collectorItem.fullname;
+                    worksheet.Cells[i + 2, 3].Value = collectorItem.phone;
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.profession;
+                    worksheet.Cells[i + 2, 5].Value = collectorItem.gun;
+                    worksheet.Cells[i + 2, 6].Value = collectorItem.automaton_serial;
+                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton;
+                    worksheet.Cells[i + 2, 8].Value = collectorItem.permission;
+                    worksheet.Cells[i + 2, 9].Value = collectorItem.power;
+                    worksheet.Cells[i + 2, 10].Value = collectorItem.certificate;
+                    worksheet.Cells[i + 2, 11].Value = collectorItem.token;
+                    worksheet.Cells[i + 2, 12].Value = collectorItem.meaning;
+                    for (int col = 2; col <= 10; col++)
+                    {
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
+                    }
 
                 }
                 worksheet.DeleteColumn(1);
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Список пользователей 'B.I.G'";
-
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Список инкассаторов и водителей 'B.I.G'";
+                worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "Excel Files|*.xlsx",
                     DefaultExt = ".xlsx",
-                    FileName = "Список пользователей 'B.I.G'"
+                    FileName = "Список инкассаторов и водителей 'B.I.G'"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -335,10 +336,10 @@ namespace B.I.G
             Close();
         }
 
-        private void Button_CollectorWindow(object sender, RoutedEventArgs e)
+        private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
-            cashCollectorWindow.Show();
+            UsersWindow usersWindow = new UsersWindow();
+            usersWindow.Show();
             Close();
         }
     }

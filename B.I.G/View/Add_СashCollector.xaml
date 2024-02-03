@@ -1,0 +1,95 @@
+﻿<Window x:Class="B.I.G.Add_СashCollector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:B.I.G"
+        mc:Ignorable="d"
+        Title="Редактор сотрудника" Height="425" Width="605" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+    <Window.Icon>
+        <BitmapImage UriSource="/image/edit2.png"/>
+    </Window.Icon>
+
+    <Grid Name="grid">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FF3072DC" Offset="1"/>
+                <GradientStop Color="#FF0F285A" Offset="0.035"/>
+                <GradientStop Color="#FF435C86" Offset="0.791"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="328*"/>
+            <ColumnDefinition Width="163*"/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="Name" Text="{Binding Path=name}" HorizontalAlignment="Left" Margin="350,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Fullname" Text="{Binding Path=fullname}" HorizontalAlignment="Left" Margin="350,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <ComboBox x:Name="Profession" Text="{Binding Path=profession}" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Phone" Text="{Binding Path=phone}" HorizontalAlignment="Left" Margin="350,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Gun" Text="{Binding Path=gun}" HorizontalAlignment="Left" Margin="350,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Automaton_serial" Text="{Binding Path=automaton_serial}" HorizontalAlignment="Left" Margin="350,170,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Automaton" Text="{Binding Path=automaton}" HorizontalAlignment="Left" Margin="350,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Permission" Text="{Binding Path=permission}" HorizontalAlignment="Left" Margin="350,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Meaning" Text="{Binding Path=meaning}" HorizontalAlignment="Left" Margin="350,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Certificate" Text="{Binding Path=certificate}" HorizontalAlignment="Left" Margin="350,290,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Token" Text="{Binding Path=token}" HorizontalAlignment="Left" Margin="350,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Power" Text="{Binding Path=power}" HorizontalAlignment="Left" Margin="350,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <Button Content="Сохранить" Margin="0,331,0,0" VerticalAlignment="Top" FontFamily="Century" Height="27" Click="Button_Save" Grid.Column="1" HorizontalAlignment="Left" Width="233">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="#FE54BB11" Offset="0.015"/>
+                    <GradientStop Color="#FE75D82B" Offset="0.956"/>
+                    <GradientStop Color="#FE93A486" Offset="0.933"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBlock HorizontalAlignment="Left" Margin="247,23,0,0" TextWrapping="Wrap" Text="Ф.И.О" VerticalAlignment="Top" Height="16" Width="104" Foreground="#FFF5E2E2" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,53,0,0" TextWrapping="Wrap" Text="Полное Ф.И.О" VerticalAlignment="Top" Height="16" Width="81" Foreground="#FFEFE7E7" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,83,0,0" TextWrapping="Wrap" Text="Должность" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,113,0,0" TextWrapping="Wrap" Text="Номер телефона" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,143,0,0" TextWrapping="Wrap" Text="Пистолет" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,173,0,0" TextWrapping="Wrap" Text="Номер автомата" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,203,0,0" TextWrapping="Wrap" Text="Автомата" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,233,0,0" TextWrapping="Wrap" Text="Разрешение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,263,0,0" TextWrapping="Wrap" Text="Доверенность" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,293,0,0" TextWrapping="Wrap" Text="Удостоверение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,323,0,0" TextWrapping="Wrap" Text="Номер жетона" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,353,0,0" TextWrapping="Wrap" Text="Бронежилет" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+
+        <Button Content="Загрузить фото" Margin="0,280,0,0" VerticalAlignment="Top" Click="Button_Foto" Grid.Column="1" Height="27" HorizontalAlignment="Left" Width="233" FontFamily="Century">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="#FEBB9D11" Offset="0.039"/>
+                    <GradientStop Color="#FE75D82B" Offset="0.956"/>
+                    <GradientStop Color="#FEA49886" Offset="0.933"/>
+                    <GradientStop Color="#FEECAB1D" Offset="0.783"/>
+                    <GradientStop Color="#FEB97D11" Offset="0.078"/>
+                    <GradientStop Color="#FED5A53D" Offset="0.83"/>
+                    <GradientStop Color="#FEBA9911" Offset="0.043"/>
+                    <GradientStop Color="#FE7C680B" Offset="0.026"/>
+                    <GradientStop Color="#FE3E3405" Offset="0.013"/>
+                    <GradientStop Color="#FEBD8011" Offset="0.135"/>
+                    <GradientStop Color="#FECC8E14" Offset="0.348"/>
+                    <GradientStop Color="#FDE8A922" Offset="0.796"/>
+                    <GradientStop Color="#FDD9A536" Offset="0.822"/>
+                    <GradientStop Color="#FDD9A536" Offset="0.822"/>
+                    <GradientStop Color="#FED2A440" Offset="0.839"/>
+                    <GradientStop Color="#FEE9A81C" Offset="0.752"/>
+                    <GradientStop Color="#FEDC9C18" Offset="0.578"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Image HorizontalAlignment="Left" Height="266" VerticalAlignment="Top" Width="233" Source="/image/NoFoto.jpg" Grid.Column="1" Margin="0,24,0,0"/>
+        <Image x:Name="imgBox" Height="235" Margin="0,23,0,0" Source="{Binding Path=image}"  VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Width="234"/>
+
+
+    </Grid>
+</Window>

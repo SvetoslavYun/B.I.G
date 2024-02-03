@@ -107,15 +107,68 @@
         <TextBlock HorizontalAlignment="Left" Margin="50,12,0,0" TextWrapping="Wrap" Text="Пользователь" VerticalAlignment="Top" Foreground="#FFF7F3EF" FontFamily="Cooper Black" FontSize="14"/>
         <TextBlock x:Name="NameText" Margin="10,224,1096,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
         <TextBlock x:Name="AccesText" Margin="10,252,1091,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
-        <Button x:Name="logButton" Content="События логи" HorizontalAlignment="Left" Margin="15,297,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow" Height="26" FontFamily="Vivaldi">
+
+        <Button x:Name="CollectorButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,297,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                        <ContentPresenter RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
+
+        <Button x:Name="logButton" Content="События логи" HorizontalAlignment="Left" Margin="15,340,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow" Height="26" FontFamily="Vivaldi">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

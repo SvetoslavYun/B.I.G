@@ -179,6 +179,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controller\СashCollectorController .cs" />
+    <Compile Include="Model\cashCollector.cs" />
+    <Compile Include="View\Add_СashCollector.xaml.cs">
+      <DependentUpon>Add_СashCollector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Add_User.xaml.cs">
       <DependentUpon>Add_User.xaml</DependentUpon>
     </Compile>
@@ -187,9 +192,16 @@
     <Compile Include="View\LogWindow .xaml.cs">
       <DependentUpon>LogWindow .xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CashCollectorWindow.xaml.cs">
+      <DependentUpon>CashCollectorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UsersWindow.xaml.cs">
       <DependentUpon>UsersWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\Add_СashCollector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Add_User.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -210,6 +222,10 @@
     <Page Include="View\LogWindow .xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CashCollectorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\UsersWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

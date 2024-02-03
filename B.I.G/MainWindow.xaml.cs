@@ -52,7 +52,7 @@ namespace B.I.G
             GetUsernames();
             log_Controller.DeleteAfterSixMonthsLog();
             //Get();
-        }   
+        }
         public void Get()//заполнить список
         {
             //LogWindow logWindow = new LogWindow();
@@ -61,6 +61,8 @@ namespace B.I.G
             UsersWindow usersWindow = new UsersWindow();
             usersWindow.Show();
 
+            //CashCollectorWindow usersWindow = new CashCollectorWindow();
+            //usersWindow.Show();
 
             Close(); // Закрыть текущее окно авторизации
         }

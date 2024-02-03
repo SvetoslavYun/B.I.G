@@ -430,5 +430,12 @@ namespace B.I.G
             usersWindow.Show();
             Close();
         }
+
+        private void Button_CollectorWindow(object sender, RoutedEventArgs e)
+        {
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            cashCollectorWindow.Show();
+            Close();
+        }
     }
 }
