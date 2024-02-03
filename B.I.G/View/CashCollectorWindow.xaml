@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Список сотрудников отдела перевозок и инкассации 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947">
+        Title="Инкассаторы и водители 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947">
     <Window.Icon>
         <BitmapImage UriSource="/image/big2.png"/>
     </Window.Icon>
@@ -51,7 +51,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Ф.И.О" Binding="{Binding fullname}" Width="*"/>
+                <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}" Width="*"/>
+                <DataGridTextColumn Header="Полное Ф.И.О" Binding="{Binding fullname}" Width="*"/>
                 <DataGridTextColumn Header="Телефон" Binding="{Binding profession}" Width="*"/>
                 <DataGridTextColumn Header="Должность" Binding="{Binding phone}" Width="*"/>
                 <DataGridTextColumn Header="Пистолет" Binding="{Binding gun}" Width="*"/>
@@ -66,7 +67,42 @@
         </DataGrid>
         <TextBox x:Name="Name" Margin="0,10,795,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" Width="174" Height="22"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,13,984,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
-        <Button Content="Экспорт в Excel" HorizontalAlignment="Right" Margin="0,9,104,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_export_to_excel">
+        
+        <Button Content="Экспорт в Excel"
+        HorizontalAlignment="Right"
+        Margin="0,9,104,0"
+        VerticalAlignment="Top"
+        Width="104"
+        BorderBrush="#FF1E1F1D"
+        FontFamily="High Tower Text"
+        Height="24"
+        Click="Button_export_to_excel">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black"/>
@@ -75,7 +111,53 @@
                     <GradientStop Color="#FF4F861E" Offset="0.009"/>
                 </LinearGradientBrush>
             </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="Black"/>
+            </Button.Foreground>
         </Button>
+
+        <Button Content="Импорт из Excel" HorizontalAlignment="Right" Margin="0,9,218,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_import_to_excel">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FF93E842" Offset="1"/>
+                    <GradientStop Color="#FF97A28C" Offset="0"/>
+                    <GradientStop Color="#FF887E64" Offset="0.261"/>
+                    <GradientStop Color="#FF55B5AA" Offset="0.93"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="Black"/>
+            </Button.Foreground>
+        </Button>
+
+
         <Button Content="" HorizontalAlignment="Right" Margin="0,8,756,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
             <Button.Template>
                 <ControlTemplate TargetType="Button">

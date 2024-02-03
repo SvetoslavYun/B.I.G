@@ -51,18 +51,18 @@ namespace B.I.G
             InitializeComponent();
             GetUsernames();
             log_Controller.DeleteAfterSixMonthsLog();
-            //Get();
+            Get();
         }
         public void Get()//заполнить список
         {
             //LogWindow logWindow = new LogWindow();
             //logWindow.Show();
 
-            UsersWindow usersWindow = new UsersWindow();
-            usersWindow.Show();
-
-            //CashCollectorWindow usersWindow = new CashCollectorWindow();
+            //UsersWindow usersWindow = new UsersWindow();
             //usersWindow.Show();
+
+            CashCollectorWindow usersWindow = new CashCollectorWindow();
+            usersWindow.Show();
 
             Close(); // Закрыть текущее окно авторизации
         }

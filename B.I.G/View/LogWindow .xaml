@@ -50,7 +50,41 @@
         <TextBlock HorizontalAlignment="Right" Margin="0,13,984,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,13,751,0" TextWrapping="Wrap" Text="С." VerticalAlignment="Top" Foreground="#FFF5F1F1"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,13,595,0" TextWrapping="Wrap" Text="По." VerticalAlignment="Top" Foreground="#FFF3F1F1" RenderTransformOrigin="0.12,0.598"/>
-        <Button Content="Экспорт в Excel" HorizontalAlignment="Right" Margin="0,9,104,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_export_to_excel">
+        <Button Content="Экспорт в Excel"
+ HorizontalAlignment="Right"
+ Margin="0,9,104,0"
+ VerticalAlignment="Top"
+ Width="104"
+ BorderBrush="#FF1E1F1D"
+ FontFamily="High Tower Text"
+ Height="24"
+ Click="Button_export_to_excel">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black"/>
@@ -59,6 +93,9 @@
                     <GradientStop Color="#FF4F861E" Offset="0.009"/>
                 </LinearGradientBrush>
             </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="Black"/>
+            </Button.Foreground>
         </Button>
         <Button Content="" HorizontalAlignment="Right" Margin="0,9,441,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="30" RenderTransformOrigin="-0.056,0.599">
             <Button.Template>

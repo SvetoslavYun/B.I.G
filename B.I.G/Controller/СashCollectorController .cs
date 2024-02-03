@@ -148,7 +148,7 @@ namespace B.I.G.Controller
         public IEnumerable<cashCollector> SearchCollectorName(string name)
         {
             connection.Close();
-            var commandString = "SELECT * FROM cashCollectors WHERE fullname LIKE @Name;";
+            var commandString = "SELECT * FROM cashCollectors WHERE name LIKE @Name;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
