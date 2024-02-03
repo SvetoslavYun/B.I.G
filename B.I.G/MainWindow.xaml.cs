@@ -120,7 +120,7 @@ namespace B.I.G
                 else
                 {
                     
-                    MessageBox.Show("Неверное 'Имя пользователя' или 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Неверный 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else

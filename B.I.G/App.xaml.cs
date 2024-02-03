@@ -39,7 +39,7 @@ namespace B.I.G
 
         private void App_Exit(object sender, ExitEventArgs e)
         {
-            string Process = "Вышел из системы";
+            string Process = "Выход из системы";
             DateTime Date = DateTime.Now;
             string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
             string formattedDate2 = Date.ToString("dd.MM.yyyy");

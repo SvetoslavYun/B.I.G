@@ -217,6 +217,18 @@ namespace B.I.G
         {
             try
             {
+                DateTime Date = DateTime.Now;
+                string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                var Log2 = new log()
+                {
+                    username = MainWindow.LogS,
+                    process = "Сформировал: Журнал событий 'B.I.G''",
+                    date = Convert.ToDateTime(formattedDate),
+                    date2 = Convert.ToDateTime(formattedDate2)
+                };
+                log_Controller.Insert(Log2);
+
                 var excelPackage = new ExcelPackage();
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Logs");
 
@@ -255,7 +267,11 @@ namespace B.I.G
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
 
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial\"&10&K000000 Журнал событий 'B.I.G'";
+                worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал событий 'B.I.G'";
+
+                worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
+
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
@@ -270,6 +286,8 @@ namespace B.I.G
                 {
                     SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
                 }
+               
+                Search(sender, e);
             }
             catch (Exception ex)
             {

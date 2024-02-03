@@ -110,7 +110,7 @@ namespace B.I.G
                         var Log = new log()
                         {
                             username = MainWindow.LogS,
-                            process = "Добавил пользователя " + "'" + Name.Text + "'",
+                            process = "Добавил пользователя: " + Name.Text + "",
                             date = Convert.ToDateTime(formattedDate),
                             date2 = Convert.ToDateTime(formattedDate2)
                         };
@@ -154,7 +154,7 @@ namespace B.I.G
                         var Log = new log()
                         {
                             username = MainWindow.LogS,
-                            process = "Изменил пользователя " + "'" + Name.Text + "'",
+                            process = "Изменил пользователя: " + Name.Text + "",
                             date = Convert.ToDateTime(formattedDate),
                             date2 = Convert.ToDateTime(formattedDate2)
                         };
