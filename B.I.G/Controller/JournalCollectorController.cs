@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows;
 using B.I.G.Model;
-using Excel = Microsoft.Office.Interop.Excel;
+
 
 namespace B.I.G.Controller
 {
-    internal class СashCollectorController
+    internal class JournalCollectorController
     { private SQLiteConnection connection;
 
-        public СashCollectorController()
+        public JournalCollectorController()
         {
             // Получение строки подключения из файла конфигурации
             var connString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
@@ -23,10 +20,15 @@ namespace B.I.G.Controller
         }
 
 
-        public IEnumerable<cashCollector> GetAllCashCollectors()
+        public IEnumerable<journalCollector> GetAllCashCollectors()
         {
-            var commandString = "SELECT * FROM cashCollectors";
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
+
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image   FROM journalCollectors jc  LEFT JOIN cashCollectors cc ON jc.id2 = cc.id";
+
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
             connection.Open();
 
             var reader = getAllCommand.ExecuteReader();
@@ -46,9 +48,12 @@ namespace B.I.G.Controller
                 var FullName = reader.GetString(10);
                 var Profession = reader.GetString(11);
                 var Phone = reader.GetString(12);
-                var Image = (byte[])reader.GetValue(13);
+                var Id2 = reader.GetInt32(13);
+                var Route = reader.GetString(14);
+                var Date = reader.GetDateTime(15);
+                var Image = (byte[])reader.GetValue(16);
 
-                var CashCollector = new cashCollector
+                var JournalCollector = new journalCollector
                 {
                     id = Id,
                     name = Name,
@@ -63,14 +68,19 @@ namespace B.I.G.Controller
                     fullname = FullName,
                     profession = Profession,
                     phone = Phone,
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
                     image = Image
                 };
 
-                yield return CashCollector;
+                yield return JournalCollector;
             }
 
             connection.Close();
         }
+
+
 
 
         public void Insert(cashCollector CashCollector)
@@ -169,13 +179,15 @@ namespace B.I.G.Controller
         }
 
 
-        public IEnumerable<cashCollector> SearchCollectorName(string name)
+        public IEnumerable<journalCollector> SearchCollectorName(string name)
         {
             connection.Close();
-            var commandString = "SELECT * FROM cashCollectors WHERE name LIKE @Name;";
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
+            var commandString = @" SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc  LEFT JOIN cashCollectors cc ON jc.id2 = cc.id  WHERE  jc.name LIKE @Name;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
 
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
@@ -192,12 +204,15 @@ namespace B.I.G.Controller
                 var Certificate = reader.GetString(7);
                 var Token = reader.GetString(8);
                 var Power = reader.GetString(9);
-                var Fullname = reader.GetString(10);
+                var FullName = reader.GetString(10);
                 var Profession = reader.GetString(11);
                 var Phone = reader.GetString(12);
-                var Image = (byte[])reader.GetValue(13);
+                var Id2 = reader.GetInt32(13);
+                var Route = reader.GetString(14);
+                var Date = reader.GetDateTime(15);
+                var Image = (byte[])reader.GetValue(16);
 
-                var CashCollector = new cashCollector
+                var JournalCollector = new journalCollector
                 {
                     id = Id,
                     name = Name,
@@ -209,17 +224,21 @@ namespace B.I.G.Controller
                     certificate = Certificate,
                     token = Token,
                     power = Power,
-                    fullname = Fullname,
+                    fullname = FullName,
                     profession = Profession,
                     phone = Phone,
-                    image = Image
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
+                    image = Image ?? File.ReadAllBytes(defaultImagePath)
                 };
 
-                yield return CashCollector;
+                yield return JournalCollector;
             }
 
             connection.Close();
         }
+
 
         public bool IsCashCollectorExists(string Name, int? Id = null)
         {
@@ -272,156 +291,6 @@ namespace B.I.G.Controller
 
 
 
-        public void ImportExcelToDatabase(string filePath)
-        {
-            Excel.Application excel = null;
-            Excel.Workbook workbook = null;
-            try
-            {
-                // строка подключения к базе данных SQLite
-                string connectionString = @"Data Source=B.I.G.db;Version=3;";
-
-                // создание объекта подключения
-                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-                {
-                    // открытие подключения
-                    connection.Open();
-
-                    // создание объекта команды
-                    SQLiteCommand command = new SQLiteCommand();
-
-                    // привязка команды к объекту подключения
-                    command.Connection = connection;
-
-                    // создание объекта Excel
-                    excel = new Excel.Application();
-
-                    // открытие книги Excel по пути к файлу
-                    workbook = excel.Workbooks.Open(filePath);
-
-                    // выбор листа Excel для чтения данных
-                    Excel._Worksheet worksheet = workbook.Sheets[1];
-
-                    // получение диапазона ячеек для чтения данных
-                    Excel.Range range = worksheet.UsedRange;
-
-                    // определение количества колонок в таблице Excel
-                    int columnCount = range.Columns.Count;
-
-                    // создание SQL-запроса для вставки данных в таблицу cashCollectors
-                    string query = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, image) " +
-                                   "VALUES (@Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Profession, @Phone, @Image)";
-
-                    // привязка SQL-запроса к объекту команды
-                    command.CommandText = query;
-
-                    // создание параметров для SQL-запроса
-                    command.Parameters.Add(new SQLiteParameter("@Name", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Gun", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Automaton_serial", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Automaton", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Permission", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Meaning", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Certificate", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Token", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Power", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Fullname", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Profession", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Phone", DbType.String));
-                    command.Parameters.Add(new SQLiteParameter("@Image", DbType.Binary)); // Если это поле изображения
-
-                    // проход по строкам диапазона
-                    for (int row = 2; row <= range.Rows.Count; row++)
-                    {
-                        // создание массива для хранения значений ячеек строки
-                        object[] rowValues = new object[columnCount];
-
-                        // проход по ячейкам строки и заполнение массива rowValues
-                        for (int col = 1; col <= columnCount; col++)
-                        {
-                            if (range.Cells[row, col].Value2 != null)
-                            {
-                                rowValues[col - 1] = (range.Cells[row, col] as Excel.Range).Value2.ToString();
-                            }
-                            else
-                            {
-                                rowValues[col - 1] = "";
-                            }
-                        }
-
-
-                        // Здесь вы можете добавить проверку наличия записи в базе данных по полю @Name. Это можно сделать путем выполнения запроса SELECT перед выполнением INSERT.
-
-                        // проверка наличия записи в базе данных по полю @Name
-                        string selectQuery = "SELECT COUNT(*) FROM cashCollectors WHERE Name = @Name";
-                        using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
-                        {
-                            selectCommand.Parameters.AddWithValue("@Name", rowValues[0].ToString());
-                            long existingRecords = (long)selectCommand.ExecuteScalar();
-                            if (existingRecords > 0)
-                            {
-                                
-                               Update2(rowValues[0].ToString(), rowValues[1].ToString(), rowValues[2].ToString(), rowValues[3].ToString(), rowValues[4].ToString(), rowValues[5].ToString(), rowValues[6].ToString(), rowValues[7].ToString(), rowValues[8].ToString(), rowValues[9].ToString(), rowValues[10].ToString(), rowValues[11].ToString());
-
-                                continue;
-                            }
-                        }
-
-                        // проверка, что все необходимые ячейки в строке не пустые
-                        if (rowValues[0] != null && rowValues[1] != null && rowValues[2] != null && rowValues[3] != null && rowValues[4] != null && rowValues[5] != null && rowValues[6] != null && rowValues[7] != null && rowValues[8] != null && rowValues[9] != null && rowValues[10] != null && rowValues[11] != null && rowValues[12] != null)
-                        {
-                            command.Parameters["@Name"].Value = rowValues[0].ToString();
-                            command.Parameters["@Gun"].Value = rowValues[1]?.ToString() ?? "";
-                            command.Parameters["@Automaton_serial"].Value = rowValues[2]?.ToString() ?? "";
-                            command.Parameters["@Automaton"].Value = rowValues[3]?.ToString() ?? "";
-                            command.Parameters["@Permission"].Value = rowValues[4]?.ToString() ?? "";
-                            command.Parameters["@Meaning"].Value = rowValues[5]?.ToString() ?? "";
-                            command.Parameters["@Certificate"].Value = rowValues[6]?.ToString() ?? "";
-                            command.Parameters["@Token"].Value = rowValues[7]?.ToString() ?? "";
-                            command.Parameters["@Power"].Value = rowValues[8]?.ToString() ?? "";
-                            command.Parameters["@Fullname"].Value = rowValues[9]?.ToString() ?? "";
-                            command.Parameters["@Profession"].Value = rowValues[10]?.ToString() ?? "";
-                            command.Parameters["@Phone"].Value = rowValues[11]?.ToString() ?? "";
-                            string defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
-                            byte[] imageBytes = File.ReadAllBytes(defaultImagePath);
-                            command.Parameters["@Image"].Value = imageBytes;
-
-                            // выполнение SQL-запроса
-                            command.ExecuteNonQuery();
-                        }
-                    }
-
-                    // закрытие книги Excel
-                    workbook.Close(false);
-
-                    // закрытие приложения Excel
-                    excel.Quit();
-                    MessageBox.Show("Данные добавлены");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Документ имеет не верный формат");
-            }
-            finally
-            {
-                // блок finally будет выполнен в любом случае, даже если произойдет исключение
-                // закрытие книги Excel
-                //if (workbook != null)
-                //{
-                //    workbook.Close(false);
-                //    Marshal.ReleaseComObject(workbook);
-                //}
-
-                // закрытие приложения Excel
-                if (excel != null)
-                {
-                    excel.Quit();
-                    Marshal.ReleaseComObject(excel);
-                }
-            }
-
-        }
 
     }
 }

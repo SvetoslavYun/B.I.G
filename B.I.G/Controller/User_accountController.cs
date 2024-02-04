@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
 using System.Data.SQLite;
 using B.I.G.Model;
-using System.Windows.Media.Imaging;
-using System.IO;
-using System.Windows;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
-using Microsoft.Graph.Models.Security;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace B.I.G.Controller
 {
