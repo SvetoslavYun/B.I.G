@@ -18,6 +18,8 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.Win32;
 using System.Data.SQLite;
 using System.Data;
+using Microsoft.Graph.Models;
+using System.Runtime.InteropServices;
 
 namespace B.I.G
 
@@ -373,6 +375,8 @@ namespace B.I.G
 
         private void ImportExcelToDatabase(string filePath)
         {
+            Excel.Application excel = null;
+            Excel.Workbook workbook = null;
             try
             {
                 // строка подключения к базе данных SQLite
@@ -391,10 +395,10 @@ namespace B.I.G
                     command.Connection = connection;
 
                     // создание объекта Excel
-                    Excel.Application excel = new Excel.Application();
+                    excel = new Excel.Application();
 
                     // открытие книги Excel по пути к файлу
-                    Excel.Workbook workbook = excel.Workbooks.Open(filePath);
+                   workbook = excel.Workbooks.Open(filePath);
 
                     // выбор листа Excel для чтения данных
                     Excel._Worksheet worksheet = workbook.Sheets[1];
@@ -458,7 +462,7 @@ namespace B.I.G
                             if (existingRecords > 0)
                             {
                                 СashCollectorController cashCollectorController = new СashCollectorController();
-                                cashCollectorController.Update2(rowValues[0].ToString(), rowValues[1].ToString(), rowValues[2].ToString(), rowValues[3].ToString(), rowValues[4].ToString(), rowValues[5].ToString(), rowValues[6].ToString(), rowValues[7].ToString(), rowValues[8].ToString());
+                                cashCollectorController.Update2(rowValues[0].ToString(), rowValues[1].ToString(), rowValues[2].ToString(), rowValues[3].ToString(), rowValues[4].ToString(), rowValues[5].ToString(), rowValues[6].ToString(), rowValues[7].ToString(), rowValues[8].ToString(), rowValues[9].ToString(), rowValues[10].ToString(), rowValues[11].ToString());
 
                                 continue;
                             }
@@ -498,9 +502,26 @@ namespace B.I.G
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Документ имеет не верный формат");
             }
-        
-    }
+            finally
+            {
+                // блок finally будет выполнен в любом случае, даже если произойдет исключение
+                // закрытие книги Excel
+                //if (workbook != null)
+                //{
+                //    workbook.Close(false);
+                //    Marshal.ReleaseComObject(workbook);
+                //}
+
+                // закрытие приложения Excel
+                if (excel != null)
+                {
+                    excel.Quit();
+                    Marshal.ReleaseComObject(excel);
+                }
+            }
+
+        }
     }
 }

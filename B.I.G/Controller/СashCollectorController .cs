@@ -132,9 +132,9 @@ namespace B.I.G.Controller
         }
 
 
-        public void Update2(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power)
+        public void Update2(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone)
         {
-            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power WHERE name=@Name";
+            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone WHERE name=@Name";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -147,6 +147,9 @@ namespace B.I.G.Controller
             new SQLiteParameter("Certificate", certificate),
             new SQLiteParameter("Token", token),
             new SQLiteParameter("Power", power),
+             new SQLiteParameter("FullName",fullname),
+        new SQLiteParameter("Profession", profession),
+        new SQLiteParameter("Phone", phone),
 
         });
 
