@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Пользователи  'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947">
     <Window.Icon>
-        <BitmapImage UriSource="/image/big2.png"/>
+        <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
 
 

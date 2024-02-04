@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Авторизация пользователя" Height="450" Width="600" WindowStartupLocation="CenterScreen" Foreground="#FFF1E5E5">
     <Window.Icon>
-        <BitmapImage UriSource="/image/big3.ico"/>
+        <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
 
 
