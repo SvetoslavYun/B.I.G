@@ -356,8 +356,9 @@ namespace B.I.G
                 {
                    
                     cashCollectorController.ImportExcelToDatabase(openFileDialog.FileName);
+                    Search(sender, e);
                 }
-                Search(sender, e);
+               
                
             }
             catch (Exception ex)

@@ -52,10 +52,10 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Маршрут" Binding="{Binding route}" Width="*"/>
+                <DataGridTextColumn Header="Должность" Binding="{Binding profession}" Width="*"/>
                 <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}" Width="*"/>
                 <DataGridTextColumn Header="Полное Ф.И.О" Binding="{Binding fullname}" Width="*"/>
-                <DataGridTextColumn Header="Телефон" Binding="{Binding profession}" Width="*"/>
-                <DataGridTextColumn Header="Должность" Binding="{Binding phone}" Width="*"/>
+                <DataGridTextColumn Header="Телефон" Binding="{Binding phone}" Width="*"/>
                 <DataGridTextColumn Header="Пистолет" Binding="{Binding gun}" Width="*"/>
                 <DataGridTextColumn Header="№Автомат" Binding="{Binding automaton_serial}" Width="*"/>
                 <DataGridTextColumn Header="Автомат" Binding="{Binding automaton}" Width="*"/>
