@@ -143,7 +143,7 @@ namespace B.I.G.Controller
 
         public void UpdateResponsibilities()
         {
-            var commandString = "UPDATE journalCollectors SET  automaton_serial='', automaton=''  WHERE profession !='водитель автомобиля'";
+            var commandString = "UPDATE journalCollectors SET  automaton_serial='', automaton=''  WHERE profession !='водитель автомобиля' and profession !='Дежурный водитель № 1' and profession !='Дежурный водитель № 2'";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             var commandString2 = "UPDATE journalCollectors SET  permission='', permission=''  WHERE profession !='инкассатор-сборщик'";
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
