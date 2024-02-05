@@ -15,7 +15,7 @@
         <Grid.Background>
             <ImageBrush ImageSource="Image/Big.png" Stretch="UniformToFill"/>
         </Grid.Background>
-        <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" 
+        <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" CanUserSortColumns="False"
           AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" 
           RowHeaderWidth="50" CanUserAddRows="False" Margin="189,40,10,10" 
           Background="Transparent"
@@ -61,7 +61,7 @@
                                     <Style TargetType="Image">
                                         <Setter Property="Height" Value="30"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding name}" Value=".">
+                                            <DataTrigger Binding="{Binding permission}" Value=".">
                                                 <Setter Property="Height" Value="20"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -76,7 +76,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </DataTrigger>
@@ -89,7 +89,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </DataTrigger>
@@ -102,7 +102,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </DataTrigger>
@@ -115,7 +115,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="White"/>
                                 </DataTrigger>
@@ -127,7 +127,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </DataTrigger>
@@ -139,7 +139,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </DataTrigger>
@@ -152,7 +152,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding name}" Value=".">
+                                <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </DataTrigger>

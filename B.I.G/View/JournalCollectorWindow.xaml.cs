@@ -12,6 +12,7 @@ using OfficeOpenXml.Style;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.Win32;
 using System.Data;
+using System.Drawing;
 
 namespace B.I.G
 
@@ -153,9 +154,10 @@ namespace B.I.G
                         // проход по списку выбранных строк
                         foreach (journalCollector JournalCollectors in journalCollectors)
                         {
+                            var Route = JournalCollectors.route;
                             var Id = JournalCollectors.id;
                             string name = JournalCollectors.fullname;
-                            journalCollectorController.Delete(Id);
+                            journalCollectorController.Delete(Route,Id);
 
                             DateTime Date = DateTime.Now;
                             string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
@@ -247,27 +249,41 @@ namespace B.I.G
                     worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
                 }
 
-             
+
                 // Добавление данных
                 for (int i = 0; i < dGridCollector.Items.Count; i++)
-                {               
+                {
                     var collectorItem = (journalCollector)dGridCollector.Items[i];
+
+                    // Создание строки
+                    var row = worksheet.Row(i + 2);
+
                     worksheet.Cells[i + 2, 2].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;                
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;
                     worksheet.Cells[i + 2, 5].Value = collectorItem.gun;
                     worksheet.Cells[i + 2, 6].Value = collectorItem.automaton_serial;
                     worksheet.Cells[i + 2, 7].Value = collectorItem.automaton;
                     worksheet.Cells[i + 2, 8].Value = collectorItem.permission;
-                    //worksheet.Cells[i + 2, 9].Value = collectorItem.meaning;
-                    //worksheet.Cells[i + 2, 10].Value = collectorItem.certificate;
-                    //worksheet.Cells[i + 2, 11].Value = collectorItem.token;
-                    //worksheet.Cells[i + 2, 12].Value = collectorItem.power;
-                    for (int col = 2; col <= 7; col++)
+
+                    for (int col = 2; col <= 8; col++)
                     {
                         worksheet.Cells[i + 2, col].Style.Font.Size = 10; // Установите нужный размер шрифта
                     }
 
+                    // Добавьте условие для проверки значения collectorItem.fullname
+                    if (collectorItem.fullname == ".")
+                    {
+                        // Установите стиль заливки для первых семь колонок
+                        for (int col = 2; col <= 8; col++)
+                        {
+                            worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Black);
+                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.White);
+                        }
+                    }
                 }
+
+
                 worksheet.DeleteColumn(1);
                 worksheet.DeleteColumn(2);
                 worksheet.DeleteColumn(8);

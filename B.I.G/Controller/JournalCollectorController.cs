@@ -155,9 +155,10 @@ namespace B.I.G.Controller
             SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
             var commandString6 = "UPDATE journalCollectors SET gun = profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут'";
             SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
-            var commandString7 = "UPDATE journalCollectors SET name = '.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут'";
+            var commandString7 = "UPDATE journalCollectors SET permission = '.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут'";
             SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
-
+            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*';";
+            SQLiteCommand updateCommand8 = new SQLiteCommand(commandString8, connection);
 
             connection.Open();
             updateCommand.ExecuteNonQuery();
@@ -167,20 +168,34 @@ namespace B.I.G.Controller
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
             updateCommand7.ExecuteNonQuery();
+            updateCommand8.ExecuteNonQuery();
             connection.Close();
         }
 
 
-        public void Delete(int id)
-        {
-            var commandString = "DELETE FROM journalCollectors WHERE (id = @Id)";
-            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+        public void Delete(string route, int id)
+        {if (route == "")
+            {
+                var commandString = "DELETE FROM journalCollectors WHERE (id = @Id)";
+                SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
 
-            deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.Parameters.AddWithValue("@Id", id);
 
-            connection.Open();
-            deleteCommand.ExecuteNonQuery();
-            connection.Close();
+                connection.Open();
+                deleteCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            else
+            {
+                var commandString2 = "DELETE FROM journalCollectors WHERE (route = @Route)";
+                SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+                deleteCommand2.Parameters.AddWithValue("@Route", route);
+
+                connection.Open();
+                deleteCommand2.ExecuteNonQuery();
+                connection.Close();
+            }
         }
 
 
