@@ -170,17 +170,17 @@ namespace B.I.G
                             string name = JournalCollectors.fullname;
                             journalCollectorController.Delete(Route,Id);
 
-                            DateTime Date = DateTime.Now;
-                            string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                            string formattedDate2 = Date.ToString("dd.MM.yyyy");
-                            var Log = new log()
-                            {
-                                username = MainWindow.LogS,
-                                process = "Удалил сотрудника: " + name + "",
-                                date = Convert.ToDateTime(formattedDate),
-                                date2 = Convert.ToDateTime(formattedDate2)
-                            };
-                            log_Controller.Insert(Log);
+                            //DateTime Date = DateTime.Now;
+                            //string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                            //string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                            //var Log = new log()
+                            //{
+                            //    username = MainWindow.LogS,
+                            //    process = "Удалил сотрудника: " + name + "",
+                            //    date = Convert.ToDateTime(formattedDate),
+                            //    date2 = Convert.ToDateTime(formattedDate2)
+                            //};
+                            //log_Controller.Insert(Log);
                             Search(sender, e);
                         }
                     }

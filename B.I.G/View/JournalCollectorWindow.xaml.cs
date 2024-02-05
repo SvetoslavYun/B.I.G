@@ -154,10 +154,10 @@ namespace B.I.G
                         // проход по списку выбранных строк
                         foreach (journalCollector JournalCollectors in journalCollectors)
                         {
-                            //var Route = JournalCollectors.route;
-                            //var Id = JournalCollectors.id;
-                            //string name = JournalCollectors.fullname;
-                            //journalCollectorController.Delete(Route,Id);
+                            var Route = JournalCollectors.route;
+                            var Id = JournalCollectors.id;
+                            string name = JournalCollectors.fullname;
+                            journalCollectorController.Delete(Route, Id);
 
                             //DateTime Date = DateTime.Now;
                             //string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
