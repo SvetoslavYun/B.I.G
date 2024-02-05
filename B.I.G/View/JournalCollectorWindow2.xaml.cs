@@ -13,11 +13,14 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.Win32;
 using System.Data;
 using System.Drawing;
+using System.Windows.Media;
+using Color = System.Drawing.Color;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace B.I.G
 
 {
-    public partial class JournalCollectorWindow : System.Windows.Window
+    public partial class JournalCollectorWindow2 : System.Windows.Window
     {
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -36,7 +39,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;         
-        public JournalCollectorWindow()
+        public JournalCollectorWindow2()
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
@@ -68,8 +71,16 @@ namespace B.I.G
             }
         }
 
+
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
+            journalCollector rowContext = e.Row.DataContext as journalCollector;
+            if (rowContext != null)
+            {
+                if (rowContext.dateWork == "Данные отсутствуют")
+                    e.Row.Background = new SolidColorBrush(Colors.Orange);
+                else { e.Row.Background = new SolidColorBrush(Colors.White); }
+            }
             e.Row.Header = e.Row.GetIndex() + 1;
         }      
 
@@ -154,22 +165,22 @@ namespace B.I.G
                         // проход по списку выбранных строк
                         foreach (journalCollector JournalCollectors in journalCollectors)
                         {
-                            //var Route = JournalCollectors.route;
-                            //var Id = JournalCollectors.id;
-                            //string name = JournalCollectors.fullname;
-                            //journalCollectorController.Delete(Route,Id);
+                            var Route = JournalCollectors.route;
+                            var Id = JournalCollectors.id;
+                            string name = JournalCollectors.fullname;
+                            journalCollectorController.Delete(Route,Id);
 
-                            //DateTime Date = DateTime.Now;
-                            //string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                            //string formattedDate2 = Date.ToString("dd.MM.yyyy");
-                            //var Log = new log()
-                            //{
-                            //    username = MainWindow.LogS,
-                            //    process = "Удалил сотрудника: " + name + "",
-                            //    date = Convert.ToDateTime(formattedDate),
-                            //    date2 = Convert.ToDateTime(formattedDate2)
-                            //};
-                            //log_Controller.Insert(Log);
+                            DateTime Date = DateTime.Now;
+                            string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                            string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                            var Log = new log()
+                            {
+                                username = MainWindow.LogS,
+                                process = "Удалил сотрудника: " + name + "",
+                                date = Convert.ToDateTime(formattedDate),
+                                date2 = Convert.ToDateTime(formattedDate2)
+                            };
+                            log_Controller.Insert(Log);
                             Search(sender, e);
                         }
                     }
@@ -237,8 +248,8 @@ namespace B.I.G
 
                     cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
-
-                    cells.Style.Font.Size = 12; // Установите нужный размер шрифта
+                    cells.Style.WrapText = true; // Разрешаем перенос текста
+                    cells.Style.Font.Size = 8; // Установите нужный размер шрифта
 
                 }
 
@@ -259,22 +270,21 @@ namespace B.I.G
                     var row = worksheet.Row(i + 2);
 
                     worksheet.Cells[i + 2, 2].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.gun;
-                    worksheet.Cells[i + 2, 6].Value = collectorItem.automaton_serial;
-                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.permission;
+                    worksheet.Cells[i + 2, 3].Value = collectorItem.name;
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.dateWork;
+                    worksheet.Cells[i + 2, 7].Value = collectorItem.appropriation;
+                   
 
-                    for (int col = 2; col <= 8; col++)
+                    for (int col = 2; col <= 7; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 10; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 6; // Установите нужный размер шрифта
                     }
 
                     // Добавьте условие для проверки значения collectorItem.fullname
                     if (collectorItem.fullname == ".")
                     {
                         // Установите стиль заливки для первых семь колонок
-                        for (int col = 2; col <= 8; col++)
+                        for (int col = 2; col <= 7; col++)
                         {
                             worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Black);
@@ -285,23 +295,25 @@ namespace B.I.G
 
 
                 worksheet.DeleteColumn(1);
-                worksheet.DeleteColumn(2);
-                worksheet.DeleteColumn(8);
-                worksheet.DeleteColumn(9);
-                worksheet.DeleteColumn(10);
-                worksheet.DeleteColumn(11);
+              
                 // Автоподгон ширины колонок
-                worksheet.Cells.AutoFitColumns();
+                worksheet.Column(1).Width = 20;
+                worksheet.Column(2).Width = 13;
+                worksheet.Column(3).Width = 20;
+                worksheet.Column(4).Width = 10;
+                worksheet.Column(5).Width = 10;
+                worksheet.Column(6).Width = 11;
+
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Наряд на работу";
-                worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
+              
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "Excel Files|*.xlsx",
                     DefaultExt = ".xlsx",
-                    FileName = "Наряд на работу'"
+                    FileName = "Наряд на работу"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)

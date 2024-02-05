@@ -27,7 +27,8 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image   FROM journalCollectors jc  LEFT JOIN cashCollectors cc ON jc.id2 = cc.id";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image
+                          FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
@@ -54,7 +55,9 @@ namespace B.I.G.Controller
                 var Id2 = reader.GetInt32(13);
                 var Route = reader.GetString(14);
                 var Date = reader.GetDateTime(15);
-                var Image = (byte[])reader.GetValue(16);
+                var DateWork = reader.GetString(16);
+                var Appropriation = reader.GetString(17);
+                var Image = (byte[])reader.GetValue(18);
 
                 var JournalCollector = new journalCollector
                 {
@@ -74,6 +77,8 @@ namespace B.I.G.Controller
                     id2 = Id2,
                     route = Route,
                     date = Date,
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
                     image = Image
                 };
 
@@ -82,6 +87,7 @@ namespace B.I.G.Controller
 
             connection.Close();
         }
+
 
 
 
@@ -147,15 +153,17 @@ namespace B.I.G.Controller
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             var commandString2 = "UPDATE journalCollectors SET  permission=''  WHERE profession !='инкассатор-сборщик'";
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
-            var commandString3 = "UPDATE journalCollectors SET route = '' WHERE SUBSTRING(Route, 1, 7) != 'Маршрут'";
+            var commandString3 = "UPDATE journalCollectors SET route = '' WHERE Route !='РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут'";
             SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут';";
             SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2) WHERE route LIKE ' %';";
             SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
-            var commandString6 = "UPDATE journalCollectors SET gun = profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут'";
+            var commandString6 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут'";
             SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
-            var commandString7 = "UPDATE journalCollectors SET permission = '.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут'";
+            var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name =''";
+            SQLiteCommand updateCommand9 = new SQLiteCommand(commandString9, connection);
+            var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ'";
             SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
             var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*';";
             SQLiteCommand updateCommand8 = new SQLiteCommand(commandString8, connection);
@@ -167,6 +175,7 @@ namespace B.I.G.Controller
             updateCommand4.ExecuteNonQuery();
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
+            updateCommand9.ExecuteNonQuery();
             updateCommand7.ExecuteNonQuery();
             updateCommand8.ExecuteNonQuery();
             connection.Close();
@@ -230,7 +239,9 @@ namespace B.I.G.Controller
                 var Id2 = reader.GetInt32(13);
                 var Route = reader.GetString(14);
                 var Date = reader.GetDateTime(15);
-                var Image = (byte[])reader.GetValue(16);
+                var DateWork = reader.GetString(16);
+                var Appropriation = reader.GetString(17);
+                var Image = (byte[])reader.GetValue(18);
 
                 var JournalCollector = new journalCollector
                 {
@@ -250,7 +261,9 @@ namespace B.I.G.Controller
                     id2 = Id2,
                     route = Route,
                     date = Date,
-                    image = Image ?? File.ReadAllBytes(defaultImagePath)
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
+                    image = Image
                 };
 
                 yield return JournalCollector;
@@ -444,16 +457,32 @@ namespace B.I.G.Controller
                        
                         string profession = (range.Cells[row, 2].Value2 ?? "").ToString();
                         string name = (range.Cells[row, 3].Value2 ?? "").ToString();
+                        string dateWork = (range.Cells[row, 4].Value2 ?? "").ToString();
+                        string appropriation = (range.Cells[row, 7].Value2 ?? "").ToString();
                         DateTime date = DateTime.Now; // текущая дата и время
 
                         // создание SQL-запроса для вставки данных в таблицу journalCollectors
-                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date)";
+                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation )";
 
                         // привязка SQL-запроса к объекту команды
                         command.CommandText = query;
 
                         // создание параметров для SQL-запроса
                         command.Parameters.Clear(); // очистка параметров
+                        if (name != "")
+                        {
+                            string selectQuery = "SELECT COUNT(*) FROM cashCollectors WHERE Name = @Name";
+                            using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                            {
+                                selectCommand.Parameters.AddWithValue("@Name", name);
+                                long existingRecords = (long)selectCommand.ExecuteScalar();
+                                if (existingRecords == 0)
+                                {
+                                    dateWork = "Данные отсутствуют";
+
+                                }
+                            }
+                        }
 
                         command.Parameters.Add(new SQLiteParameter("@Profession", DbType.String) { Value = profession });
                         command.Parameters.Add(new SQLiteParameter("@Name", DbType.String) { Value = name });
@@ -471,7 +500,8 @@ namespace B.I.G.Controller
                         if (profession != "старший бригады инкассаторов" && profession != "инкассатор-сборщик" && profession != "водитель автомобиля") { raute = profession; }
                         command.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = raute });
                         command.Parameters.Add(new SQLiteParameter("@Date", DbType.String) { Value = date.ToString("yyyy-MM-dd") });
-
+                        command.Parameters.Add(new SQLiteParameter("@DateWork", DbType.String) { Value = dateWork });
+                        command.Parameters.Add(new SQLiteParameter("@Appropriation", DbType.String) { Value = appropriation });
 
                         // выполнение SQL-запроса
                         command.ExecuteNonQuery();
