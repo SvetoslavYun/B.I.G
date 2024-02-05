@@ -53,21 +53,21 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}" Width="*"/>
                 <DataGridTextColumn Header="Полное Ф.И.О" Binding="{Binding fullname}" Width="*"/>
-                <DataGridTextColumn Header="Телефон" Binding="{Binding profession}" Width="*"/>
-                <DataGridTextColumn Header="Должность" Binding="{Binding phone}" Width="*"/>
+                <DataGridTextColumn Header="Телефон" Binding="{Binding phone}" Width="*"/>
+                <DataGridTextColumn Header="Должность" Binding="{Binding profession}" Width="*"/>
                 <DataGridTextColumn Header="Пистолет" Binding="{Binding gun}" Width="*"/>
                 <DataGridTextColumn Header="№Автомат" Binding="{Binding automaton_serial}" Width="*"/>
                 <DataGridTextColumn Header="Автомат" Binding="{Binding automaton}" Width="*"/>
                 <DataGridTextColumn Header="Разрешение" Binding="{Binding permission}" Width="*"/>
-                <DataGridTextColumn Header="Доверенность" Binding="{Binding power}" Width="*"/>
+                <DataGridTextColumn Header="Доверенность" Binding="{Binding meaning}" Width="*"/>
                 <DataGridTextColumn Header="Удостоверение" Binding="{Binding certificate}" Width="*"/>
                 <DataGridTextColumn Header="Жетон" Binding="{Binding token}" Width="*"/>
-                <DataGridTextColumn Header="Бронежилет" Binding="{Binding meaning}" Width="*"/>
+                <DataGridTextColumn Header="Бронежилет" Binding="{Binding power}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Name" Margin="0,10,795,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" Width="174" Height="22"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,13,984,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
-        
+        <TextBox x:Name="Name" Margin="311,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="174" Height="22"/>
+        <TextBlock HorizontalAlignment="Left" Margin="204,13,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
+
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
         Margin="0,9,104,0"
@@ -158,7 +158,7 @@
         </Button>
 
 
-        <Button Content="" HorizontalAlignment="Right" Margin="0,8,756,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
+        <Button Content="" HorizontalAlignment="Left" Margin="497,8,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">

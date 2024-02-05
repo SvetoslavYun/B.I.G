@@ -22,7 +22,16 @@
           Foreground="Black"
           BorderBrush="Transparent"
           AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
-
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding image}" Value="{x:Null}">
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Resources>
                 <ContextMenu x:Key="RowContextMenu">
                     <MenuItem Header="Удалить" Click="DeleteMenuItem">
@@ -47,29 +56,121 @@
                 <DataGridTemplateColumn Header="" Width="30">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Height="30" Width="80" Source="{Binding image}"  />
+                            <Image x:Name="imageControl" Width="80" Source="{Binding image}">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Height" Value="30"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding name}" Value=".">
+                                                <Setter Property="Height" Value="20"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Маршрут" Binding="{Binding route}" Width="*"/>
-                <DataGridTextColumn Header="Должность" Binding="{Binding profession}" Width="*"/>
-                <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}" Width="*"/>
-                <DataGridTextColumn Header="Полное Ф.И.О" Binding="{Binding fullname}" Width="*"/>
-                <DataGridTextColumn Header="Телефон" Binding="{Binding phone}" Width="*"/>
-                <DataGridTextColumn Header="Пистолет" Binding="{Binding gun}" Width="*"/>
-                <DataGridTextColumn Header="№Автомат" Binding="{Binding automaton_serial}" Width="*"/>
-                <DataGridTextColumn Header="Автомат" Binding="{Binding automaton}" Width="*"/>
-                <DataGridTextColumn Header="Разрешение" Binding="{Binding permission}" Width="*"/>
-                <DataGridTextColumn Header="Доверенность" Binding="{Binding power}" Width="*"/>
+                <!--<DataGridTextColumn Header="Маршрут" Binding="{Binding route}" Width="*"/>-->
+                <DataGridTextColumn Header="Должность" Binding="{Binding profession}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Полное Ф.И.О" Binding="{Binding fullname}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <!--<DataGridTextColumn Header="Телефон" Binding="{Binding phone}" Width="*"/>-->
+                <DataGridTextColumn Header="Пистолет" Binding="{Binding gun}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="№Автомат" Binding="{Binding automaton_serial}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Автомат" Binding="{Binding automaton}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Разрешение" Binding="{Binding permission}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding name}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                
+                <!--<DataGridTextColumn Header="Доверенность" Binding="{Binding meaning}" Width="*"/>
                 <DataGridTextColumn Header="Удостоверение" Binding="{Binding certificate}" Width="*"/>
                 <DataGridTextColumn Header="Жетон" Binding="{Binding token}" Width="*"/>
-                <DataGridTextColumn Header="Бронежилет" Binding="{Binding meaning}" Width="*"/>
-                <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}" Width="*"/>
+                <DataGridTextColumn Header="Бронежилет" Binding="{Binding power}" Width="*"/>-->
+                <!--<DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Name" Margin="0,10,795,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" Width="174" Height="22"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,13,984,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
-        
+        <TextBox x:Name="Name" Margin="311,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="174" Height="22"/>
+        <TextBlock HorizontalAlignment="Left" Margin="204,13,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
+
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
         Margin="0,9,104,0"
@@ -160,7 +261,7 @@
         </Button>
 
 
-        <Button Content="" HorizontalAlignment="Right" Margin="0,8,756,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
+        <Button Content="" HorizontalAlignment="Left" Margin="497,8,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">

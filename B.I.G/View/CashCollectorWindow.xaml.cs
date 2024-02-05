@@ -255,10 +255,10 @@ namespace B.I.G
                     worksheet.Cells[i + 2, 7].Value = collectorItem.automaton_serial;
                     worksheet.Cells[i + 2, 8].Value = collectorItem.automaton;
                     worksheet.Cells[i + 2, 9].Value = collectorItem.permission;
-                    worksheet.Cells[i + 2, 10].Value = collectorItem.power;
+                    worksheet.Cells[i + 2, 10].Value = collectorItem.meaning;
                     worksheet.Cells[i + 2, 11].Value = collectorItem.certificate;
                     worksheet.Cells[i + 2, 12].Value = collectorItem.token;
-                    worksheet.Cells[i + 2, 13].Value = collectorItem.meaning;
+                    worksheet.Cells[i + 2, 13].Value = collectorItem.power;
                     for (int col = 2; col <= 13; col++)
                     {
                         worksheet.Cells[i + 2, col].Style.Font.Size = 10; // Установите нужный размер шрифта

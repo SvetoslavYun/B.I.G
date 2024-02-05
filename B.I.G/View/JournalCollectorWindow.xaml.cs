@@ -216,7 +216,7 @@ namespace B.I.G
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
-                    process = "Сформировал: Список инкассаторов и водителей 'B.I.G'",
+                    process = "Сформировал: Наряд на работу",
                     date = Convert.ToDateTime(formattedDate),
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
@@ -251,30 +251,33 @@ namespace B.I.G
                 // Добавление данных
                 for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {               
-                    var collectorItem = (cashCollector)dGridCollector.Items[i];
-                    worksheet.Cells[i + 2, 2].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 3].Value = collectorItem.fullname;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.phone;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 6].Value = collectorItem.gun;
-                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton_serial;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.automaton;
-                    worksheet.Cells[i + 2, 9].Value = collectorItem.permission;
-                    worksheet.Cells[i + 2, 10].Value = collectorItem.power;
-                    worksheet.Cells[i + 2, 11].Value = collectorItem.certificate;
-                    worksheet.Cells[i + 2, 12].Value = collectorItem.token;
-                    worksheet.Cells[i + 2, 13].Value = collectorItem.meaning;
-                    for (int col = 2; col <= 13; col++)
+                    var collectorItem = (journalCollector)dGridCollector.Items[i];
+                    worksheet.Cells[i + 2, 2].Value = collectorItem.profession;
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;                
+                    worksheet.Cells[i + 2, 5].Value = collectorItem.gun;
+                    worksheet.Cells[i + 2, 6].Value = collectorItem.automaton_serial;
+                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton;
+                    worksheet.Cells[i + 2, 8].Value = collectorItem.permission;
+                    //worksheet.Cells[i + 2, 9].Value = collectorItem.meaning;
+                    //worksheet.Cells[i + 2, 10].Value = collectorItem.certificate;
+                    //worksheet.Cells[i + 2, 11].Value = collectorItem.token;
+                    //worksheet.Cells[i + 2, 12].Value = collectorItem.power;
+                    for (int col = 2; col <= 7; col++)
                     {
                         worksheet.Cells[i + 2, col].Style.Font.Size = 10; // Установите нужный размер шрифта
                     }
 
                 }
                 worksheet.DeleteColumn(1);
+                worksheet.DeleteColumn(2);
+                worksheet.DeleteColumn(8);
+                worksheet.DeleteColumn(9);
+                worksheet.DeleteColumn(10);
+                worksheet.DeleteColumn(11);
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Список инкассаторов и водителей 'B.I.G'";
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Наряд на работу";
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
@@ -282,7 +285,7 @@ namespace B.I.G
                 {
                     Filter = "Excel Files|*.xlsx",
                     DefaultExt = ".xlsx",
-                    FileName = "Список инкассаторов и водителей 'B.I.G'"
+                    FileName = "Наряд на работу'"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -362,7 +365,7 @@ namespace B.I.G
 
                     journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName);
                     journalCollectorController.UpdateResponsibilities();
-                    Search(sender, e);
+                    FillData();
                 }
 
 

@@ -145,14 +145,28 @@ namespace B.I.G.Controller
         {
             var commandString = "UPDATE journalCollectors SET  automaton_serial='', automaton=''  WHERE profession !='водитель автомобиля' and profession !='Дежурный водитель № 1' and profession !='Дежурный водитель № 2'";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
-            var commandString2 = "UPDATE journalCollectors SET  permission='', permission=''  WHERE profession !='инкассатор-сборщик'";
+            var commandString2 = "UPDATE journalCollectors SET  permission=''  WHERE profession !='инкассатор-сборщик'";
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
-
+            var commandString3 = "UPDATE journalCollectors SET route = '' WHERE SUBSTRING(Route, 1, 7) != 'Маршрут'";
+            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
+            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут';";
+            SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
+            var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2) WHERE route LIKE ' %';";
+            SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
+            var commandString6 = "UPDATE journalCollectors SET gun = profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут'";
+            SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
+            var commandString7 = "UPDATE journalCollectors SET name = '.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут'";
+            SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
 
 
             connection.Open();
             updateCommand.ExecuteNonQuery();
             updateCommand2.ExecuteNonQuery();
+            updateCommand3.ExecuteNonQuery();
+            updateCommand4.ExecuteNonQuery();
+            updateCommand5.ExecuteNonQuery();
+            updateCommand6.ExecuteNonQuery();
+            updateCommand7.ExecuteNonQuery();
             connection.Close();
         }
 
@@ -175,9 +189,9 @@ namespace B.I.G.Controller
             connection.Close();
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @" SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc  LEFT JOIN cashCollectors cc ON jc.id2 = cc.id  WHERE  jc.name LIKE @Name;";
+            var commandString = @" SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc  LEFT JOIN cashCollectors cc ON jc.id2 = cc.id  WHERE  jc.route LIKE @Name;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
-            getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+            getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
 
             connection.Open();
@@ -373,6 +387,7 @@ namespace B.I.G.Controller
 
         public void ImportExcelToDatabase(string filePath)
         {
+            string raute = string.Empty;
             Excel.Application excel = null;
             Excel.Workbook workbook = null;
             try
@@ -411,6 +426,7 @@ namespace B.I.G.Controller
                     for (int row = 5; row <= rowCount; row++)
                     {
                         // получение значений из колонок B и C
+                       
                         string profession = (range.Cells[row, 2].Value2 ?? "").ToString();
                         string name = (range.Cells[row, 3].Value2 ?? "").ToString();
                         DateTime date = DateTime.Now; // текущая дата и время
@@ -437,7 +453,8 @@ namespace B.I.G.Controller
                         command.Parameters.Add(new SQLiteParameter("@Fullname", DbType.String) { Value = "" });
                         command.Parameters.Add(new SQLiteParameter("@Phone", DbType.String) { Value = "" });
                         command.Parameters.Add(new SQLiteParameter("@Id2", DbType.Int32) { Value = 0 }); // Предполагая, что это int, иначе укажите правильный тип данных
-                        command.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = "" });
+                        if (profession != "старший бригады инкассаторов" && profession != "инкассатор-сборщик" && profession != "водитель автомобиля") { raute = profession; }
+                        command.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = raute });
                         command.Parameters.Add(new SQLiteParameter("@Date", DbType.String) { Value = date.ToString("yyyy-MM-dd") });
 
 
