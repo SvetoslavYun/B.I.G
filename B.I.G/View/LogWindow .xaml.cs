@@ -437,5 +437,13 @@ namespace B.I.G
             cashCollectorWindow.Show();
             Close();
         }
+
+        private void Button_OrderrWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            journalCollectorWindow.Show();
+
+            Close();
+        }
     }
 }

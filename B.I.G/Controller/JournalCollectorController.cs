@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using B.I.G.Model;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace B.I.G.Controller
@@ -23,14 +24,14 @@ namespace B.I.G.Controller
         }
 
 
-        public IEnumerable<journalCollector> GetAllCashCollectors()
+        public IEnumerable<journalCollector> GetAllCashCollectors(DateTime date)
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image
-                          FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
 
             connection.Open();
@@ -149,43 +150,62 @@ namespace B.I.G.Controller
         }
 
 
-        public void UpdateResponsibilities()
+        public void UpdateResponsibilities(DateTime date)
         {
-            var commandString = "UPDATE journalCollectors SET  automaton_serial='', automaton=''  WHERE profession !='водитель автомобиля' and profession !='Дежурный водитель № 1' and profession !='Дежурный водитель № 2'";
-            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
-            var commandString2 = "UPDATE journalCollectors SET  permission=''  WHERE profession !='инкассатор-сборщик'";
-            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
-            var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route !='РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут'";
-            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
-            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут';";
-            SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
-            var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %';";
-            SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);           
+            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'";
+            var commandString2 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'";
+            var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
+            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут'";
+            var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %'";
             var commandString6 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут'";
-            SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
-            var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name =''";
-            SQLiteCommand updateCommand9 = new SQLiteCommand(commandString9, connection);
             var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ'";
-            SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
-            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*';";
-            SQLiteCommand updateCommand8 = new SQLiteCommand(commandString8, connection);
-            var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1)WHERE route2 LIKE '%/%';";
-            SQLiteCommand updateCommand10 = new SQLiteCommand(commandString10, connection);
-            var commandString11 = "UPDATE journalCollectors SET  route = profession, route2 = profession WHERE route ==''";
-            SQLiteCommand updateCommand11 = new SQLiteCommand(commandString2, connection);
+            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*'";
+            var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name =''";
+            var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1) WHERE route2 LIKE '%/%'";
+            var commandString11 = "UPDATE journalCollectors SET route2 = route WHERE route2 =''";
+            var commandString12 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE gun='РЕЗЕРВ'";
+            var commandString13 = "UPDATE journalCollectors SET route = SUBSTR(route, 1, INSTR(route || ' ', ' ') - 1), route2 = SUBSTR(route2, 1, INSTR(route2 || ' ', ' ') - 1) WHERE route LIKE '% %' OR route2 LIKE '% %';";
             connection.Open();
+
+            // Создание и добавление параметра @Date в команду для удаления
+            SQLiteCommand deleteCommand8 = new SQLiteCommand(commandString8, connection);
+            deleteCommand8.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            // Добавление параметра @Date в остальные команды
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
+            updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
+            SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
+            SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
+            SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
+            SQLiteCommand updateCommand9 = new SQLiteCommand(commandString9, connection);
+            SQLiteCommand updateCommand10 = new SQLiteCommand(commandString10, connection);
+            SQLiteCommand updateCommand11 = new SQLiteCommand(commandString11, connection);
+            SQLiteCommand updateCommand12 = new SQLiteCommand(commandString12, connection);
+            SQLiteCommand updateCommand13 = new SQLiteCommand(commandString13, connection);
+
+
+            // Выполнение команд
             updateCommand.ExecuteNonQuery();
             updateCommand2.ExecuteNonQuery();
             updateCommand3.ExecuteNonQuery();
             updateCommand4.ExecuteNonQuery();
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
-            updateCommand9.ExecuteNonQuery();
             updateCommand7.ExecuteNonQuery();
-            updateCommand8.ExecuteNonQuery();
+            deleteCommand8.ExecuteNonQuery(); // Использование команды с добавленным параметром @Date
+            updateCommand9.ExecuteNonQuery();
             updateCommand10.ExecuteNonQuery();
+            updateCommand11.ExecuteNonQuery();
+            updateCommand12.ExecuteNonQuery();
+            updateCommand13.ExecuteNonQuery();
+
             connection.Close();
         }
+
 
 
         public void Delete(string route, int id)
@@ -213,11 +233,23 @@ namespace B.I.G.Controller
             }
         }
 
+        public void DeleteToDate(DateTime date)
+        {
+          
+                var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date)";
+                SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
-        public IEnumerable<journalCollector> SearchCollectorName(string name)
+                deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+                connection.Open();
+                deleteCommand2.ExecuteNonQuery();
+                connection.Close();          
+        }
+
+        public IEnumerable<journalCollector> SearchCollectorName(string name, DateTime date, string route)
         {
             connection.Open();
-            if (name != "")
+            if (!string.IsNullOrEmpty(name))
             {
                 string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE Name = @Name";
                 using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
@@ -233,11 +265,33 @@ namespace B.I.G.Controller
                 name = char.ToUpper(name[0]) + name.Substring(1);
             }
             connection.Close();
+
+            connection.Open();
+            if (!string.IsNullOrEmpty(route))
+            {
+                string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE route = @Route";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Route", "%" + route + "%");
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        route = char.ToUpper(route[0]) + route.Substring(1);
+
+                    }
+                }
+                route = char.ToUpper(route[0]) + route.Substring(1);
+            }
+            connection.Close();
+
+
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @" SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc  LEFT JOIN cashCollectors cc ON jc.id2 = cc.id  WHERE  jc.route LIKE @Name;";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
+            getAllCommand.Parameters.AddWithValue("@Route", "" + route + "%");
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
 
             connection.Open();
@@ -437,19 +491,33 @@ namespace B.I.G.Controller
         //    }
         //}
 
-        public void ImportExcelToDatabase(string filePath)
+
+        public bool ImportSerchData(DateTime date)
+        {
+            connection.Open();
+
+               string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE date = @Date";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                int count = Convert.ToInt32(selectCommand.ExecuteScalar());
+
+                connection.Close();
+
+                return count > 0;
+            }
+        
+        }
+        public void ImportExcelToDatabase(string filePath,DateTime date)
         {
             string raute = string.Empty;
             Excel.Application excel = null;
             Excel.Workbook workbook = null;
             try
             {
-                // строка подключения к базе данных SQLite
-                string connectionString = @"Data Source=B.I.G.db;Version=3;";
-
+             
                 // создание объекта подключения
-                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-                {
+             
                     // открытие подключения
                     connection.Open();
 
@@ -483,7 +551,7 @@ namespace B.I.G.Controller
                         string name = (range.Cells[row, 3].Value2 ?? "").ToString();
                         string dateWork = (range.Cells[row, 4].Value2 ?? "").ToString();
                         string appropriation = (range.Cells[row, 7].Value2 ?? "").ToString();
-                        DateTime date = DateTime.Now; // текущая дата и время
+                    
 
                         // создание SQL-запроса для вставки данных в таблицу journalCollectors
                         string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2 ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2 )";
@@ -531,14 +599,14 @@ namespace B.I.G.Controller
                         // выполнение SQL-запроса
                         command.ExecuteNonQuery();
                     }
-
+                     connection.Close();
                     // закрытие книги Excel
                     workbook.Close(false);
 
                     // закрытие приложения Excel
                     excel.Quit();
                     MessageBox.Show("Данные загружены");
-                }
+                
             }
             catch (Exception ex)
             {

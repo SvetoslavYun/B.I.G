@@ -35,6 +35,8 @@ namespace B.I.G
         public static string LogDate2;
         public static string nameUser;
         public static string LognameUser;
+        public static string NameJorunal;
+        public static string NameCollector;
         public static byte[] image_Profil;
         public static string acces;
         public static string LogS = "";
@@ -51,7 +53,7 @@ namespace B.I.G
             InitializeComponent();
             GetUsernames();
             log_Controller.DeleteAfterSixMonthsLog();
-            Get();
+            //Get();
         }
         public void Get()//заполнить список
         {
@@ -118,8 +120,8 @@ namespace B.I.G
                     LogS = login.Text;
                     App.nameUserApp = LogS;
                     user_AccountController.MainPhoto(LogS);
-                    UsersWindow logWindow = new UsersWindow();
-                    logWindow.Show();
+                    JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+                    journalCollectorWindow.Show();
                     Close(); // Закрыть текущее окно авторизации
                 }
                 else

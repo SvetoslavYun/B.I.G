@@ -26,5 +26,7 @@ namespace B.I.G.Properties
                 return defaultInstance;
             }
         }
+
+        public string Y { get; internal set; }
     }
 }

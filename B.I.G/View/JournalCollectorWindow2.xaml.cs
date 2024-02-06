@@ -16,12 +16,15 @@ using System.Drawing;
 using System.Windows.Media;
 using Color = System.Drawing.Color;
 using DocumentFormat.OpenXml.Drawing;
+using Microsoft.Graph.Models;
+using System.Windows.Input;
 
 namespace B.I.G
 
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
     {
+        private string Y;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
@@ -38,7 +41,7 @@ namespace B.I.G
         private Log_Controller log_Controller;
         ObservableCollection<log> Logs;
         public static bool flag;
-        public static bool flagEdit;         
+        public static bool flagEdit;
         public JournalCollectorWindow2()
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
@@ -52,24 +55,46 @@ namespace B.I.G
 
             User_Accounts = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
-            
+
             InitializeComponent();
+            // Загрузка сохраненного значения переменной
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Y))
+            {
+                Name.Text = Properties.Settings.Default.Y;
+            }
             dGridCollector.DataContext = JournalCollectors;
-            FillData();
+            Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            FillData();            
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
+            Route.TextChanged += Search;
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
-            NameText.Text = MainWindow.LogS;
-            Name.Text = MainWindow.nameUser;
+            NameText.Text = MainWindow.LogS;   
+            Name.Text = MainWindow.NameJorunal;
             if (AccesText.Text != "Администратор")
             {
+
                 UserButton.Visibility = Visibility.Collapsed;
                 UserButton.IsEnabled = false;
                 logButton.Visibility = Visibility.Collapsed;
                 logButton.IsEnabled = false;
             }
+            Calendar.Visibility = Visibility.Collapsed;
+            Calendar.IsEnabled = false;
+            ImportButton.Visibility = Visibility.Collapsed;
+            ImportButton.IsEnabled = false;
+            X.Visibility = Visibility.Collapsed;
+            X.IsEnabled = false;          
+
         }
+
+        // Сохранение значения переменной при закрытии окна
+        private void Window_Closing(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Y = MainWindow.NameJorunal;
+            Properties.Settings.Default.Save();
+        }    
 
 
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
@@ -80,9 +105,10 @@ namespace B.I.G
                 if (rowContext.dateWork == "Данные отсутствуют")
                     e.Row.Background = new SolidColorBrush(Colors.Orange);
                 else { e.Row.Background = new SolidColorBrush(Colors.White); }
+            
             }
             e.Row.Header = e.Row.GetIndex() + 1;
-        }      
+        }
 
         public void FillData()
         {
@@ -90,7 +116,7 @@ namespace B.I.G
 
             {
                 JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors())
+                foreach (var item in journalCollectorController.GetAllCashCollectors(Convert.ToDateTime(Date.Text)))
                 {
                     JournalCollectors.Add(item);
                 }
@@ -108,13 +134,13 @@ namespace B.I.G
             Add_СashCollector add_СashCollector = new Add_СashCollector();
             add_СashCollector.Owner = this;
             add_СashCollector.ShowDialog();
-            Search(sender, e);        
+            Search(sender, e);
         }
 
         private void DoubleClick(object sender, RoutedEventArgs e)
         {
             try
-            {                
+            {
                 if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
                 var id = ((journalCollector)dGridCollector.SelectedItem).id2;
                 UsersWindow.flag = false;
@@ -122,7 +148,7 @@ namespace B.I.G
                 Add_СashCollector add_СashCollector = new Add_СashCollector();
                 add_СashCollector.Owner = this;
                 add_СashCollector.ShowDialog();
-                Search(sender, e);                            
+                Search(sender, e);
                 CashCollector = null;
             }
             catch (Exception h)
@@ -143,7 +169,7 @@ namespace B.I.G
                 Add_СashCollector add_СashCollector = new Add_СashCollector();
                 add_СashCollector.Owner = this;
                 add_СashCollector.ShowDialog();
-                    Search(sender, e);               
+                Search(sender, e);
                 CashCollector = null;
             }
             catch (Exception h)
@@ -168,7 +194,7 @@ namespace B.I.G
                             var Route = JournalCollectors.route;
                             var Id = JournalCollectors.id;
                             string name = JournalCollectors.fullname;
-                            journalCollectorController.Delete(Route,Id);
+                            journalCollectorController.Delete(Route, Id);
 
                             //DateTime Date = DateTime.Now;
                             //string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
@@ -193,6 +219,20 @@ namespace B.I.G
 
         }
 
+
+        private void Date_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //Обработки изменения даты
+            Search(sender, e);
+        }
+
+
+        private void Date_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true; // Отменить обработку события, чтобы предотвратить ввод текста
+        }
+
+
         private void Search(object sender, RoutedEventArgs e)
         {
             try
@@ -201,16 +241,16 @@ namespace B.I.G
                 SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
-                MainWindow.nameUser = Name.Text;
-                var searchResults = journalCollectorController.SearchCollectorName(Name.Text);
+                MainWindow.NameJorunal = Name.Text;
+                var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
 
                 JournalCollectors.Clear();
-                    foreach (var result in searchResults)
-                    {
+                foreach (var result in searchResults)
+                {
                     JournalCollectors.Add(result);
-                    }
-                    
-                
+                }
+
+
             }
             catch (Exception h)
             {
@@ -234,7 +274,7 @@ namespace B.I.G
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
                 log_Controller.Insert(Log2);
-               
+
                 var excelPackage = new ExcelPackage();
                 var worksheet = excelPackage.Workbook.Worksheets.Add("CashCollectors");
 
@@ -269,11 +309,11 @@ namespace B.I.G
                     // Создание строки
                     var row = worksheet.Row(i + 2);
 
-                    worksheet.Cells[i + 2, 2].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 3].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.dateWork;
-                    worksheet.Cells[i + 2, 7].Value = collectorItem.appropriation;
-                   
+                    worksheet.Cells[i + 2, 3].Value = collectorItem.profession;
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.name;
+                    worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;
+                    worksheet.Cells[i + 2, 8].Value = collectorItem.appropriation;
+
 
                     for (int col = 2; col <= 7; col++)
                     {
@@ -284,7 +324,7 @@ namespace B.I.G
                     if (collectorItem.fullname == ".")
                     {
                         // Установите стиль заливки для первых семь колонок
-                        for (int col = 2; col <= 7; col++)
+                        for (int col = 2; col <= 8; col++)
                         {
                             worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Black);
@@ -294,8 +334,9 @@ namespace B.I.G
                 }
 
 
-                worksheet.DeleteColumn(1);
-              
+                worksheet.DeleteColumn(1,2);
+                
+
                 // Автоподгон ширины колонок
                 worksheet.Column(1).Width = 20;
                 worksheet.Column(2).Width = 13;
@@ -305,8 +346,8 @@ namespace B.I.G
                 worksheet.Column(6).Width = 11;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Наряд на работу";
-              
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + DateTime.Now.ToString("dd.MM.yyyy");
+
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
@@ -319,8 +360,8 @@ namespace B.I.G
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
-                }             
-               
+                }
+
                 Search(sender, e);
             }
             catch (Exception ex)
@@ -333,7 +374,7 @@ namespace B.I.G
 
 
 
-      
+
 
         private void SaveExcelWithPageLayoutView(ExcelPackage excelPackage, string filePath)
         {
@@ -361,7 +402,8 @@ namespace B.I.G
         private void Button_cleaning(object sender, RoutedEventArgs e)
         {
             Name.Text = string.Empty;
-           
+            Route.Text = string.Empty;
+            Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
             FillData();
         }
 
@@ -383,18 +425,12 @@ namespace B.I.G
         {
             try
             {
-                // создание диалогового окна для выбора файла Excel
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
-
-                // проверка, был ли выбран файл
-                if (openFileDialog.ShowDialog() == true)
-                {
-
-                    journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName);
-                    journalCollectorController.UpdateResponsibilities();
-                    FillData();
-                }
+                Calendar.Visibility = Visibility.Visible;
+                Calendar.IsEnabled = true;
+                ImportButton.Visibility = Visibility.Visible;
+                ImportButton.IsEnabled = true;
+                X.Visibility = Visibility.Visible;
+                X.IsEnabled = true;
 
 
             }
@@ -405,6 +441,104 @@ namespace B.I.G
 
         }
 
-      
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            DateTime date = DateTime.Now;
+            if (Calendar.SelectedDate.HasValue)
+            {
+                ; date = Calendar.SelectedDate.Value;
+            }
+            if (!journalCollectorController.ImportSerchData(date))
+            {
+                // создание диалогового окна для выбора файла Excel
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+
+                // проверка, был ли выбран файл
+                if (openFileDialog.ShowDialog() == true)
+                {
+
+                    if (Calendar.SelectedDate.HasValue)
+                    {
+                        ; date = Calendar.SelectedDate.Value;
+                    }
+                    journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
+                    journalCollectorController.UpdateResponsibilities(date);
+                    Date.Text = date.ToString("yyyy-MM-dd");
+                    FillData();
+                }
+                Calendar.Visibility = Visibility.Collapsed;
+                Calendar.IsEnabled = false;
+                ImportButton.Visibility = Visibility.Collapsed;
+                ImportButton.IsEnabled = false;              
+                X.Visibility = Visibility.Collapsed;
+                X.IsEnabled = false;
+                ImportButton.Content = "Выбрать дату";
+            }
+            else 
+            {
+                var result = MessageBox.Show("      Наряд с этой датой уже сформирован.\n                Переформировать заново?", "", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // создание диалогового окна для выбора файла Excel
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+
+                    // проверка, был ли выбран файл
+                    if (openFileDialog.ShowDialog() == true)
+                    {
+
+                        if (Calendar.SelectedDate.HasValue)
+                        {
+                            ; date = Calendar.SelectedDate.Value;
+                        }
+                        journalCollectorController.DeleteToDate(date);
+                        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
+                        journalCollectorController.UpdateResponsibilities(date);
+                        Date.Text = date.ToString("yyyy-MM-dd");
+                        FillData();
+                    }
+                    Calendar.Visibility = Visibility.Collapsed;
+                    Calendar.IsEnabled = false;
+                    ImportButton.Visibility = Visibility.Collapsed;
+                    ImportButton.IsEnabled = false;
+                    X.Visibility = Visibility.Collapsed;
+                    X.IsEnabled = false;
+                    ImportButton.Content = "Выбрать дату";
+                }
+                
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Calendar.Visibility = Visibility.Collapsed;
+            Calendar.IsEnabled = false;
+            ImportButton.Visibility = Visibility.Collapsed;
+            ImportButton.IsEnabled = false;
+            X.Visibility = Visibility.Collapsed;
+            X.IsEnabled = false;
+            ImportButton.Content = "Выбрать дату";
+        }
+
+        private void Calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+{
+    // Проверяем, выбрана ли хоть одна дата
+    if (Calendar.SelectedDate.HasValue)
+    {
+        // Устанавливаем выбранную дату в качестве содержимого кнопки ImportButton
+        ImportButton.Content = Calendar.SelectedDate.Value.ToShortDateString();
+        
+        // Здесь также вы можете добавить логику для автоматического выполнения каких-либо действий после выбора даты
+    }
+}
+
+        private void Button_CollectorWindow(object sender, RoutedEventArgs e)
+        {
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            cashCollectorWindow.Show();
+            Close();
+        }
     }
 }

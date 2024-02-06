@@ -52,7 +52,7 @@ namespace B.I.G
             SelectedProduct = new cashCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
             NameText.Text = MainWindow.LogS;
-            Name.Text = MainWindow.nameUser;
+            Name.Text = MainWindow.NameCollector;
             if (AccesText.Text != "Администратор")
             {
                 UserButton.Visibility = Visibility.Collapsed;
@@ -183,7 +183,7 @@ namespace B.I.G
                 SelectedProduct = new cashCollector { image = MainWindow.image_Profil };
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
-                MainWindow.nameUser = Name.Text;
+                MainWindow.NameCollector = Name.Text;
                 var searchResults = сashCollectorController.SearchCollectorName(Name.Text);
 
                 CashCollectors.Clear();
@@ -368,6 +368,14 @@ namespace B.I.G
 
         }
 
-      
+
+        private void Button_OrderrWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            journalCollectorWindow.Show();
+
+            Close();
+        }
+
     }
 }

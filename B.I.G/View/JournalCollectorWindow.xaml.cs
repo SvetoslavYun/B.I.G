@@ -75,20 +75,20 @@ namespace B.I.G
 
         public void FillData()
         {
-            try
+            //try
 
-            {
-                JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors())
-                {
-                    JournalCollectors.Add(item);
-                }
+            //{
+            //    JournalCollectors.Clear();
+            //    foreach (var item in journalCollectorController.GetAllCashCollectors())
+            //    {
+            //        JournalCollectors.Add(item);
+            //    }
 
-            }
-            catch (Exception h)
-            {
-                MessageBox.Show(h.Message);
-            }
+            //}
+            //catch (Exception h)
+            //{
+            //    MessageBox.Show(h.Message);
+            //}
         }
 
         private void Button_Add(object sender, RoutedEventArgs e)
@@ -187,17 +187,17 @@ namespace B.I.G
             try
 
             {
-                SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
-                AccesText.Text = MainWindow.acces;
-                NameText.Text = MainWindow.LogS;
-                MainWindow.nameUser = Name.Text;
-                var searchResults = journalCollectorController.SearchCollectorName(Name.Text);
+                //SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
+                //AccesText.Text = MainWindow.acces;
+                //NameText.Text = MainWindow.LogS;
+                //MainWindow.nameUser = Name.Text;
+                //var searchResults = journalCollectorController.SearchCollectorName(Name.Text);
 
-                JournalCollectors.Clear();
-                    foreach (var result in searchResults)
-                    {
-                    JournalCollectors.Add(result);
-                    }
+                //JournalCollectors.Clear();
+                //    foreach (var result in searchResults)
+                //    {
+                //    JournalCollectors.Add(result);
+                //    }
                     
                 
             }
@@ -369,30 +369,36 @@ namespace B.I.G
 
         private void Button_import_to_excel(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // создание диалогового окна для выбора файла Excel
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+            //try
+            //{
+            //    // создание диалогового окна для выбора файла Excel
+            //    OpenFileDialog openFileDialog = new OpenFileDialog();
+            //    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
 
-                // проверка, был ли выбран файл
-                if (openFileDialog.ShowDialog() == true)
-                {
+            //    // проверка, был ли выбран файл
+            //    if (openFileDialog.ShowDialog() == true)
+            //    {
 
-                    journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName);
-                    journalCollectorController.UpdateResponsibilities();
-                    FillData();
-                }
+            //        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName);
+            //        journalCollectorController.UpdateResponsibilities();
+            //        FillData();
+            //    }
 
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
 
         }
 
-      
+        private void Button_OrderrWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            journalCollectorWindow.Show();
+
+            Close();
+        }
     }
 }
