@@ -64,7 +64,7 @@ namespace B.I.G
             //CashCollectorWindow usersWindow = new CashCollectorWindow();
             //usersWindow.Show();
 
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
             journalCollectorWindow.Show();
 
             Close(); // Закрыть текущее окно авторизации

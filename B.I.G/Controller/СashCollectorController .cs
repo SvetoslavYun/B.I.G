@@ -171,6 +171,22 @@ namespace B.I.G.Controller
 
         public IEnumerable<cashCollector> SearchCollectorName(string name)
         {
+            connection.Open();
+            if (name != "")
+            {
+                string selectQuery = "SELECT COUNT(*) FROM cashCollectors WHERE Name = @Name";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        name = char.ToUpper(name[0]) + name.Substring(1);
+
+                    }
+                }
+                name = char.ToUpper(name[0]) + name.Substring(1);
+            }
             connection.Close();
             var commandString = "SELECT * FROM cashCollectors WHERE name LIKE @Name;";
 

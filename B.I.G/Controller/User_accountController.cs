@@ -89,6 +89,22 @@ namespace B.I.G.Controller
 
         public IEnumerable<user_account> SearchUsername(string name)
         {
+            connection.Open();
+            if (name != "")
+            {
+                string selectQuery = "SELECT COUNT(*) FROM user_accounts WHERE username = @Name";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        name = char.ToUpper(name[0]) + name.Substring(1);
+
+                    }
+                }
+                name = char.ToUpper(name[0]) + name.Substring(1);
+            }
             connection.Close();
             var commandString = "SELECT * FROM user_accounts WHERE username LIKE @Name;";
 

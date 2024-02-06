@@ -85,6 +85,23 @@ namespace B.I.G.Controller
 
         public IEnumerable<log> SearchUsername(string name)
         {
+            connection.Open();
+            if (name != "")
+            {
+                string selectQuery = "SELECT COUNT(*) FROM logs WHERE username = @Name";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Name", name);
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        name = char.ToUpper(name[0]) + name.Substring(1);
+
+                    }
+                }
+                name = char.ToUpper(name[0]) + name.Substring(1);
+            }
+            connection.Close();
             var commandString = "SELECT * FROM logs WHERE username LIKE @Name;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
@@ -140,10 +157,27 @@ namespace B.I.G.Controller
 
         public IEnumerable<log> SearchNameDate(string name, DateTime date)
         {
+            connection.Open();
+            if (name != "")
+            {
+                string selectQuery = "SELECT COUNT(*) FROM logs WHERE username = @Name";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        name = char.ToUpper(name[0]) + name.Substring(1);
+
+                    }
+                }
+                name = char.ToUpper(name[0]) + name.Substring(1);
+            }
+            connection.Close();
             var commandString = "SELECT * FROM logs WHERE username LIKE @Name and date2 = @Date;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date);
-            getAllCommand.Parameters.AddWithValue("@Name", name);
+            getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
             while (reader.Read())
@@ -196,11 +230,27 @@ namespace B.I.G.Controller
 
         public IEnumerable<log> Search_Name_Between_dates(string name, DateTime startdate, DateTime enddate)
         {
+            connection.Open();
+            if (name != "")
+            {
+                string selectQuery = "SELECT COUNT(*) FROM logs WHERE username = @Name";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        name = char.ToUpper(name[0]) + name.Substring(1);
+
+                    }
+                }
+                name = char.ToUpper(name[0]) + name.Substring(1);
+            } connection.Close();
             var commandString = "SELECT * FROM logs WHERE username LIKE @Name AND date2 BETWEEN @StartDate AND @EndDate ;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@StartDate", startdate);
             getAllCommand.Parameters.AddWithValue("@EndDate", enddate);
-            getAllCommand.Parameters.AddWithValue("@Name", name);
+            getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
             while (reader.Read())
