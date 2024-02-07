@@ -24,7 +24,6 @@ namespace B.I.G
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
     {
-        private string Y;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
@@ -58,12 +57,17 @@ namespace B.I.G
 
             InitializeComponent();
             // Загрузка сохраненного значения переменной
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Y))
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Y)|| !string.IsNullOrEmpty(Properties.Settings.Default.routeOrder) || !string.IsNullOrEmpty(Properties.Settings.Default.dateOrder))
             {
                 Name.Text = Properties.Settings.Default.Y;
+                Route.Text = Properties.Settings.Default.routeOrder;
+                Date.Text = Properties.Settings.Default.dateOrder;
             }
             dGridCollector.DataContext = JournalCollectors;
-            Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            if (string.IsNullOrEmpty(Date.Text))
+            {
+                Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            }
             FillData();            
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
@@ -92,7 +96,11 @@ namespace B.I.G
         // Сохранение значения переменной при закрытии окна
         private void Window_Closing(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Y = MainWindow.NameJorunal;
+            Properties.Settings.Default.Y = Name.Text;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.routeOrder = Route.Text;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.dateOrder = Date.Text;
             Properties.Settings.Default.Save();
         }    
 

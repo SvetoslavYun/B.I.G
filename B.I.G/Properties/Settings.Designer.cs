@@ -28,5 +28,7 @@ namespace B.I.G.Properties
         }
 
         public string Y { get; internal set; }
+        public string routeOrder { get; internal set; }
+        public string dateOrder { get; internal set; }
     }
 }
