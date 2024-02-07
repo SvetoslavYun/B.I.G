@@ -102,7 +102,7 @@ namespace B.I.G
             Properties.Settings.Default.Save();
             Properties.Settings.Default.dateOrder = Date.Text;
             Properties.Settings.Default.Save();
-        }    
+        }
 
 
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
@@ -110,13 +110,23 @@ namespace B.I.G
             journalCollector rowContext = e.Row.DataContext as journalCollector;
             if (rowContext != null)
             {
+                SolidColorBrush backgroundBrush = new SolidColorBrush(Colors.White);
+
                 if (rowContext.dateWork == "Данные отсутствуют")
-                    e.Row.Background = new SolidColorBrush(Colors.Orange);
-                else { e.Row.Background = new SolidColorBrush(Colors.White); }
-            
+                {
+                    backgroundBrush = new SolidColorBrush(Colors.Orange);
+                }
+                else if (rowContext.dateWork.Contains("Повтор автомата"))
+                {
+                    backgroundBrush = new SolidColorBrush(Colors.RosyBrown);
+                }
+
+                e.Row.Background = backgroundBrush;
             }
+
             e.Row.Header = e.Row.GetIndex() + 1;
         }
+
 
         public void FillData()
         {

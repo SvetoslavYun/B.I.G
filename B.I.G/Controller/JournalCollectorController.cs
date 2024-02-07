@@ -162,9 +162,13 @@ namespace B.I.G.Controller
             var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*'";
             var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name =''";
             var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1) WHERE route2 LIKE '%/%'";
+            var commandString15 = "UPDATE journalCollectors \r\nSET route2 = SUBSTR(route, 1, INSTR(route2, '\\') - 1) \r\nWHERE REPLACE(route2, '\\', '/') LIKE '%/%';";
             var commandString11 = "UPDATE journalCollectors SET route2 = route WHERE route2 =''";
             var commandString12 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE gun='РЕЗЕРВ'";
             var commandString13 = "UPDATE journalCollectors SET route = SUBSTR(route, 1, INSTR(route || ' ', ' ') - 1), route2 = SUBSTR(route2, 1, INSTR(route2 || ' ', ' ') - 1) WHERE route LIKE '% %' OR route2 LIKE '% %';";
+            var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
+            //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '');";
+            
             connection.Open();
 
             // Создание и добавление параметра @Date в команду для удаления
@@ -187,6 +191,10 @@ namespace B.I.G.Controller
             SQLiteCommand updateCommand12 = new SQLiteCommand(commandString12, connection);
             SQLiteCommand updateCommand13 = new SQLiteCommand(commandString13, connection);
 
+            SQLiteCommand updateCommand14 = new SQLiteCommand(commandString14, connection);
+            updateCommand14.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            SQLiteCommand updateCommand15 = new SQLiteCommand(commandString15, connection);
 
             // Выполнение команд
             updateCommand.ExecuteNonQuery();
@@ -202,7 +210,8 @@ namespace B.I.G.Controller
             updateCommand11.ExecuteNonQuery();
             updateCommand12.ExecuteNonQuery();
             updateCommand13.ExecuteNonQuery();
-
+            updateCommand14.ExecuteNonQuery();
+            updateCommand15.ExecuteNonQuery();
             connection.Close();
         }
 
