@@ -316,6 +316,7 @@ namespace B.I.G
                 for (int i = 1; i <= dGridCollector.Columns.Count; i++)
                 {
                     worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[1, i].Style.Font.Bold = true;
                 }
 
 
@@ -335,7 +336,7 @@ namespace B.I.G
 
                     for (int col = 2; col <= 7; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 6; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 7; // Установите нужный размер шрифта
                     }
 
                     // Добавьте условие для проверки значения collectorItem.fullname

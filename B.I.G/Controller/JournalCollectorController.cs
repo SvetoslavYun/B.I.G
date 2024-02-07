@@ -152,49 +152,56 @@ namespace B.I.G.Controller
 
         public void UpdateResponsibilities(DateTime date)
         {
-            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'";
-            var commandString2 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'";
+            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString2 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
-            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут'";
-            var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %'";
-            var commandString6 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут'";
-            var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ'";
+            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
+            var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
+            var commandString6 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
+            var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ' AND date = @Date";
             var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*'";
-            var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name =''";
-            var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1) WHERE route2 LIKE '%/%'";
-            var commandString15 = "UPDATE journalCollectors \r\nSET route2 = SUBSTR(route, 1, INSTR(route2, '\\') - 1) \r\nWHERE REPLACE(route2, '\\', '/') LIKE '%/%';";
-            var commandString11 = "UPDATE journalCollectors SET route2 = route WHERE route2 =''";
-            var commandString12 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE gun='РЕЗЕРВ'";
-            var commandString13 = "UPDATE journalCollectors SET route = SUBSTR(route, 1, INSTR(route || ' ', ' ') - 1), route2 = SUBSTR(route2, 1, INSTR(route2 || ' ', ' ') - 1) WHERE route LIKE '% %' OR route2 LIKE '% %';";
+            var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name ='' AND date = @Date";
+            var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1) WHERE route2 LIKE '%/%'AND date = @Date";
+            var commandString15 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '\\') - 1) WHERE REPLACE(route2, '\\', '/') LIKE '%/%' AND date = @Date;";
+            var commandString11 = "UPDATE journalCollectors SET route2 = route WHERE route2 ='' AND date = @Date";
+            var commandString12 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE gun='РЕЗЕРВ' and date = @Date";
+            var commandString13 = "UPDATE journalCollectors SET route = SUBSTR(route, 1, INSTR(route || ' ', ' ') - 1), route2 = SUBSTR(route2, 1, INSTR(route2 || ' ', ' ') - 1) WHERE route LIKE '% %' OR route2 LIKE '% %' and date = @Date;";
             var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
             //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '');";
             
             connection.Open();
 
-            // Создание и добавление параметра @Date в команду для удаления
-            SQLiteCommand deleteCommand8 = new SQLiteCommand(commandString8, connection);
-            deleteCommand8.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
-            // Добавление параметра @Date в остальные команды
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
             SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
-            updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
             SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
             SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
             SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
             SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
+            SQLiteCommand deleteCommand8 = new SQLiteCommand(commandString8, connection);
             SQLiteCommand updateCommand9 = new SQLiteCommand(commandString9, connection);
             SQLiteCommand updateCommand10 = new SQLiteCommand(commandString10, connection);
             SQLiteCommand updateCommand11 = new SQLiteCommand(commandString11, connection);
             SQLiteCommand updateCommand12 = new SQLiteCommand(commandString12, connection);
             SQLiteCommand updateCommand13 = new SQLiteCommand(commandString13, connection);
-
             SQLiteCommand updateCommand14 = new SQLiteCommand(commandString14, connection);
-            updateCommand14.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
             SQLiteCommand updateCommand15 = new SQLiteCommand(commandString15, connection);
+
+            updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand6.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand7.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            deleteCommand8.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand9.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand10.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand11.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand12.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand13.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand14.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand15.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
             // Выполнение команд
             updateCommand.ExecuteNonQuery();
