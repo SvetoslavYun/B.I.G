@@ -122,7 +122,7 @@ namespace B.I.G.Controller
         }
 
 
-        public void Update(int idColl, int idJourn)
+        public void Update(int idColl, int idJourn,string route, DateTime date, string profession)
         {
             var commandString = "UPDATE journalCollectors" +
                 " SET name = cashCollectors.name,  gun = cashCollectors.gun," +
@@ -130,15 +130,41 @@ namespace B.I.G.Controller
                 " permission = cashCollectors.permission,dateWork ='',  meaning = cashCollectors.meaning," +
                 " certificate = cashCollectors.certificate, token = cashCollectors.token, power = cashCollectors.power," +
                 " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id " +
-                " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn;";
+                " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn  ;";
+            var commandString2 = "UPDATE journalCollectors SET dateWork =''," +
+                " name = (SELECT name FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
+                " gun = (SELECT gun FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " automaton_serial = (SELECT automaton_serial FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
+                " automaton = (SELECT automaton FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " permission = (SELECT permission FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " meaning = (SELECT meaning FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " certificate = (SELECT certificate FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " token = (SELECT token FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
+                " power = (SELECT power FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
+                " fullname = (SELECT fullname FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " phone = (SELECT phone FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
+                " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='') " +
+                " WHERE route2 = @Route AND profession = @Profession and date = @Date and route !='';";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
 
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
-        new SQLiteParameter("@IdColl", idColl),
-        new SQLiteParameter("@IdJourn", idJourn), });
+             new SQLiteParameter("@IdColl", idColl),
+             new SQLiteParameter("@IdJourn", idJourn),
+           
+            
+            });
+
+            updateCommand2.Parameters.AddRange(new SQLiteParameter[] {
+    new SQLiteParameter("@IdJourn", idJourn),
+    new SQLiteParameter("@Route", route),
+    new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+    new SQLiteParameter("@Profession", profession)
+});
 
             connection.Open();
             updateCommand.ExecuteNonQuery();
+            updateCommand2.ExecuteNonQuery();
             connection.Close();
         }
 

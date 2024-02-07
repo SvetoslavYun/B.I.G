@@ -182,8 +182,10 @@ namespace B.I.G
             {
 
                 if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var id = ((journalCollector)dGridCollector.SelectedItem).id;       
-                EditJournal editJournal = new EditJournal(id, Convert.ToDateTime(Date.Text));
+                var Id = ((journalCollector)dGridCollector.SelectedItem).id;
+                var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
+                var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
+                EditJournal editJournal = new EditJournal(Id, Route2, Convert.ToDateTime(Date.Text), Profession);
                 editJournal.Owner = this;
                 editJournal.ShowDialog();              
                 Search(sender, e);

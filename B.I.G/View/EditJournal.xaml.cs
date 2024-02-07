@@ -24,6 +24,8 @@ namespace B.I.G.View
     public partial class EditJournal : Window
     {   private int Id;
         private DateTime Date;
+        private string Route2;
+        private string Profession;
         public static cashCollector CashCollector;
         ObservableCollection<cashCollector> CashCollectors;
         private СashCollectorController сashCollectorController;
@@ -31,7 +33,7 @@ namespace B.I.G.View
         public static journalCollector journalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
-        public EditJournal(int id, DateTime data)
+        public EditJournal(int id, string route2, DateTime data, string profession)
         {
             CashCollectors = new ObservableCollection<cashCollector>();
             сashCollectorController = new СashCollectorController();
@@ -41,6 +43,8 @@ namespace B.I.G.View
             InitializeComponent();
             Id = id;
             Date = data;
+            Route2 = route2;
+            Profession = profession;
             dGridCollector.DataContext = CashCollectors;
             Name.TextChanged += Search;
         }
@@ -106,7 +110,7 @@ namespace B.I.G.View
                 if (result == MessageBoxResult.Yes)
                 {
                     // Если пользователь выбрал "Да", обновляем данные
-                    journalCollectorController.Update(selectedCollector.id, Id);
+                    journalCollectorController.Update(selectedCollector.id, Id, Route2, Date, Profession);
                     journalCollectorController.UpdateResponsibilities2(Date);
                     Close();
                 }
