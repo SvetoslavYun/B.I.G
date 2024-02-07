@@ -97,52 +97,45 @@ namespace B.I.G.Controller
 
         public void Insert(cashCollector CashCollector)
         {
-            var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
-            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+    //        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
+    //        SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
-            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
-        new SQLiteParameter("Name", CashCollector.name),
-        new SQLiteParameter("Gun", CashCollector.gun),
-        new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
-        new SQLiteParameter("Automaton", CashCollector.automaton),
-        new SQLiteParameter("Permission", CashCollector.permission),
-        new SQLiteParameter("Meaning", CashCollector.meaning),
-        new SQLiteParameter("Certificate", CashCollector.certificate),
-        new SQLiteParameter("Token", CashCollector.token),
-        new SQLiteParameter("Power", CashCollector.power),
-        new SQLiteParameter("FullName", CashCollector.fullname),
-        new SQLiteParameter("Profession", CashCollector.profession),
-        new SQLiteParameter("Phone", CashCollector.phone),
-        new SQLiteParameter("Image", CashCollector.image),
-    });
+    //        insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+    //    new SQLiteParameter("Name", CashCollector.name),
+    //    new SQLiteParameter("Gun", CashCollector.gun),
+    //    new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
+    //    new SQLiteParameter("Automaton", CashCollector.automaton),
+    //    new SQLiteParameter("Permission", CashCollector.permission),
+    //    new SQLiteParameter("Meaning", CashCollector.meaning),
+    //    new SQLiteParameter("Certificate", CashCollector.certificate),
+    //    new SQLiteParameter("Token", CashCollector.token),
+    //    new SQLiteParameter("Power", CashCollector.power),
+    //    new SQLiteParameter("FullName", CashCollector.fullname),
+    //    new SQLiteParameter("Profession", CashCollector.profession),
+    //    new SQLiteParameter("Phone", CashCollector.phone),
+    //    new SQLiteParameter("Image", CashCollector.image),
+    //});
 
-            connection.Open();
-            insertCommand.ExecuteNonQuery();
-            connection.Close();
+    //        connection.Open();
+    //        insertCommand.ExecuteNonQuery();
+    //        connection.Close();
         }
 
 
-        public void Update(cashCollector CashCollector)
+        public void Update(int idColl, int idJourn)
         {
-            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image WHERE id = @Id";
+            var commandString = "UPDATE journalCollectors" +
+                " SET name = cashCollectors.name,  gun = cashCollectors.gun," +
+                " automaton_serial = cashCollectors.automaton_serial,  automaton = cashCollectors.automaton, " +
+                " permission = cashCollectors.permission,dateWork ='',  meaning = cashCollectors.meaning," +
+                " certificate = cashCollectors.certificate, token = cashCollectors.token, power = cashCollectors.power," +
+                " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id " +
+                " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn;";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
-        new SQLiteParameter("Name", CashCollector.name),
-        new SQLiteParameter("Gun", CashCollector.gun),
-        new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
-        new SQLiteParameter("Automaton", CashCollector.automaton),
-        new SQLiteParameter("Permission", CashCollector.permission),
-        new SQLiteParameter("Meaning", CashCollector.meaning),
-        new SQLiteParameter("Certificate", CashCollector.certificate),
-        new SQLiteParameter("Token", CashCollector.token),
-        new SQLiteParameter("Power", CashCollector.power),
-        new SQLiteParameter("FullName", CashCollector.fullname),
-        new SQLiteParameter("Profession", CashCollector.profession),
-        new SQLiteParameter("Phone", CashCollector.phone),
-        new SQLiteParameter("Image", CashCollector.image),
-        new SQLiteParameter("Id", CashCollector.id),
-    });
+        new SQLiteParameter("@IdColl", idColl),
+        new SQLiteParameter("@IdJourn", idJourn), });
 
             connection.Open();
             updateCommand.ExecuteNonQuery();
@@ -211,7 +204,7 @@ namespace B.I.G.Controller
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
             updateCommand7.ExecuteNonQuery();
-            deleteCommand8.ExecuteNonQuery(); // Использование команды с добавленным параметром @Date
+            deleteCommand8.ExecuteNonQuery(); 
             updateCommand9.ExecuteNonQuery();
             updateCommand10.ExecuteNonQuery();
             updateCommand11.ExecuteNonQuery();
@@ -221,6 +214,40 @@ namespace B.I.G.Controller
             updateCommand15.ExecuteNonQuery();
             connection.Close();
         }
+
+
+
+      
+        public void UpdateResponsibilities2(DateTime date)
+        {
+            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
+            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString3 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
+            var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
+            var commandString5 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
+
+            connection.Open();
+            SQLiteCommand updateCommand1 = new SQLiteCommand(commandString1, connection);
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
+            SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
+            SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
+
+            updateCommand1.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));         
+            updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            updateCommand1.ExecuteNonQuery();
+            updateCommand2.ExecuteNonQuery();
+            updateCommand3.ExecuteNonQuery();
+            updateCommand4.ExecuteNonQuery();
+            updateCommand5.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
 
 
 

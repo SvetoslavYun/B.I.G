@@ -18,6 +18,7 @@ using Color = System.Drawing.Color;
 using DocumentFormat.OpenXml.Drawing;
 using Microsoft.Graph.Models;
 using System.Windows.Input;
+using B.I.G.View;
 
 namespace B.I.G
 
@@ -181,14 +182,12 @@ namespace B.I.G
             {
 
                 if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var id = ((cashCollector)dGridCollector.SelectedItem).id;
-                flag = false;
-                CashCollector = (cashCollector)dGridCollector.SelectedItem;
-                Add_СashCollector add_СashCollector = new Add_СashCollector();
-                add_СashCollector.Owner = this;
-                add_СashCollector.ShowDialog();
+                var id = ((journalCollector)dGridCollector.SelectedItem).id;       
+                EditJournal editJournal = new EditJournal(id, Convert.ToDateTime(Date.Text));
+                editJournal.Owner = this;
+                editJournal.ShowDialog();              
                 Search(sender, e);
-                CashCollector = null;
+                JournalCollector = null;
             }
             catch (Exception h)
             {
@@ -279,6 +278,7 @@ namespace B.I.G
 
         private void Button_export_to_excel(object sender, RoutedEventArgs e)
         {
+            DateTime Date2 = Convert.ToDateTime(Date.Text);
             try
             {
                 DateTime Date = DateTime.Now;
@@ -365,7 +365,7 @@ namespace B.I.G
                 worksheet.Column(6).Width = 11;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + DateTime.Now.ToString("dd.MM.yyyy");
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + Date2;
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 

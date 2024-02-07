@@ -191,6 +191,9 @@
     </Compile>
     <Compile Include="Controller\Log_Controller.cs" />
     <Compile Include="Model\log.cs" />
+    <Compile Include="View\EditJournal.xaml.cs">
+      <DependentUpon>EditJournal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\JournalCollectorWindow2.xaml.cs">
       <DependentUpon>JournalCollectorWindow2.xaml</DependentUpon>
     </Compile>
@@ -227,6 +230,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\EditJournal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\JournalCollectorWindow2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

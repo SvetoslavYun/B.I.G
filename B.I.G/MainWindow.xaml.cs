@@ -1,5 +1,6 @@
 ﻿using B.I.G.Controller;
 using B.I.G.Model;
+using B.I.G.View;
 using Microsoft.Graph.Models.Security;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
@@ -53,7 +54,7 @@ namespace B.I.G
             InitializeComponent();
             GetUsernames();
             log_Controller.DeleteAfterSixMonthsLog();
-            //Get();
+            Get();
         }
         public void Get()//заполнить список
         {
@@ -68,6 +69,10 @@ namespace B.I.G
 
             JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
             journalCollectorWindow.Show();
+
+
+            //EditJournal editJournal = new EditJournal();
+            //editJournal.Show();
 
             Close(); // Закрыть текущее окно авторизации
         }
