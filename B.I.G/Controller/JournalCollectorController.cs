@@ -6,7 +6,9 @@ using System.Data.SQLite;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using B.I.G.Model;
+using Microsoft.Graph.Models.TermStore;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -169,6 +171,29 @@ namespace B.I.G.Controller
         }
 
 
+
+        public void EditAutomate(int idColl, string name,DateTime date)
+        {
+            var commandString = "UPDATE journalCollectors SET " +
+                "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Замененный автомат'," +
+                " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
+                "WHERE journalCollectors.name = @Name and date = @Date;";      
+
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            //SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@IdColl", idColl),
+             new SQLiteParameter("@Name", name),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+
+            });
+            connection.Open();
+            updateCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
         public void UpdateResponsibilities(DateTime date)
         {
             var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
@@ -250,8 +275,8 @@ namespace B.I.G.Controller
       
         public void UpdateResponsibilities2(DateTime date)
         {
-            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
-            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Замененный автомат' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
+            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Замененный автомат' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
             var commandString5 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
@@ -282,25 +307,25 @@ namespace B.I.G.Controller
         }
 
 
-        public void Delete(string route, int id)
+        public void Delete(string route, int id, DateTime date)
         {if (route == "")
             {
-                var commandString = "DELETE FROM journalCollectors WHERE (id = @Id)";
+                var commandString = "DELETE FROM journalCollectors WHERE (id = @Id) and date=@Date";
                 SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
 
                 deleteCommand.Parameters.AddWithValue("@Id", id);
-
+                deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
                 connection.Open();
                 deleteCommand.ExecuteNonQuery();
                 connection.Close();
             }
             else
             {
-                var commandString2 = "DELETE FROM journalCollectors WHERE (route = @Route)";
+                var commandString2 = "DELETE FROM journalCollectors WHERE (route = @Route and date=@Date)";
                 SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
                 deleteCommand2.Parameters.AddWithValue("@Route", route);
-
+                deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
                 connection.Open();
                 deleteCommand2.ExecuteNonQuery();
                 connection.Close();

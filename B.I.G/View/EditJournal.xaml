@@ -42,11 +42,10 @@
         </Image>
 
         <ListBox x:Name="dGridCollector" ItemsSource="{Binding}" 
-         Margin="247,63,0,15" Background="Transparent"
+         Margin="247,63,0,41" Background="Transparent"
          Foreground="#FFFBF9F9" BorderBrush="Transparent"
          AlternationCount="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="217"
-         SelectionChanged="dGridCollector_SelectionChanged"
-         MouseDoubleClick="dGridCollector_MouseDoubleClick">
+         SelectionChanged="dGridCollector_SelectionChanged" PreviewMouseLeftButtonUp="dGridCollector_PreviewMouseLeftButtonUp">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding name}" />
@@ -54,5 +53,42 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
+        <Button x:Name="AddButton" Grid.Column="1" Content="Выбрать" HorizontalAlignment="Left" Margin="247,0,0,15" Grid.ColumnSpan="2" Width="217" Height="21" VerticalAlignment="Bottom" FontFamily="Vivaldi" Click="AddButton_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
     </Grid>
 </Window>

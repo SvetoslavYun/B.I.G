@@ -39,6 +39,11 @@
                             <Image Source="/image/edit2.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Header="Заменить автомат" Click="EditAutomate">
+                        <MenuItem.Icon>
+                            <Image Source="/image/edit2.png" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.RowStyle>

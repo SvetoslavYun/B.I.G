@@ -117,11 +117,15 @@ namespace B.I.G
                 {
                     backgroundBrush = new SolidColorBrush(Colors.Orange);
                 }
-                else if (rowContext.dateWork.Contains("Повтор автомата"))
+                else if (rowContext.dateWork.Contains("Повтор автомата")) 
                 {
                     backgroundBrush = new SolidColorBrush(Colors.RosyBrown);
                 }
 
+                else if (rowContext.dateWork.Contains("Замененный автомат"))
+                {
+                    backgroundBrush = new SolidColorBrush(Colors.Gray);
+                }
                 e.Row.Background = backgroundBrush;
             }
 
@@ -202,6 +206,31 @@ namespace B.I.G
             }
         }
 
+        private void EditAutomate(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                var Id = ((journalCollector)dGridCollector.SelectedItem).id2;
+                var Name = ((journalCollector)dGridCollector.SelectedItem).name;
+                var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
+                var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
+                string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
+                if (Id != 0)
+                {
+                    journalCollectorController.EditAutomate(Id, Name, Convert.ToDateTime(Date.Text));
+                    Search(sender, e);
+                    JournalCollector = null;
+                }
+                else { MessageBox.Show("Данные по сотруднику отсутствуют"); }
+            }
+            catch (Exception h)
+            {
+                MessageBox.Show(h.Message);
+            }
+        }
+
         private void DeleteMenuItem(object sender, RoutedEventArgs e)
         {
             try
@@ -218,7 +247,7 @@ namespace B.I.G
                             var Route = JournalCollectors.route;
                             var Id = JournalCollectors.id;
                             string name = JournalCollectors.fullname;
-                            journalCollectorController.Delete(Route, Id);
+                            journalCollectorController.Delete(Route, Id, Convert.ToDateTime(Date.Text));
                             journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
                             journalCollectorController.DeleteNULL();
                             Search(sender, e);

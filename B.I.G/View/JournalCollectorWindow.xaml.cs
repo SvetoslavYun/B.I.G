@@ -157,7 +157,7 @@ namespace B.I.G
                             var Route = JournalCollectors.route;
                             var Id = JournalCollectors.id;
                             string name = JournalCollectors.fullname;
-                            journalCollectorController.Delete(Route, Id);
+                            //journalCollectorController.Delete(Route, Id);
 
                             //DateTime Date = DateTime.Now;
                             //string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");

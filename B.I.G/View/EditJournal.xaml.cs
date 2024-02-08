@@ -23,6 +23,7 @@ namespace B.I.G.View
     /// </summary>
     public partial class EditJournal : Window
     {   private int Id;
+        private int Id2;
         private DateTime Date;
         private string Route2;
         private string Profession;
@@ -98,27 +99,38 @@ namespace B.I.G.View
             }
         }
 
-        private void dGridCollector_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private bool isDataGridClick = false;
+
+        private void dGridCollector_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            isDataGridClick = true;
+
             var selectedCollector = dGridCollector.SelectedItem as cashCollector;
             if (selectedCollector != null)
             {
+                Name.Text = selectedCollector.name;
+                Id2 = selectedCollector.id;
+            }
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isDataGridClick)
+            {
                 // Создаем окно сообщения с вопросом пользователю
-                MessageBoxResult result = MessageBox.Show($"Заменить на {selectedCollector.name}?", "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show($"Заменить на {Name.Text}?", "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 // Проверяем выбор пользователя
                 if (result == MessageBoxResult.Yes)
                 {
                     // Если пользователь выбрал "Да", обновляем данные
-                    journalCollectorController.Update(selectedCollector.id, Id, Route2, Date, Profession);
+                    journalCollectorController.Update(Id2, Id, Route2, Date, Profession);
                     journalCollectorController.UpdateResponsibilities2(Date);
                     Close();
                 }
                 // Если пользователь выбрал "Нет", ничего не делаем
             }
         }
-
-
 
     }
 }
