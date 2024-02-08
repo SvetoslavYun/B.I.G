@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Инкассаторы и водители 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947">
+        Title="Журнал оружия 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
     <Window.Icon>
         <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
@@ -16,12 +16,12 @@
             <ImageBrush ImageSource="Image/Big.png" Stretch="UniformToFill"/>
         </Grid.Background>
         <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" CanUserSortColumns="False"
-          AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" 
-          RowHeaderWidth="50" CanUserAddRows="False" Margin="189,40,10,10" 
-          Background="Transparent"
-          Foreground="Black"
-          BorderBrush="Transparent"
-          AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
+   AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" 
+   RowHeaderWidth="50" CanUserAddRows="False" Margin="189,51,10,24" 
+   Background="Transparent"
+   Foreground="Black"
+   BorderBrush="Transparent"
+   AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
@@ -39,9 +39,14 @@
                             <Image Source="/image/Delete.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Редактировать" Click="EditMenuItem">
+                    <MenuItem Header="Заменить сотрудника" Click="EditMenuItem">
                         <MenuItem.Icon>
-                            <Image Source="/image/edit2.png" Width="16" Height="16"/>
+                            <Image Source="/image/Employee.png" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Заменить автомат" Click="EditAutomate">
+                        <MenuItem.Icon>
+                            <Image Source="/image/Ak47.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -117,6 +122,25 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding permission}" Value=".">
                                     <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Начала работы" Binding="{Binding dateWork}"  Width="*">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding permission}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
                                     <Setter Property="Foreground" Value="White"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -160,25 +184,28 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                
+
                 <!--<DataGridTextColumn Header="Доверенность" Binding="{Binding meaning}" Width="*"/>
-                <DataGridTextColumn Header="Удостоверение" Binding="{Binding certificate}" Width="*"/>
-                <DataGridTextColumn Header="Жетон" Binding="{Binding token}" Width="*"/>
-                <DataGridTextColumn Header="Бронежилет" Binding="{Binding power}" Width="*"/>-->
+         <DataGridTextColumn Header="Удостоверение" Binding="{Binding certificate}" Width="*"/>
+         <DataGridTextColumn Header="Жетон" Binding="{Binding token}" Width="*"/>
+         <DataGridTextColumn Header="Бронежилет" Binding="{Binding power}" Width="*"/>-->
                 <!--<DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Name" Margin="311,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="174" Height="22"/>
-        <TextBlock HorizontalAlignment="Left" Margin="204,13,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
 
+        <TextBox x:Name="Name" Margin="189,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
+        <TextBox x:Name="Route" Margin="342,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
+        <TextBlock HorizontalAlignment="Left" Margin="217,3,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
+        <TextBlock HorizontalAlignment="Left" Margin="358,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
+        <DatePicker x:Name="Date" Margin="552,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
-        Margin="0,9,104,0"
+        Margin="0,12,103,0"
         VerticalAlignment="Top"
         Width="104"
         BorderBrush="#FF1E1F1D"
         FontFamily="High Tower Text"
-        Height="24"
+        Height="28"
         Click="Button_export_to_excel">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
@@ -219,7 +246,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="Импорт из Excel" HorizontalAlignment="Right" Margin="0,9,218,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_import_to_excel">
+        <Button Content="Загрузить наряд" HorizontalAlignment="Left" Margin="826,12,0,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -261,7 +288,7 @@
         </Button>
 
 
-        <Button Content="" HorizontalAlignment="Left" Margin="497,8,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">
+        <Button Content="" HorizontalAlignment="Left" Margin="663,14,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="28">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">
@@ -338,7 +365,46 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="UserButton" Content="Пользователи" HorizontalAlignment="Left" Margin="15,340,0,0" VerticalAlignment="Top" Width="154" Click="Button_UsersWindow" Height="26" FontFamily="Vivaldi">
+
+        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
+
+        <Button x:Name="UserButton" Content="Пользователи" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Button_UsersWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -377,7 +443,7 @@
         </Button>
 
 
-        <Button x:Name="logButton" Content="События логи" HorizontalAlignment="Left" Margin="15,383,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="logButton" Content="События логи" HorizontalAlignment="Left" Margin="15,555,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -414,5 +480,18 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
+        
+        <Calendar x:Name="Calendar" HorizontalAlignment="Left" Margin="771,10,0,0" VerticalAlignment="Top" SelectedDatesChanged="Calendar_SelectedDatesChanged"/>
+        <Button x:Name="ImportButton" Content="Выбрать дату" HorizontalAlignment="Left" Margin="771,174,0,0" VerticalAlignment="Top" Width="179" Click="ImportButton_Click" Height="24"/>
+
+        <Button x:Name="X" Content="X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="953,13,0,0" Padding="5"
+   Click="CloseButton_Click" Height="29" Width="29" Background="#FFE85B5B">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="Red" />
+                </Style>
+            </Button.Style>
+        </Button>
+
     </Grid>
 </Window>

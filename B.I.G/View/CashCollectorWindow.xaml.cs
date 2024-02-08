@@ -333,14 +333,20 @@ namespace B.I.G
         {
             LogWindow logWindow = new LogWindow();
             logWindow.Show();
-            Close();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
         }
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
             UsersWindow usersWindow = new UsersWindow();
             usersWindow.Show();
-            Close();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
         }
 
         private void Button_import_to_excel(object sender, RoutedEventArgs e)
@@ -374,8 +380,20 @@ namespace B.I.G
             JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
             journalCollectorWindow.Show();
 
-            Close();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
         }
 
+        private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            journalCollectorWindow.Show();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
+        }
     }
 }

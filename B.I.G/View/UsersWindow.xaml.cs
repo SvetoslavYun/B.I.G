@@ -339,7 +339,7 @@ namespace B.I.G
         {
             CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
             cashCollectorWindow.Show();
-            Close();
+             Close();
         }
 
         private void Button_OrderrWindow(object sender, RoutedEventArgs e)
@@ -347,7 +347,20 @@ namespace B.I.G
             JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
             journalCollectorWindow.Show();
 
-            Close();
+       
+
+            // Закрыть текущее окно
+           Close(); 
+        }
+
+        private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            journalCollectorWindow.Show();
+
+          
+            Close(); 
+
         }
     }
 }

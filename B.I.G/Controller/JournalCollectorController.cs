@@ -134,18 +134,18 @@ namespace B.I.G.Controller
                 " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id " +
                 " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn  ;";
             var commandString2 = "UPDATE journalCollectors SET dateWork =''," +
-                " name = (SELECT name FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
-                " gun = (SELECT gun FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " automaton_serial = (SELECT automaton_serial FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
-                " automaton = (SELECT automaton FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " permission = (SELECT permission FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " meaning = (SELECT meaning FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " certificate = (SELECT certificate FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " token = (SELECT token FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
-                " power = (SELECT power FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !=''), " +
-                " fullname = (SELECT fullname FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " phone = (SELECT phone FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='')," +
-                " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='') " +
+                " name = (SELECT name FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " gun = (SELECT gun FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " automaton_serial = (SELECT automaton_serial FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " automaton = (SELECT automaton FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " permission = (SELECT permission FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " meaning = (SELECT meaning FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " certificate = (SELECT certificate FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " token = (SELECT token FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " power = (SELECT power FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " fullname = (SELECT fullname FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " phone = (SELECT phone FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date) " +
                 " WHERE route2 = @Route AND profession = @Profession and date = @Date and route !='';";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
@@ -208,16 +208,16 @@ namespace B.I.G.Controller
             var commandString = "UPDATE journalCollectors SET " +
                 "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Автомат не повторяется'," +
                 " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
-                "WHERE journalCollectors.name = @Name and date = @Date;";
+                "WHERE date = @Date and journalCollectors.name = @Name;";
 
             var commandString2 = "UPDATE journalCollectors SET " +
                "automaton_serial = ''," +
                " automaton = '' " +
-               "WHERE route2 = @Route2 and date = @Date;";
+               "WHERE date = @Date and route2 = @Route2;";
 
             var commandString3 = "UPDATE journalCollectors SET " +
               "dateWork =''" +
-              "WHERE route2 = @Route2 and date = @Date and fullname !='.';";
+              "WHERE date = @Date and route2 = @Route2 and fullname !='.' AND dateWork != 'Данные отсутствуют';";
 
 
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
@@ -251,10 +251,10 @@ namespace B.I.G.Controller
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
-            var commandString6 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
-            var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(gun, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ' AND date = @Date";
-            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(gun, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*'";
-            var commandString9 = "UPDATE journalCollectors SET gun = profession, dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name ='' AND date = @Date";
+            var commandString6 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
+            var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ' AND date = @Date";
+            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*'";
+            var commandString9 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name ='' AND date = @Date";
             var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1) WHERE route2 LIKE '%/%'AND date = @Date";
             var commandString15 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '\\') - 1) WHERE REPLACE(route2, '\\', '/') LIKE '%/%' AND date = @Date;";
             var commandString11 = "UPDATE journalCollectors SET route2 = route WHERE route2 ='' AND date = @Date";
@@ -325,7 +325,7 @@ namespace B.I.G.Controller
       
         public void UpdateResponsibilities2(DateTime date)
         {
-            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
+            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
             var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
@@ -383,7 +383,7 @@ namespace B.I.G.Controller
         }
 
 
-        public void DeleteNULL()
+        public void DeleteNUL()
         {
          
                 var commandString = "DELETE FROM journalCollectors WHERE name IS NULL OR  gun IS NULL OR automaton_serial IS NULL OR automaton IS NULL OR permission IS NULL OR meaning  IS NULL OR certificate  IS NULL OR token IS NULL OR power  IS NULL OR fullname IS NULL OR profession IS NULL OR phone IS NULL OR id2 IS NULL OR route  IS NULL OR date  IS NULL OR dateWork  IS NULL OR appropriation  IS NULL OR   route2 IS NULL;";
@@ -394,6 +394,39 @@ namespace B.I.G.Controller
            
               
         }
+
+
+        public void UpdateNullValues(DateTime date)
+        {
+            var updateCommandString = @"UPDATE journalCollectors 
+                                SET name = COALESCE(name, 'Данные отсутствуют'),
+                                    gun = COALESCE(gun, 'Данные отсутствуют'),
+                                    automaton_serial = COALESCE(automaton_serial, 'Данные отсутствуют'),
+                                    automaton = COALESCE(automaton, 'Данные отсутствуют'),
+                                    permission = COALESCE(permission, 'Данные отсутствуют'),
+                                    meaning = COALESCE(meaning, 'Данные отсутствуют'),
+                                    certificate = COALESCE(certificate, 'Данные отсутствуют'),
+                                    token = COALESCE(token, 'Данные отсутствуют'),
+                                    power = COALESCE(power, 'Данные отсутствуют'),
+                                    fullname = COALESCE(fullname, 'Данные отсутствуют'),
+                                    profession = COALESCE(profession, 'Данные отсутствуют'),
+                                    phone = COALESCE(phone, 'Данные отсутствуют'),
+                                    id2 = COALESCE(id2, 0),
+                                    route = COALESCE(route, 'Данные отсутствуют'),
+                                    date = COALESCE(date, @Date),
+                                    dateWork = COALESCE(dateWork, ''),
+                                    appropriation = COALESCE(appropriation, 'Данные отсутствуют'),
+                                    route2 = COALESCE(route2, 'Данные отсутствуют');";
+          
+            SQLiteCommand updateCommand = new SQLiteCommand(updateCommandString, connection);
+            updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+           
+                connection.Open();
+                updateCommand.ExecuteNonQuery();
+                connection.Close();
+            
+        }
+
 
         public void DeleteToDate(DateTime date)
         {

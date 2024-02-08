@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Инкассаторы и водители 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
+        Title="Наряды 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
     <Window.Icon>
         <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
@@ -344,7 +344,83 @@
         <TextBlock x:Name="NameText" Margin="10,224,1096,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
         <TextBlock x:Name="AccesText" Margin="10,252,1091,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
 
-        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,340,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
+
+        <Button x:Name="LookCollectoButton" Content="Журнал оружия" HorizontalAlignment="Left" Margin="15,469,0,0" VerticalAlignment="Top" Width="154" Click="LookCollectoButton_LogWindow" Height="26" FontFamily="Vivaldi">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
+
+        <Button x:Name="UserButton" Content="Пользователи" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Button_UsersWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -383,8 +459,7 @@
         </Button>
 
 
-
-        <Button x:Name="UserButton" Content="Пользователи" HorizontalAlignment="Left" Margin="15,383,0,0" VerticalAlignment="Top" Width="154" Click="Button_UsersWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="logButton" Content="События логи" HorizontalAlignment="Left" Margin="15,555,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -421,46 +496,8 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
-
-
-        <Button x:Name="logButton" Content="События логи" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_LogWindow" Height="26" FontFamily="Vivaldi">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
-            <Button.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#FF000080" Offset="0"/>
-                    <GradientStop Color="#FF2EACD4" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background>
-            <Button.Foreground>
-                <SolidColorBrush Color="White"/>
-            </Button.Foreground>
-        </Button>
-        <Calendar x:Name="Calendar" HorizontalAlignment="Left" Margin="771,10,0,0" VerticalAlignment="Top" SelectedDatesChanged="Calendar_SelectedDatesChanged"/>
+        
+        <Calendar x:Name="Calendar2" HorizontalAlignment="Left" Margin="771,10,0,0" VerticalAlignment="Top" SelectedDatesChanged="Calendar_SelectedDatesChanged"/>
         <Button x:Name="ImportButton" Content="Выбрать дату" HorizontalAlignment="Left" Margin="771,174,0,0" VerticalAlignment="Top" Width="179" Click="ImportButton_Click" Height="24"/>
 
         <Button x:Name="X" Content="X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="953,13,0,0" Padding="5"

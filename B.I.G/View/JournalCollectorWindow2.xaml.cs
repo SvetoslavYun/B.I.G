@@ -85,8 +85,8 @@ namespace B.I.G
                 logButton.Visibility = Visibility.Collapsed;
                 logButton.IsEnabled = false;
             }
-            Calendar.Visibility = Visibility.Collapsed;
-            Calendar.IsEnabled = false;
+            Calendar2.Visibility = Visibility.Collapsed;
+            Calendar2.IsEnabled = false;
             ImportButton.Visibility = Visibility.Collapsed;
             ImportButton.IsEnabled = false;
             X.Visibility = Visibility.Collapsed;
@@ -168,8 +168,8 @@ namespace B.I.G
                 LookCollector lookCollector = new LookCollector(selectedCollector);
               
                 lookCollector.Show();
-
-                journalCollectorController.DeleteNULL();
+                journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                journalCollectorController.DeleteNUL();
                 Search(sender, e);
                 JournalCollector = null;
             }
@@ -196,7 +196,8 @@ namespace B.I.G
                     editJournal.Owner = this;
                     editJournal.ShowDialog();
                 }
-                journalCollectorController.DeleteNULL();
+                journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                journalCollectorController.DeleteNUL();
                 Search(sender, e);
                 JournalCollector = null;
             }
@@ -221,7 +222,8 @@ namespace B.I.G
                 {
                     journalCollectorController.EditAutomate(Id, Name, Convert.ToDateTime(Date.Text), Route2);
                     journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
-                    journalCollectorController.DeleteNULL();
+                    journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                    journalCollectorController.DeleteNUL();
                     Search(sender, e);
                     JournalCollector = null;
                 }
@@ -251,7 +253,8 @@ namespace B.I.G
                             string name = JournalCollectors.fullname;
                             journalCollectorController.Delete(Route, Id, Convert.ToDateTime(Date.Text));
                             journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
-                            journalCollectorController.DeleteNULL();
+                            journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                            journalCollectorController.DeleteNUL();
                             Search(sender, e);
                         }
                     }
@@ -458,22 +461,28 @@ namespace B.I.G
         {
             LogWindow logWindow = new LogWindow();
             logWindow.Show();
-            Close();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
         }
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
             UsersWindow usersWindow = new UsersWindow();
             usersWindow.Show();
-            Close();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
         }
 
         private void Button_import_to_excel(object sender, RoutedEventArgs e)
         {
             try
             {
-                Calendar.Visibility = Visibility.Visible;
-                Calendar.IsEnabled = true;
+                Calendar2.Visibility = Visibility.Visible;
+                Calendar2.IsEnabled = true;
                 ImportButton.Visibility = Visibility.Visible;
                 ImportButton.IsEnabled = true;
                 X.Visibility = Visibility.Visible;
@@ -491,9 +500,9 @@ namespace B.I.G
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             DateTime date = DateTime.Now;
-            if (Calendar.SelectedDate.HasValue)
+            if (Calendar2.SelectedDate.HasValue)
             {
-                ; date = Calendar.SelectedDate.Value;
+                ; date = Calendar2.SelectedDate.Value;
             }
             if (!journalCollectorController.ImportSerchData(date))
             {
@@ -505,17 +514,17 @@ namespace B.I.G
                 if (openFileDialog.ShowDialog() == true)
                 {
 
-                    if (Calendar.SelectedDate.HasValue)
+                    if (Calendar2.SelectedDate.HasValue)
                     {
-                        ; date = Calendar.SelectedDate.Value;
+                        ; date = Calendar2.SelectedDate.Value;
                     }
                     journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
                     journalCollectorController.UpdateResponsibilities(date);
                     Date.Text = date.ToString("yyyy-MM-dd");
                     FillData();
                 }
-                Calendar.Visibility = Visibility.Collapsed;
-                Calendar.IsEnabled = false;
+                Calendar2.Visibility = Visibility.Collapsed;
+                Calendar2.IsEnabled = false;
                 ImportButton.Visibility = Visibility.Collapsed;
                 ImportButton.IsEnabled = false;              
                 X.Visibility = Visibility.Collapsed;
@@ -536,19 +545,20 @@ namespace B.I.G
                     if (openFileDialog.ShowDialog() == true)
                     {
 
-                        if (Calendar.SelectedDate.HasValue)
+                        if (Calendar2.SelectedDate.HasValue)
                         {
-                            ; date = Calendar.SelectedDate.Value;
+                            ; date = Calendar2.SelectedDate.Value;
                         }
                         journalCollectorController.DeleteToDate(date);
                         journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
                         journalCollectorController.UpdateResponsibilities(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
-                        journalCollectorController.DeleteNULL();
+                        journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                        journalCollectorController.DeleteNUL();
                         FillData();
                     }
-                    Calendar.Visibility = Visibility.Collapsed;
-                    Calendar.IsEnabled = false;
+                    Calendar2.Visibility = Visibility.Collapsed;
+                    Calendar2.IsEnabled = false;
                     ImportButton.Visibility = Visibility.Collapsed;
                     ImportButton.IsEnabled = false;
                     X.Visibility = Visibility.Collapsed;
@@ -561,8 +571,8 @@ namespace B.I.G
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Calendar.Visibility = Visibility.Collapsed;
-            Calendar.IsEnabled = false;
+            Calendar2.Visibility = Visibility.Collapsed;
+            Calendar2.IsEnabled = false;
             ImportButton.Visibility = Visibility.Collapsed;
             ImportButton.IsEnabled = false;
             X.Visibility = Visibility.Collapsed;
@@ -573,10 +583,10 @@ namespace B.I.G
         private void Calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
 {
     // Проверяем, выбрана ли хоть одна дата
-    if (Calendar.SelectedDate.HasValue)
+    if (Calendar2.SelectedDate.HasValue)
     {
         // Устанавливаем выбранную дату в качестве содержимого кнопки ImportButton
-        ImportButton.Content = Calendar.SelectedDate.Value.ToShortDateString();
+        ImportButton.Content = Calendar2.SelectedDate.Value.ToShortDateString();
         
         // Здесь также вы можете добавить логику для автоматического выполнения каких-либо действий после выбора даты
     }
@@ -586,7 +596,20 @@ namespace B.I.G
         {
             CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
             cashCollectorWindow.Show();
-            Close();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
+        }
+
+        private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            journalCollectorWindow.Show();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
         }
     }
 }
