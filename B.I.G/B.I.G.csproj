@@ -209,6 +209,9 @@
     <Compile Include="View\UsersWindow.xaml.cs">
       <DependentUpon>UsersWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\LookCollector.xaml.cs">
+      <DependentUpon>LookCollector.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\Add_СashCollector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -253,6 +256,10 @@
     <Page Include="View\UsersWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LookCollector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -149,11 +149,11 @@ namespace B.I.G
 
         private void Button_Add(object sender, RoutedEventArgs e)
         {
-            flag = true;
-            Add_СashCollector add_СashCollector = new Add_СashCollector();
-            add_СashCollector.Owner = this;
-            add_СashCollector.ShowDialog();
-            Search(sender, e);
+            //flag = true;
+            //Add_СashCollector add_СashCollector = new Add_СashCollector();
+            //add_СashCollector.Owner = this;
+            //add_СashCollector.ShowDialog();
+            //Search(sender, e);
         }
 
         private void DoubleClick(object sender, RoutedEventArgs e)
@@ -161,20 +161,24 @@ namespace B.I.G
             try
             {
                 if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var id = ((journalCollector)dGridCollector.SelectedItem).id2;
-                UsersWindow.flag = false;
-                CashCollector = (cashCollector)dGridCollector.SelectedItem;
-                Add_СashCollector add_СashCollector = new Add_СashCollector();
-                add_СashCollector.Owner = this;
-                add_СashCollector.ShowDialog();
+
+                var selectedCollector = (journalCollector)dGridCollector.SelectedItem;
+                JournalCollector = selectedCollector;
+
+                LookCollector lookCollector = new LookCollector(selectedCollector);
+              
+                lookCollector.Show();
+
+                journalCollectorController.DeleteNULL();
                 Search(sender, e);
-                CashCollector = null;
+                JournalCollector = null;
             }
-            catch (Exception h)
+            catch (Exception ex)
             {
-                MessageBox.Show(h.Message);
+                MessageBox.Show(ex.Message);
             }
         }
+
 
         private void EditMenuItem(object sender, RoutedEventArgs e)
         {

@@ -70,6 +70,8 @@ namespace B.I.G
             JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
             journalCollectorWindow.Show();
 
+            //LookCollector lookCollector = new LookCollector();
+            //lookCollector.Show();
 
             //EditJournal editJournal = new EditJournal();
             //editJournal.Show();

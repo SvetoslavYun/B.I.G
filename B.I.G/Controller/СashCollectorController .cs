@@ -13,7 +13,7 @@ namespace B.I.G.Controller
 {
     internal class СashCollectorController
     { private SQLiteConnection connection;
-
+        private LookCollector lookCollector;
         public СashCollectorController()
         {
             // Получение строки подключения из файла конфигурации
@@ -72,6 +72,8 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+
+      
 
         public void Insert(cashCollector CashCollector)
         {
