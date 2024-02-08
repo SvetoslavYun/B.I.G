@@ -185,9 +185,10 @@ namespace B.I.G.Controller
             var commandString11 = "UPDATE journalCollectors SET route2 = route WHERE route2 ='' AND date = @Date";
             var commandString12 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE gun='РЕЗЕРВ' and date = @Date";
             var commandString13 = "UPDATE journalCollectors SET route = SUBSTR(route, 1, INSTR(route || ' ', ' ') - 1), route2 = SUBSTR(route2, 1, INSTR(route2 || ' ', ' ') - 1) WHERE route LIKE '% %' OR route2 LIKE '% %' and date = @Date;";
-            var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
+            //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
             //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '');";
-            
+            var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
+            var commandString16 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             connection.Open();
 
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
@@ -205,6 +206,7 @@ namespace B.I.G.Controller
             SQLiteCommand updateCommand13 = new SQLiteCommand(commandString13, connection);
             SQLiteCommand updateCommand14 = new SQLiteCommand(commandString14, connection);
             SQLiteCommand updateCommand15 = new SQLiteCommand(commandString15, connection);
+            SQLiteCommand updateCommand16 = new SQLiteCommand(commandString16, connection);
 
             updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -221,6 +223,7 @@ namespace B.I.G.Controller
             updateCommand13.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand14.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand15.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand16.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
             // Выполнение команд
             updateCommand.ExecuteNonQuery();
@@ -237,6 +240,7 @@ namespace B.I.G.Controller
             updateCommand12.ExecuteNonQuery();
             updateCommand13.ExecuteNonQuery();
             updateCommand14.ExecuteNonQuery();
+            updateCommand16.ExecuteNonQuery();
             updateCommand15.ExecuteNonQuery();
             connection.Close();
         }
@@ -249,8 +253,9 @@ namespace B.I.G.Controller
             var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
             var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
-            var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
-            var commandString5 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
+            var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
+            var commandString5 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
+            var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
 
             connection.Open();
             SQLiteCommand updateCommand1 = new SQLiteCommand(commandString1, connection);
@@ -258,23 +263,23 @@ namespace B.I.G.Controller
             SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
             SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
             SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
+            SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
 
             updateCommand1.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));         
             updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand6.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
             updateCommand1.ExecuteNonQuery();
             updateCommand2.ExecuteNonQuery();
             updateCommand3.ExecuteNonQuery();
             updateCommand4.ExecuteNonQuery();
             updateCommand5.ExecuteNonQuery();
+            updateCommand6.ExecuteNonQuery();
             connection.Close();
         }
-
-
-
 
 
         public void Delete(string route, int id)
@@ -300,6 +305,19 @@ namespace B.I.G.Controller
                 deleteCommand2.ExecuteNonQuery();
                 connection.Close();
             }
+        }
+
+
+        public void DeleteNULL()
+        {
+         
+                var commandString = "DELETE FROM journalCollectors WHERE name IS NULL OR  gun IS NULL OR automaton_serial IS NULL OR automaton IS NULL OR permission IS NULL OR meaning  IS NULL OR certificate  IS NULL OR token IS NULL OR power  IS NULL OR fullname IS NULL OR profession IS NULL OR phone IS NULL OR id2 IS NULL OR route  IS NULL OR date  IS NULL OR dateWork  IS NULL OR appropriation  IS NULL OR   route2 IS NULL;";
+                SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+                connection.Open();
+                deleteCommand.ExecuteNonQuery();
+                connection.Close();
+           
+              
         }
 
         public void DeleteToDate(DateTime date)

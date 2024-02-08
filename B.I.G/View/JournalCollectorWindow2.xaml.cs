@@ -185,9 +185,14 @@ namespace B.I.G
                 var Id = ((journalCollector)dGridCollector.SelectedItem).id;
                 var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
                 var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
-                EditJournal editJournal = new EditJournal(Id, Route2, Convert.ToDateTime(Date.Text), Profession);
-                editJournal.Owner = this;
-                editJournal.ShowDialog();              
+                string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
+                if (Permission != ".")
+                {
+                    EditJournal editJournal = new EditJournal(Id, Route2, Convert.ToDateTime(Date.Text), Profession);
+                    editJournal.Owner = this;
+                    editJournal.ShowDialog();
+                }
+                journalCollectorController.DeleteNULL();
                 Search(sender, e);
                 JournalCollector = null;
             }
@@ -214,18 +219,8 @@ namespace B.I.G
                             var Id = JournalCollectors.id;
                             string name = JournalCollectors.fullname;
                             journalCollectorController.Delete(Route, Id);
-
-                            //DateTime Date = DateTime.Now;
-                            //string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                            //string formattedDate2 = Date.ToString("dd.MM.yyyy");
-                            //var Log = new log()
-                            //{
-                            //    username = MainWindow.LogS,
-                            //    process = "Удалил сотрудника: " + name + "",
-                            //    date = Convert.ToDateTime(formattedDate),
-                            //    date2 = Convert.ToDateTime(formattedDate2)
-                            //};
-                            //log_Controller.Insert(Log);
+                            journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
+                            journalCollectorController.DeleteNULL();
                             Search(sender, e);
                         }
                     }
@@ -518,6 +513,7 @@ namespace B.I.G
                         journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
                         journalCollectorController.UpdateResponsibilities(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
+                        journalCollectorController.DeleteNULL();
                         FillData();
                     }
                     Calendar.Visibility = Visibility.Collapsed;
