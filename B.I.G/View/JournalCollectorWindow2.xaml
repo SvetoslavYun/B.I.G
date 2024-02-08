@@ -34,14 +34,14 @@
                             <Image Source="/image/Delete.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Редактировать" Click="EditMenuItem">
+                    <MenuItem Header="Заменить сотрудника" Click="EditMenuItem">
                         <MenuItem.Icon>
-                            <Image Source="/image/edit2.png" Width="16" Height="16"/>
+                            <Image Source="/image/Employee.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Заменить автомат" Click="EditAutomate">
                         <MenuItem.Icon>
-                            <Image Source="/image/edit2.png" Width="16" Height="16"/>
+                            <Image Source="/image/Ak47.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>

@@ -122,10 +122,6 @@ namespace B.I.G
                     backgroundBrush = new SolidColorBrush(Colors.RosyBrown);
                 }
 
-                else if (rowContext.dateWork.Contains("Замененный автомат"))
-                {
-                    backgroundBrush = new SolidColorBrush(Colors.Gray);
-                }
                 e.Row.Background = backgroundBrush;
             }
 
@@ -219,7 +215,9 @@ namespace B.I.G
                 string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
                 if (Id != 0)
                 {
-                    journalCollectorController.EditAutomate(Id, Name, Convert.ToDateTime(Date.Text));
+                    journalCollectorController.EditAutomate(Id, Name, Convert.ToDateTime(Date.Text), Route2);
+                    journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
+                    journalCollectorController.DeleteNULL();
                     Search(sender, e);
                     JournalCollector = null;
                 }

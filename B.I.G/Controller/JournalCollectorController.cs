@@ -172,23 +172,73 @@ namespace B.I.G.Controller
 
 
 
-        public void EditAutomate(int idColl, string name,DateTime date)
+        //public void EditAutomate(int idColl, string name,DateTime date, string rote)
+        //{
+        //    var commandString = "UPDATE journalCollectors SET " +
+        //        "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Автомат не повторяется'," +
+        //        " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
+        //        "WHERE journalCollectors.name = @Name and date = @Date;";
+
+        //    var commandString2 = "UPDATE journalCollectors SET " +
+        //       "automaton_serial = ''," +
+        //       " automaton = '' " +
+        //       "WHERE route2 = @Route2 and date = @Date;";
+
+
+        //    SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+        //     updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+        //     new SQLiteParameter("@IdColl", idColl),
+        //     new SQLiteParameter("@Name", name),
+        //     new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
+        //    SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+        //    updateCommand2.Parameters.AddRange(new SQLiteParameter[] {
+        //     new SQLiteParameter("@Route2", rote),
+        //     new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
+        //    connection.Open();
+        //    updateCommand2.ExecuteNonQuery();
+        //    updateCommand.ExecuteNonQuery();
+        //    connection.Close();
+        //}
+
+
+        public void EditAutomate(int idColl, string name, DateTime date, string rote)
         {
             var commandString = "UPDATE journalCollectors SET " +
-                "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Замененный автомат'," +
+                "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Автомат не повторяется'," +
                 " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
-                "WHERE journalCollectors.name = @Name and date = @Date;";      
+                "WHERE journalCollectors.name = @Name and date = @Date;";
+
+            var commandString2 = "UPDATE journalCollectors SET " +
+               "automaton_serial = ''," +
+               " automaton = '' " +
+               "WHERE route2 = @Route2 and date = @Date;";
+
+            var commandString3 = "UPDATE journalCollectors SET " +
+              "dateWork =''" +
+              "WHERE route2 = @Route2 and date = @Date and fullname !='.';";
+
 
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
-            //SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
-
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
              new SQLiteParameter("@IdColl", idColl),
              new SQLiteParameter("@Name", name),
-             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
 
-            });
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+            updateCommand2.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Route2", rote),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
+            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
+            updateCommand3.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Route2", rote),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
             connection.Open();
+            updateCommand3.ExecuteNonQuery();
+            updateCommand2.ExecuteNonQuery();
             updateCommand.ExecuteNonQuery();
             connection.Close();
         }
@@ -275,8 +325,8 @@ namespace B.I.G.Controller
       
         public void UpdateResponsibilities2(DateTime date)
         {
-            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Замененный автомат' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
-            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Замененный автомат' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date ";
+            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
             var commandString5 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
