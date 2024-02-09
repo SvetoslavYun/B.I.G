@@ -60,30 +60,30 @@
                 <DataGridTextColumn Header="явочных карточек, штук (прописью)"  Width="*"/>
 
                 <DataGridTextColumn Header="номера печатей" Binding="{Binding route2}" Width="*"/>
-                <DataGridTextColumn Header="номера доверенностей" Binding="{Binding meaning}" Width="*"/>
-                <DataGridTextColumn Header="ключей от сефов и металлических печатей, одноразового пломбирующего материала штук (прописью)"  Width="*"/>
-                <DataGridTextColumn Header="марка бронежилетов" Width="*"/>
-                <DataGridTextColumn Header="модель средства радиосвязи/марка видиорегистратора" Width="*"/>
+                <DataGridTextColumn Header="номера доверен-ностей" Binding="{Binding meaning}" Width="*"/>
+                <DataGridTextColumn Header="ключей от сефов и металлических печатей, одноразового пломби-рующего материала штук (прописью)"  Width="*"/>
+                <DataGridTextColumn Header="марка броне-жилетов" Width="*"/>
+                <DataGridTextColumn Header="модель средства радиосвязи/марка видиоре-гистратора" Width="*"/>
 
-                <DataGridTextColumn Header="№ удостоверения личности инкассатора" Binding="{Binding certificate}" Width="*"/>
+                <DataGridTextColumn Header="№ удосто-верения личности инкасса-тора" Binding="{Binding certificate}" Width="*"/>
                 <DataGridTextColumn Header="№ номерного жетона" Binding="{Binding token}" Width="*"/>
                 <DataGridTextColumn Header="марка плпншета"  Width="*"/>
                 <DataGridTextColumn Header="таблица кодограмм (позывных)" Width="*"/>
-                <DataGridTextColumn Header="Расписка инкассаторов в получении сумок, явочных карточек, доверенностей, печатей, одноразового пломбирующего материала бронежелетов, средств радиосвязи удостоверений личности инкассатора, номерных жетонов, планшетов и таблиц кодограмм" Width="*"/>
+                <DataGridTextColumn Header="Расписка инкассаторов в получении сумок, явочных карточек, доверенностей, печатей, одноразового пломбирующего материала, бронежелетов, средств радиосвязи, удостоверений личности инкассатора, номерных жетонов, планшетов и таблиц кодограмм" Width="*"/>
 
                 <DataGridTextColumn Header="явочных карточек штук (прописью) "  Width="*"/>
                 <DataGridTextColumn Header="номера печатей" Binding="{Binding route2}" Width="*"/>
-                <DataGridTextColumn Header="номера доверенностей" Binding="{Binding meaning}" Width="*"/>
-                <DataGridTextColumn Header="ключей от сефов и металлических печатей, одноразового пломбирующего материала штук (прописью)" Width="*"/>
-                <DataGridTextColumn Header="марка бронежилетов" Binding="{Binding appropriation}" Width="*"/>
-                <DataGridTextColumn Header="модель средства радиосвязи/марка видиорегистратора"  Width="*"/>
+                <DataGridTextColumn Header="номера доверен-ностей" Binding="{Binding meaning}" Width="*"/>
+                <DataGridTextColumn Header="ключей от сефов и металлических печатей, одноразового пломби-рующего материала штук (прописью)"  Width="*"/>
+                <DataGridTextColumn Header="марка броне-жилетов" Width="*"/>
+                <DataGridTextColumn Header="модель средства радиосвязи/марка видиоре-гистратора" Width="*"/>
 
-                <DataGridTextColumn Header="№ удостоверения личности инкассатора" Binding="{Binding certificate}"  Width="*"/>
+                <DataGridTextColumn Header="№ удосто-верения личности инкасса-тора" Binding="{Binding certificate}" Width="*"/>
                 <DataGridTextColumn Header="№ номерного жетона" Binding="{Binding token}" Width="*"/>
                 <DataGridTextColumn Header="марка плпншета"  Width="*"/>
                 <DataGridTextColumn Header="таблица кодограмм (позывных)"  Width="*"/>
                 <DataGridTextColumn Header="Дата и время (в часах и минутах) выдачи"  Width="*"/>
-                <DataGridTextColumn Header="Расписка инкассаторов в получении сумок, явочных карточек, доверенностей, печатей, одноразового пломбирующего материала бронежелетов, средств радиосвязи удостоверений личности инкассатора, номерных жетонов, планшетов и таблиц кодограмм"  Width="*"/>
+                <DataGridTextColumn Header="Расписка инкассаторов в получении сумок, явочных карточек, доверенностей, печатей, одноразового пломбирующего материала, бронежелетов, средств радиосвязи, удостоверений личности инкассатора, номерных жетонов, планшетов и таблиц кодограмм" Width="*"/>
                 <DataGridTextColumn Header="Примечание"  Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
