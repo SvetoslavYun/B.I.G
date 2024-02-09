@@ -300,97 +300,97 @@ namespace B.I.G
 
 
         //для журнала жетонов
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
 
-        //        var excelPackage = new ExcelPackage();
-        //        var worksheet = excelPackage.Workbook.Worksheets.Add("Logs");
+                var excelPackage = new ExcelPackage();
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Logs");
 
-        //        // Установка стилей для линий ячеек, ширины колонок и выравнивания
-        //        using (var cells = worksheet.Cells[1, 1, dGridLog.Items.Count + 1, dGridLog.Columns.Count])
-        //        {
-        //            cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-        //            cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-        //            cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-        //            cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                // Установка стилей для линий ячеек, ширины колонок и выравнивания
+                using (var cells = worksheet.Cells[1, 1, dGridLog.Items.Count + 1, dGridLog.Columns.Count])
+                {
+                    cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
 
-        //            cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //            cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
-        //            cells.Style.WrapText = true; // Разрешаем перенос текста
-        //        }
+                    cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                    cells.Style.WrapText = true; // Разрешаем перенос текста
+                }
 
-        //        // Добавление сетки после последней строки данных
-        //        using (var cells = worksheet.Cells[dGridLog.Items.Count + 2, 1, dGridLog.Items.Count + 3, dGridLog.Columns.Count])
-        //        {
-        //            cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-        //            cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-        //            cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-        //            cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                // Добавление сетки после последней строки данных
+                using (var cells = worksheet.Cells[dGridLog.Items.Count + 2, 1, dGridLog.Items.Count + 3, dGridLog.Columns.Count])
+                {
+                    cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
 
-        //            cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //            cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
-        //            cells.Style.WrapText = true; // Разрешаем перенос текста
-        //        }
+                    cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                    cells.Style.WrapText = true; // Разрешаем перенос текста
+                }
 
-        //        // Объединение второй и третьей колонок в первой строке
-        //        worksheet.Cells[1, 2, 1, 3].Merge = true;
+                // Объединение второй и третьей колонок в первой строке
+                worksheet.Cells[1, 2, 1, 3].Merge = true;
 
-        //        // Установка значения в объединенной ячейке
-        //        worksheet.Cells[1, 2].Value = "Выдано инкассаторам";
-        //        // Добавление заголовков столбцов и порядковых номеров
+                // Установка значения в объединенной ячейке
+                worksheet.Cells[1, 2].Value = "Выдано инкассаторам";
+                // Добавление заголовков столбцов и порядковых номеров
 
-        //        for (int i = 1; i <= dGridLog.Columns.Count; i++)
-        //        {
-        //            worksheet.Cells[2, i].Value = dGridLog.Columns[i - 1].Header;
-        //            worksheet.Cells[3, i].Value = i;
-        //        }
-
-
-        //        // Добавление данных
-        //        for (int i = 0; i < dGridLog.Items.Count; i++)
-        //        {
-        //            var logItem = (log)dGridLog.Items[i];
-
-        //            worksheet.Cells[i + 4, 1].Value = logItem.id;
-        //            worksheet.Cells[i + 4, 2].Value = logItem.username;
-        //            worksheet.Cells[i + 4, 3].Value = logItem.process;
-        //            worksheet.Cells[i + 4, 4].Value = logItem.date.ToString("dd.MM.yyyy HH:mm");
-        //        }
+                for (int i = 1; i <= dGridLog.Columns.Count; i++)
+                {
+                    worksheet.Cells[2, i].Value = dGridLog.Columns[i - 1].Header;
+                    worksheet.Cells[3, i].Value = i;
+                }
 
 
-        //        // Автоподгон ширины колонок
-        //        worksheet.Cells.AutoFitColumns();
-        //        worksheet.Column(2).Width = 30;
-        //        worksheet.Column(3).Width = 30;
-        //        worksheet.Column(4).Width = 30;
+                // Добавление данных
+                for (int i = 0; i < dGridLog.Items.Count; i++)
+                {
+                    var logItem = (log)dGridLog.Items[i];
 
-        //        // Установка текста в колонтитуле
-        //        worksheet.HeaderFooter.OddHeader.RightAlignedText = "&\"Arial\"&10&K000000 sviatoslavyun@gmail.com";
+                    worksheet.Cells[i + 4, 1].Value = logItem.id;
+                    worksheet.Cells[i + 4, 2].Value = logItem.username;
+                    worksheet.Cells[i + 4, 3].Value = logItem.process;
+                    worksheet.Cells[i + 4, 4].Value = logItem.date.ToString("dd.MM.yyyy HH:mm");
+                }
 
-        //        // Установка альбомной ориентации
-        //        worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
 
-        //        // Установка строк заголовка, которые будут повторяться при выводе на печать
-        //        worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:3"];
-        //        // Установка текста в колонтитуле для повторяющихся страниц
-        //        var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-        //        {
-        //            Filter = "Excel Files|*.xlsx",
-        //            DefaultExt = ".xlsx"
-        //        };
+                // Автоподгон ширины колонок
+                worksheet.Cells.AutoFitColumns();
+                worksheet.Column(2).Width = 30;
+                worksheet.Column(3).Width = 30;
+                worksheet.Column(4).Width = 30;
 
-        //        if (saveFileDialog.ShowDialog() == true)
-        //        {
-        //            SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
+                // Установка текста в колонтитуле
+                worksheet.HeaderFooter.OddHeader.RightAlignedText = "&\"Arial\"&10&K000000 sviatoslavyun@gmail.com";
+
+                // Установка альбомной ориентации
+                worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
+
+                // Установка строк заголовка, которые будут повторяться при выводе на печать
+                worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:3"];
+                // Установка текста в колонтитуле для повторяющихся страниц
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Excel Files|*.xlsx",
+                    DefaultExt = ".xlsx"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
 
         private void SaveExcelWithPageLayoutView(ExcelPackage excelPackage, string filePath)
