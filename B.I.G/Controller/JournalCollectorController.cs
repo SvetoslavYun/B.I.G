@@ -102,7 +102,72 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+        public IEnumerable<journalCollector> GetAllCashCollectors3(DateTime date)
+        {
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' ";
+
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
+            connection.Open();
+
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var Id = reader.GetInt32(reader.GetOrdinal("id"));
+                var Name = reader.GetString(reader.GetOrdinal("name"));
+                var Gun = reader.GetString(reader.GetOrdinal("gun"));
+                var AutomatonSerial = reader.GetString(reader.GetOrdinal("automaton_serial"));
+                var Automaton = reader.GetString(reader.GetOrdinal("automaton"));
+                var Permission = reader.GetString(reader.GetOrdinal("permission"));
+                var Meaning = reader.GetString(reader.GetOrdinal("meaning"));
+                var Certificate = reader.GetString(reader.GetOrdinal("certificate"));
+                var Token = reader.GetString(reader.GetOrdinal("token"));
+                var Power = reader.GetString(reader.GetOrdinal("power"));
+                var FullName = reader.GetString(reader.GetOrdinal("fullname"));
+                var Profession = reader.GetString(reader.GetOrdinal("profession"));
+                var Phone = reader.GetString(reader.GetOrdinal("phone"));
+                var Id2 = reader.GetInt32(reader.GetOrdinal("id2"));
+                var Route = reader.GetString(reader.GetOrdinal("route"));
+                var Date = reader.GetDateTime(reader.GetOrdinal("date"));
+                var DateWork = reader.GetString(reader.GetOrdinal("dateWork"));
+                var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+                var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+
+                var JournalCollector = new journalCollector
+                {
+                    id = Id,
+                    name = Name,
+                    gun = Gun,
+                    automaton_serial = AutomatonSerial,
+                    automaton = Automaton,
+                    permission = Permission,
+                    meaning = Meaning,
+                    certificate = Certificate,
+                    token = Token,
+                    power = Power,
+                    fullname = FullName,
+                    profession = Profession,
+                    phone = Phone,
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
+                    route2 = Route2, // Добавлено новое поле route2
+                    image = Image
+                };
+
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
 
 
 
@@ -257,7 +322,7 @@ namespace B.I.G.Controller
         {
             var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
-            var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
+            var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
             var commandString6 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
@@ -334,7 +399,7 @@ namespace B.I.G.Controller
       
         public void UpdateResponsibilities2(DateTime date)
         {
-            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
+            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
             var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
@@ -367,7 +432,7 @@ namespace B.I.G.Controller
 
 
         public void Delete(string route, int id, DateTime date)
-        {if (route == "")
+        { if (route == "" || route == "РЕЗЕРВ" || route == "резерв" || route == "Pезерв")
             {
                 var commandString = "DELETE FROM journalCollectors WHERE (id = @Id) and date=@Date";
                 SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
@@ -470,22 +535,8 @@ namespace B.I.G.Controller
             }
             connection.Close();
 
-            connection.Open();
-            if (!string.IsNullOrEmpty(route))
-            {
-                string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE route = @Route";
-                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
-                {
-                    selectCommand.Parameters.AddWithValue("@Route", "%" + route + "%");
-                    long existingRecords = (long)selectCommand.ExecuteScalar();
-                    if (existingRecords == 0)
-                    {
-                        route = char.ToUpper(route[0]) + route.Substring(1);
+          
 
-                    }
-                }
-                route = char.ToUpper(route[0]) + route.Substring(1);
-            }
             connection.Close();
 
 
@@ -496,6 +547,76 @@ namespace B.I.G.Controller
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
             getAllCommand.Parameters.AddWithValue("@Route", "" + route + "%");
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
+            connection.Open();
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var Id = reader.GetInt32(reader.GetOrdinal("id"));
+                var Name = reader.GetString(reader.GetOrdinal("name"));
+                var Gun = reader.GetString(reader.GetOrdinal("gun"));
+                var AutomatonSerial = reader.GetString(reader.GetOrdinal("automaton_serial"));
+                var Automaton = reader.GetString(reader.GetOrdinal("automaton"));
+                var Permission = reader.GetString(reader.GetOrdinal("permission"));
+                var Meaning = reader.GetString(reader.GetOrdinal("meaning"));
+                var Certificate = reader.GetString(reader.GetOrdinal("certificate"));
+                var Token = reader.GetString(reader.GetOrdinal("token"));
+                var Power = reader.GetString(reader.GetOrdinal("power"));
+                var FullName = reader.GetString(reader.GetOrdinal("fullname"));
+                var Profession = reader.GetString(reader.GetOrdinal("profession"));
+                var Phone = reader.GetString(reader.GetOrdinal("phone"));
+                var Id2 = reader.GetInt32(reader.GetOrdinal("id2"));
+                var Route = reader.GetString(reader.GetOrdinal("route"));
+                var Date = reader.GetDateTime(reader.GetOrdinal("date"));
+                var DateWork = reader.GetString(reader.GetOrdinal("dateWork"));
+                var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+                var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+
+                var JournalCollector = new journalCollector
+                {
+                    id = Id,
+                    name = Name,
+                    gun = Gun,
+                    automaton_serial = AutomatonSerial,
+                    automaton = Automaton,
+                    permission = Permission,
+                    meaning = Meaning,
+                    certificate = Certificate,
+                    token = Token,
+                    power = Power,
+                    fullname = FullName,
+                    profession = Profession,
+                    phone = Phone,
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
+                    route2 = Route2, // Добавлено новое поле route2
+                    image = Image
+                };
+
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
+
+
+        public IEnumerable<journalCollector> SearchCollectorName3(DateTime date)
+        {
+           
+            connection.Close();
+
+
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
+
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='';";
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
 
             connection.Open();

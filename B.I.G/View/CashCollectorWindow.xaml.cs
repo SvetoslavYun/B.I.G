@@ -395,5 +395,12 @@ namespace B.I.G
             // Закрыть текущее окно
             currentWindow.Close();
         }
+
+        private void Inventory_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            journalCollectorWindow.Show();
+            Close();
+        }
     }
 }

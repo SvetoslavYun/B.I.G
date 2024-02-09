@@ -61,7 +61,7 @@ namespace B.I.G
             log_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
-            Get();
+            //Get();
         }
         public void Get()//заполнить список
         {

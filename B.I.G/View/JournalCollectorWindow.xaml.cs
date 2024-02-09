@@ -613,5 +613,12 @@ namespace B.I.G
 
 
         }
+
+        private void Inventory_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            journalCollectorWindow.Show();
+            Close();
+        }
     }
 }

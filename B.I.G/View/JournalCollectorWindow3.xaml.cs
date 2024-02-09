@@ -60,8 +60,7 @@ namespace B.I.G
             // Загрузка сохраненного значения переменной
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Y)|| !string.IsNullOrEmpty(Properties.Settings.Default.routeOrder) || !string.IsNullOrEmpty(Properties.Settings.Default.dateOrder))
             {
-                Name.Text = Properties.Settings.Default.Y;
-                Route.Text = Properties.Settings.Default.routeOrder;
+              
                 Date.Text = Properties.Settings.Default.dateOrder;
             }
             dGridCollector.DataContext = JournalCollectors;
@@ -71,20 +70,11 @@ namespace B.I.G
             }
             FillData();            
             ImgBox.DataContext = this;
-            Name.TextChanged += Search;
-            Route.TextChanged += Search;
+           
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
             NameText.Text = MainWindow.LogS;   
-            Name.Text = MainWindow.NameJorunal;
-            Access();
-            Calendar2.Visibility = Visibility.Collapsed;
-            Calendar2.IsEnabled = false;
-            ImportButton.Visibility = Visibility.Collapsed;
-            ImportButton.IsEnabled = false;
-            X.Visibility = Visibility.Collapsed;
-            X.IsEnabled = false;          
-
+          
         }
 
         public void Access()
@@ -99,8 +89,7 @@ namespace B.I.G
             }
             if (AccesText.Text == "Пользователь")
             {
-                BatenOrder.Visibility = Visibility.Collapsed;
-                BatenOrder.IsEnabled = false;
+               
                 CollectoButton.Visibility = Visibility.Collapsed;
                 CollectoButton.IsEnabled = false;
                 LookCollectoButton.Visibility = Visibility.Collapsed;
@@ -116,9 +105,9 @@ namespace B.I.G
         // Сохранение значения переменной при закрытии окна
         private void Window_Closing(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Y = Name.Text;
+           
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.routeOrder = Route.Text;
+           
             Properties.Settings.Default.Save();
             Properties.Settings.Default.dateOrder = Date.Text;
             Properties.Settings.Default.Save();
@@ -154,7 +143,7 @@ namespace B.I.G
 
             {
                 JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors(Convert.ToDateTime(Date.Text)))
+                foreach (var item in journalCollectorController.GetAllCashCollectors3(Convert.ToDateTime(Date.Text)))
                 {
                     JournalCollectors.Add(item);
                 }
@@ -308,8 +297,8 @@ namespace B.I.G
                 SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
-                MainWindow.NameJorunal = Name.Text;
-                var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
+           
+                var searchResults = journalCollectorController.SearchCollectorName3(Convert.ToDateTime(Date.Text));
 
                 JournalCollectors.Clear();
                 foreach (var result in searchResults)
@@ -333,11 +322,11 @@ namespace B.I.G
             {
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy");
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
-                    process = "Сформировал: Наряд на работу",
+                    process = "Сформировал: Журнал выдачи инвентаря",
                     date = Convert.ToDateTime(formattedDate),
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
@@ -361,7 +350,7 @@ namespace B.I.G
                 }
 
                 // Добавление сетки после последней строки данных
-                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 10, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -393,7 +382,7 @@ namespace B.I.G
                     worksheet.Cells[3, i].Value = i;
                 }
 
-
+              
 
                 // Добавление данных
                 for (int i = 1; i < dGridCollector.Items.Count; i++)
@@ -413,7 +402,7 @@ namespace B.I.G
                     worksheet.Cells[i + 3, 17].Value = collectorItem.route2;
                     worksheet.Cells[i + 3, 18].Value = collectorItem.meaning;
                     worksheet.Cells[i + 3, 22].Value = collectorItem.certificate;
-                    worksheet.Cells[i + 3, 12].Value = collectorItem.token;
+                    worksheet.Cells[i + 3, 23].Value = collectorItem.token;
 
 
                     for (int col = 2; col <= 8; col++)
@@ -421,12 +410,36 @@ namespace B.I.G
                         worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
                     }
 
-                  
-                }
+                    if (worksheet.Cells[i + 3, 3].Value?.ToString() != "")
+                    {
+
+                        worksheet.Cells[i + 3, 9].Value = "Алмаз";
+                        worksheet.Cells[i + 3, 20].Value = "Алмаз";                      
+                    }
 
 
-            
-                
+                    if (worksheet.Cells[i + 3, 7].Value?.ToString() != "")
+                    {
+
+                      
+                        worksheet.Cells[i + 3, 10].Value = "T2 DP2400";
+                        worksheet.Cells[i + 3, 21].Value = "T2 DP2400";
+                        worksheet.Cells[i + 3, 13].Value = "HW";
+                        worksheet.Cells[i + 3, 24].Value = "HW";
+                    }
+                    else
+                    {
+                        worksheet.Cells[i + 3, 6].Value = "";
+                        worksheet.Cells[i + 3, 17].Value = "";
+                    }
+
+                   
+                        worksheet.Cells[i + 3, 8].Value = "-/-";
+                        worksheet.Cells[i + 3, 14].Value = "-/-";
+                        worksheet.Cells[i + 3, 19].Value = "-/-";
+                        worksheet.Cells[i + 3, 25].Value = "-/-";
+                    
+                }   
 
                 // Автоподгон ширины колонок
                 worksheet.Column(1).Width = 8;
@@ -459,7 +472,7 @@ namespace B.I.G
                 worksheet.Column(28).Width = 8;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + Date2;
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:3"];
 
@@ -467,7 +480,7 @@ namespace B.I.G
                 {
                     Filter = "Excel Files|*.xlsx",
                     DefaultExt = ".xlsx",
-                    FileName = "Наряд на работу"
+                    FileName = "Журнал выдачи инвентаря"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -514,8 +527,7 @@ namespace B.I.G
 
         private void Button_cleaning(object sender, RoutedEventArgs e)
         {
-            Name.Text = string.Empty;
-            Route.Text = string.Empty;
+           
             Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
             FillData();
         }
@@ -540,129 +552,10 @@ namespace B.I.G
             currentWindow.Close();
         }
 
-        private void Button_import_to_excel(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-              
-                    Calendar2.Visibility = Visibility.Visible;
-                    Calendar2.IsEnabled = true;
-                    ImportButton.Visibility = Visibility.Visible;
-                    ImportButton.IsEnabled = true;
-                    X.Visibility = Visibility.Visible;
-                    X.IsEnabled = true;
-           
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+ 
 
-        }
+    
 
-        private void ImportButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-              
-                DateTime date = DateTime.Now;
-                if (Calendar2.SelectedDate.HasValue)
-                {
-                    ; date = Calendar2.SelectedDate.Value;
-                }
-                if (!journalCollectorController.ImportSerchData(date))
-                {
-                    // создание диалогового окна для выбора файла Excel
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
-
-                    // проверка, был ли выбран файл
-                    if (openFileDialog.ShowDialog() == true)
-                    {
-
-                        if (Calendar2.SelectedDate.HasValue)
-                        {
-                            ; date = Calendar2.SelectedDate.Value;
-                        }
-                        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
-                        journalCollectorController.UpdateResponsibilities(date);
-                        Date.Text = date.ToString("yyyy-MM-dd");
-                        FillData();
-                    }
-                    Calendar2.Visibility = Visibility.Collapsed;
-                    Calendar2.IsEnabled = false;
-                    ImportButton.Visibility = Visibility.Collapsed;
-                    ImportButton.IsEnabled = false;
-                    X.Visibility = Visibility.Collapsed;
-                    X.IsEnabled = false;
-                    ImportButton.Content = "Выбрать дату";
-                }
-                else
-                {
-                    var result = MessageBox.Show("      Наряд с этой датой уже сформирован.\n                Переформировать заново?", "", MessageBoxButton.YesNo);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        // создание диалогового окна для выбора файла Excel
-                        OpenFileDialog openFileDialog = new OpenFileDialog();
-                        openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
-
-                        // проверка, был ли выбран файл
-                        if (openFileDialog.ShowDialog() == true)
-                        {
-
-                            if (Calendar2.SelectedDate.HasValue)
-                            {
-                                ; date = Calendar2.SelectedDate.Value;
-                            }
-                            journalCollectorController.DeleteToDate(date);
-                            journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
-                            journalCollectorController.UpdateResponsibilities(date);
-                            Date.Text = date.ToString("yyyy-MM-dd");
-                            journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                            journalCollectorController.DeleteNUL();
-                            FillData();
-                        }
-                        Calendar2.Visibility = Visibility.Collapsed;
-                        Calendar2.IsEnabled = false;
-                        ImportButton.Visibility = Visibility.Collapsed;
-                        ImportButton.IsEnabled = false;
-                        X.Visibility = Visibility.Collapsed;
-                        X.IsEnabled = false;
-                        ImportButton.Content = "Выбрать дату";     
-                    }
-                
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Calendar2.Visibility = Visibility.Collapsed;
-            Calendar2.IsEnabled = false;
-            ImportButton.Visibility = Visibility.Collapsed;
-            ImportButton.IsEnabled = false;
-            X.Visibility = Visibility.Collapsed;
-            X.IsEnabled = false;
-            ImportButton.Content = "Выбрать дату";
-        }
-
-        private void Calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
-{
-    // Проверяем, выбрана ли хоть одна дата
-    if (Calendar2.SelectedDate.HasValue)
-    {
-        // Устанавливаем выбранную дату в качестве содержимого кнопки ImportButton
-        ImportButton.Content = Calendar2.SelectedDate.Value.ToShortDateString();
-        
-        // Здесь также вы можете добавить логику для автоматического выполнения каких-либо действий после выбора даты
-    }
-}
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
@@ -682,6 +575,13 @@ namespace B.I.G
 
             // Закрыть текущее окно
             currentWindow.Close();
+        }
+
+        private void Button_OrderrWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            journalCollectorWindow.Show();
+            Close();
         }
     }
 }
