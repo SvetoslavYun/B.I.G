@@ -42,18 +42,25 @@ namespace B.I.G
         public static string acces;
         public static string LogS = "";
         ObservableCollection<log> Logs;
+        ObservableCollection<journalCollector> JournalCollectors;
         private Log_Controller log_Controller;
+        private JournalCollectorController journalCollectorController;
         ObservableCollection<user_account> Users;
         private User_accountController user_AccountController;
         public MainWindow()
         {
             Logs = new ObservableCollection<log>();
             log_Controller = new Log_Controller();
+ 
+            journalCollectorController = new JournalCollectorController();
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
             GetUsernames();
+
             log_Controller.DeleteAfterSixMonthsLog();
+            journalCollectorController.DeleteAfterSixMonthsLog();
+            journalCollectorController.DeleteNUL();
             //Get();
         }
         public void Get()//заполнить список

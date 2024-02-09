@@ -59,8 +59,9 @@ namespace B.I.G
 
         private void AddUserWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Access.Items.Add("Администратор");
+            Access.Items.Add("Пользователь");
             Access.Items.Add("Оператор");
+            Access.Items.Add("Администратор");           
         }
         private void Button_Save(object sender, RoutedEventArgs e)
         {

@@ -26,6 +26,15 @@ namespace B.I.G.Controller
         }
 
 
+        public void DeleteAfterSixMonthsLog()
+        {
+            var commandString = "DELETE FROM journalCollectors  WHERE date <= date('now', '-1 months')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            connection.Open();
+            deleteCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
         public IEnumerable<journalCollector> GetAllCashCollectors(DateTime date)
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
@@ -247,7 +256,7 @@ namespace B.I.G.Controller
         public void UpdateResponsibilities(DateTime date)
         {
             var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
-            var commandString2 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
+            var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
@@ -327,7 +336,7 @@ namespace B.I.G.Controller
         {
             var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
             var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
-            var commandString3 = "UPDATE journalCollectors SET permission='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
+            var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
             var commandString5 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";

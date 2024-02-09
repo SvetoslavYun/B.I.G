@@ -263,7 +263,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="Загрузить наряд" HorizontalAlignment="Left" Margin="826,12,0,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel">
+        <Button x:Name="BatenOrder"  Content="Загрузить наряд" HorizontalAlignment="Left" Margin="826,12,0,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">

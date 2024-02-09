@@ -77,6 +77,18 @@ namespace B.I.G
             AccesText.Text = MainWindow.acces;
             NameText.Text = MainWindow.LogS;   
             Name.Text = MainWindow.NameJorunal;
+            Access();
+            Calendar2.Visibility = Visibility.Collapsed;
+            Calendar2.IsEnabled = false;
+            ImportButton.Visibility = Visibility.Collapsed;
+            ImportButton.IsEnabled = false;
+            X.Visibility = Visibility.Collapsed;
+            X.IsEnabled = false;          
+
+        }
+
+        public void Access()
+        {
             if (AccesText.Text != "Администратор")
             {
 
@@ -85,13 +97,20 @@ namespace B.I.G
                 logButton.Visibility = Visibility.Collapsed;
                 logButton.IsEnabled = false;
             }
-            Calendar2.Visibility = Visibility.Collapsed;
-            Calendar2.IsEnabled = false;
-            ImportButton.Visibility = Visibility.Collapsed;
-            ImportButton.IsEnabled = false;
-            X.Visibility = Visibility.Collapsed;
-            X.IsEnabled = false;          
+            if (AccesText.Text == "Пользователь")
+            {
+                BatenOrder.Visibility = Visibility.Collapsed;
+                BatenOrder.IsEnabled = false;
+                CollectoButton.Visibility = Visibility.Collapsed;
+                CollectoButton.IsEnabled = false;
+                LookCollectoButton.Visibility = Visibility.Collapsed;
+                LookCollectoButton.IsEnabled = false;
+                CollectoButton.Visibility = Visibility.Collapsed;
+                CollectoButton.IsEnabled = false;
+                LookCollectoButton.Visibility = Visibility.Collapsed;
+                LookCollectoButton.IsEnabled = false;
 
+            }
         }
 
         // Сохранение значения переменной при закрытии окна
@@ -481,14 +500,14 @@ namespace B.I.G
         {
             try
             {
-                Calendar2.Visibility = Visibility.Visible;
-                Calendar2.IsEnabled = true;
-                ImportButton.Visibility = Visibility.Visible;
-                ImportButton.IsEnabled = true;
-                X.Visibility = Visibility.Visible;
-                X.IsEnabled = true;
-
-
+              
+                    Calendar2.Visibility = Visibility.Visible;
+                    Calendar2.IsEnabled = true;
+                    ImportButton.Visibility = Visibility.Visible;
+                    ImportButton.IsEnabled = true;
+                    X.Visibility = Visibility.Visible;
+                    X.IsEnabled = true;
+           
             }
             catch (Exception ex)
             {
@@ -499,43 +518,16 @@ namespace B.I.G
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            DateTime date = DateTime.Now;
-            if (Calendar2.SelectedDate.HasValue)
+            try
             {
-                ; date = Calendar2.SelectedDate.Value;
-            }
-            if (!journalCollectorController.ImportSerchData(date))
-            {
-                // создание диалогового окна для выбора файла Excel
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
 
-                // проверка, был ли выбран файл
-                if (openFileDialog.ShowDialog() == true)
+              
+                DateTime date = DateTime.Now;
+                if (Calendar2.SelectedDate.HasValue)
                 {
-
-                    if (Calendar2.SelectedDate.HasValue)
-                    {
-                        ; date = Calendar2.SelectedDate.Value;
-                    }
-                    journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
-                    journalCollectorController.UpdateResponsibilities(date);
-                    Date.Text = date.ToString("yyyy-MM-dd");
-                    FillData();
+                    ; date = Calendar2.SelectedDate.Value;
                 }
-                Calendar2.Visibility = Visibility.Collapsed;
-                Calendar2.IsEnabled = false;
-                ImportButton.Visibility = Visibility.Collapsed;
-                ImportButton.IsEnabled = false;              
-                X.Visibility = Visibility.Collapsed;
-                X.IsEnabled = false;
-                ImportButton.Content = "Выбрать дату";
-            }
-            else 
-            {
-                var result = MessageBox.Show("      Наряд с этой датой уже сформирован.\n                Переформировать заново?", "", MessageBoxButton.YesNo);
-
-                if (result == MessageBoxResult.Yes)
+                if (!journalCollectorController.ImportSerchData(date))
                 {
                     // создание диалогового окна для выбора файла Excel
                     OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -549,12 +541,9 @@ namespace B.I.G
                         {
                             ; date = Calendar2.SelectedDate.Value;
                         }
-                        journalCollectorController.DeleteToDate(date);
                         journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
                         journalCollectorController.UpdateResponsibilities(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
-                        journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                        journalCollectorController.DeleteNUL();
                         FillData();
                     }
                     Calendar2.Visibility = Visibility.Collapsed;
@@ -565,7 +554,46 @@ namespace B.I.G
                     X.IsEnabled = false;
                     ImportButton.Content = "Выбрать дату";
                 }
+                else
+                {
+                    var result = MessageBox.Show("      Наряд с этой датой уже сформирован.\n                Переформировать заново?", "", MessageBoxButton.YesNo);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // создание диалогового окна для выбора файла Excel
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+
+                        // проверка, был ли выбран файл
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+
+                            if (Calendar2.SelectedDate.HasValue)
+                            {
+                                ; date = Calendar2.SelectedDate.Value;
+                            }
+                            journalCollectorController.DeleteToDate(date);
+                            journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
+                            journalCollectorController.UpdateResponsibilities(date);
+                            Date.Text = date.ToString("yyyy-MM-dd");
+                            journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                            journalCollectorController.DeleteNUL();
+                            FillData();
+                        }
+                        Calendar2.Visibility = Visibility.Collapsed;
+                        Calendar2.IsEnabled = false;
+                        ImportButton.Visibility = Visibility.Collapsed;
+                        ImportButton.IsEnabled = false;
+                        X.Visibility = Visibility.Collapsed;
+                        X.IsEnabled = false;
+                        ImportButton.Content = "Выбрать дату";     
+                    }
                 
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
