@@ -238,6 +238,55 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+        public IEnumerable<journalCollector> GetAllCashCollectors5(DateTime date)
+        {
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
+
+            var commandString = @"SELECT 
+    route2,
+    COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'старший бригады инкассаторов' THEN name END), '') AS names_starshego,
+    COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'инкассатор-сборщик' THEN name END), '') AS names_sborschika
+FROM 
+    journalCollectors 
+WHERE 
+    name != ''
+    AND name NOT LIKE '%[^a-zA-Z0-9]%' 
+    AND route2 != 'РЕЗЕРВ' 
+    AND route2 != 'стажер'
+    AND name IS NOT NULL -- Условие для исключения строк с пустым значением name
+GROUP BY 
+    route2
+ORDER BY 
+    MIN(id);";
+
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
+            connection.Open();
+
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var Name = reader.GetString(reader.GetOrdinal("names_starshego"));
+                var Name2 = reader.GetString(reader.GetOrdinal("names_sborschika"));
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+
+                var JournalCollector = new journalCollector
+                {
+                    name = Name,
+                    name2 = Name2,
+                    route2 = Route2
+                };
+
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
+
+
 
 
         public void Insert(cashCollector CashCollector)

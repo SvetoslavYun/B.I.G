@@ -13,6 +13,7 @@ namespace B.I.G.Model
         public String route2 { get; set; }
         public DateTime date { get; set; }
         public String dateWork { get; set; }
+        public String name2 { get; set; }
         public String appropriation { get; set; }
     }
 }

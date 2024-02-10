@@ -61,7 +61,7 @@ namespace B.I.G
             log_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
-            //Get();
+            Get();
         }
         public void Get()//заполнить список
         {
@@ -74,7 +74,7 @@ namespace B.I.G
             //CashCollectorWindow usersWindow = new CashCollectorWindow();
             //usersWindow.Show();
 
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
             journalCollectorWindow.Show();
 
             //LookCollector lookCollector = new LookCollector();
