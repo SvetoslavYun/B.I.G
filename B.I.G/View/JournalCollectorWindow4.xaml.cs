@@ -23,7 +23,7 @@ using B.I.G.View;
 namespace B.I.G
 
 {
-    public partial class JournalCollectorWindow3 : System.Windows.Window
+    public partial class JournalCollectorWindow4 : System.Windows.Window
     {
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -42,7 +42,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow3()
+        public JournalCollectorWindow4()
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
@@ -143,7 +143,7 @@ namespace B.I.G
 
             {
                 JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors3(Convert.ToDateTime(Date.Text)))
+                foreach (var item in journalCollectorController.GetAllCashCollectors4(Convert.ToDateTime(Date.Text)))
                 {
                     JournalCollectors.Add(item);
                 }
@@ -298,7 +298,7 @@ namespace B.I.G
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
            
-                var searchResults = journalCollectorController.SearchCollectorName3(Convert.ToDateTime(Date.Text));
+                var searchResults = journalCollectorController.SearchCollectorName4(Convert.ToDateTime(Date.Text));
 
                 JournalCollectors.Clear();
                 foreach (var result in searchResults)
@@ -326,7 +326,7 @@ namespace B.I.G
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
-                    process = "Сформировал: Журнал выдачи инвентаря",
+                    process = "Сформировал: Журнал инструктажа",
                     date = Convert.ToDateTime(formattedDate),
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
@@ -346,7 +346,7 @@ namespace B.I.G
                     cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
                     cells.Style.WrapText = true; // Разрешаем перенос текста
-                    cells.Style.Font.Size = 7;
+                    cells.Style.Font.Size = 8;
                 }
 
                 // Добавление сетки после последней строки данных
@@ -362,27 +362,11 @@ namespace B.I.G
                     cells.Style.WrapText = true; // Разрешаем перенос текста
                 }
 
-                // Объединение второй и третьей колонок в первой строке
-                worksheet.Cells[1, 4, 1, 14].Merge = true;
-
-                // Установка значения в объединенной ячейке
-                worksheet.Cells[1, 4].Value = "Выдано инкассаторам";
-                // Добавление заголовков столбцов и порядковых номеров
-
-                // Объединение второй и третьей колонок в первой строке
-                worksheet.Cells[1, 16, 1, 26].Merge = true;
-
-                // Установка значения в объединенной ячейке
-                worksheet.Cells[1, 16].Value = "Получено от инкассаторов";
-                // Добавление заголовков столбцов и порядковых номеров
-
                 for (int i = 1; i <= dGridCollector.Columns.Count; i++)
                 {
-                    worksheet.Cells[2, i].Value = dGridCollector.Columns[i - 1].Header;
-                    worksheet.Cells[3, i].Value = i;
+                    worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[2, i].Value = i;
                 }
-
-              
 
                 // Добавление данных
                 for (int i = 1; i < dGridCollector.Items.Count; i++)
@@ -391,105 +375,44 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
+                    worksheet.Cells[i + 2, 1].Value = collectorItem.date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.name;
+                    worksheet.Cells[i + 2, 5].Value = collectorItem.profession;
 
-                    worksheet.Cells[i + 3, 2].Value = collectorItem.name;
-                    worksheet.Cells[i + 3, 3].Value = collectorItem.route;
-                    worksheet.Cells[i + 3, 6].Value = collectorItem.route2;
-                    worksheet.Cells[i + 3, 7].Value = collectorItem.meaning;
-
-                    worksheet.Cells[i + 3, 11].Value = collectorItem.certificate;
-                    worksheet.Cells[i + 3, 12].Value = collectorItem.token;
-                    worksheet.Cells[i + 3, 17].Value = collectorItem.route2;
-                    worksheet.Cells[i + 3, 18].Value = collectorItem.meaning;
-                    worksheet.Cells[i + 3, 22].Value = collectorItem.certificate;
-                    worksheet.Cells[i + 3, 23].Value = collectorItem.token;
-
-
-                    for (int col = 2; col <= 8; col++)
-                    {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
-                    }
-
-                    if (worksheet.Cells[i + 3, 3].Value?.ToString() != "")
-                    {
-
-                        worksheet.Cells[i + 3, 9].Value = "Алмаз";
-                        worksheet.Cells[i + 3, 20].Value = "Алмаз";                      
-                    }
-
-
-                    if (worksheet.Cells[i + 3, 7].Value?.ToString() != "")
-                    {
-
-                      
-                        worksheet.Cells[i + 3, 10].Value = "T2 DP2400";
-                        worksheet.Cells[i + 3, 21].Value = "T2 DP2400";
-                        worksheet.Cells[i + 3, 13].Value = "Honeywell";
-                        worksheet.Cells[i + 3, 24].Value = "Honeywell";
-                    }
-                    else
-                    {
-                        worksheet.Cells[i + 3, 6].Value = "";
-                        worksheet.Cells[i + 3, 17].Value = "";
-                    }
-
-                   
-                        worksheet.Cells[i + 3, 8].Value = "-/-";
-                        worksheet.Cells[i + 3, 14].Value = "-/-";
-                        worksheet.Cells[i + 3, 19].Value = "-/-";
-                        worksheet.Cells[i + 3, 25].Value = "-/-";
-                    
-                }   
-
-                // Автоподгон ширины колонок
-                worksheet.Column(1).Width = 8;
-                worksheet.Column(2).Width = 15;
-                worksheet.Column(3).Width = 8;
-                worksheet.Column(4).Width = 8;
-                worksheet.Column(5).Width = 10;
-                worksheet.Column(6).Width = 8;
-                worksheet.Column(7).Width = 8;
-                worksheet.Column(8).Width = 9;
-                worksheet.Column(9).Width = 7;
-                worksheet.Column(10).Width = 8;
-                worksheet.Column(11).Width = 7;
-                worksheet.Column(12).Width = 8;
-                worksheet.Column(13).Width = 8;
-                worksheet.Column(14).Width = 8;
-                worksheet.Column(15).Width = 11;
-                worksheet.Column(16).Width = 8;
-                worksheet.Column(17).Width = 8;
-                worksheet.Column(18).Width = 8;
-                worksheet.Column(19).Width = 9;
-                worksheet.Column(20).Width = 7;
-                worksheet.Column(21).Width = 7;
-                worksheet.Column(22).Width = 8;
-                worksheet.Column(23).Width = 8;
-                worksheet.Column(24).Width = 8;
-                worksheet.Column(25).Width = 8;
-                worksheet.Column(26).Width = 8;
-                worksheet.Column(27).Width = 11;
-                worksheet.Column(28).Width = 8;
-
-                worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 " + formattedDate2;
-                worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
-                worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:3"];
-
-                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-                {
-                    Filter = "Excel Files|*.xlsx",
-                    DefaultExt = ".xlsx",
-                    FileName = "Журнал выдачи инвентаря"
-                };
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
                 }
 
-                Search(sender, e);
-            }
+
+
+                    // Автоподгон ширины колонок
+                    worksheet.Column(1).Width = 9;
+                    worksheet.Column(2).Width = 9;
+                    worksheet.Column(3).Width = 23;
+                    worksheet.Column(4).Width = 17;
+                    worksheet.Column(5).Width = 23;
+                    worksheet.Column(6).Width = 14;
+                    worksheet.Column(7).Width = 15;
+                    worksheet.Column(8).Width = 11;
+
+                worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
+                    worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 " + formattedDate2;
+                    worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
+                    worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
+
+                    var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                    {
+                        Filter = "Excel Files|*.xlsx",
+                        DefaultExt = ".xlsx",
+                        FileName = "Журнал инструктажа"
+                    };
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
+                    }
+
+                    Search(sender, e);
+                }
+            
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

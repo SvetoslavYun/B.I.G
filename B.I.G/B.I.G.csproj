@@ -194,6 +194,9 @@
     <Compile Include="View\EditJournal.xaml.cs">
       <DependentUpon>EditJournal.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\JournalCollectorWindow4.xaml.cs">
+      <DependentUpon>JournalCollectorWindow4.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\JournalCollectorWindow3.xaml.cs">
       <DependentUpon>JournalCollectorWindow3.xaml</DependentUpon>
     </Compile>
@@ -239,6 +242,10 @@
     <Page Include="View\EditJournal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\JournalCollectorWindow4.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\JournalCollectorWindow3.xaml">
       <Generator>MSBuild:Compile</Generator>
