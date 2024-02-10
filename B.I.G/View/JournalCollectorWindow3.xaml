@@ -31,7 +31,7 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.CellStyle>
-           
+
             <DataGrid.Columns>
 
                 <DataGridTextColumn Header="Дата и время (в часах и минутах) выдачи"  Width="*"/>
@@ -54,7 +54,7 @@
 
                 <DataGridTextColumn Header="явочных карточек штук (прописью) "  Width="*"/>
                 <DataGridTextColumn Header="номера печатей" Binding="{Binding route2}" Width="*"/>
-                
+
                 <DataGridTextColumn Header="номера доверен-ностей" Binding="{Binding meaning}" Width="*"/>
                 <DataGridTextColumn Header="ключей от сефов и металлических печатей, одноразового пломби-рующего материала штук (прописью)"  Width="*"/>
                 <DataGridTextColumn Header="марка броне-жилетов" Width="*"/>
@@ -198,6 +198,44 @@
             </Button.Foreground>
         </Button>
 
+
+        <Button x:Name="BriefingButton" Content="Журнал инструктажа" Margin="15,0,0,0" VerticalAlignment="Center" Click="Briefing_Button" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="154">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
 
         <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2">
             <Button.Template>

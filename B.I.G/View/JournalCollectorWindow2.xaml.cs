@@ -109,6 +109,10 @@ namespace B.I.G
                 CollectoButton.IsEnabled = false;
                 LookCollectoButton.Visibility = Visibility.Collapsed;
                 LookCollectoButton.IsEnabled = false;
+                BriefingButton.Visibility = Visibility.Collapsed;
+                BriefingButton.IsEnabled = false;
+                InventoryButton.Visibility = Visibility.Collapsed;
+                InventoryButton.IsEnabled = false;
 
             }
         }
@@ -203,22 +207,24 @@ namespace B.I.G
         {
             try
             {
-
-                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var Id = ((journalCollector)dGridCollector.SelectedItem).id;
-                var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
-                var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
-                string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
-                if (Permission != ".")
+                if (AccesText.Text != "Пользователь")
                 {
-                    EditJournal editJournal = new EditJournal(Id, Route2, Convert.ToDateTime(Date.Text), Profession);
-                    editJournal.Owner = this;
-                    editJournal.ShowDialog();
+                    if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                    var Id = ((journalCollector)dGridCollector.SelectedItem).id;
+                    var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
+                    var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
+                    string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
+                    if (Permission != ".")
+                    {
+                        EditJournal editJournal = new EditJournal(Id, Route2, Convert.ToDateTime(Date.Text), Profession);
+                        editJournal.Owner = this;
+                        editJournal.ShowDialog();
+                    }
+                    journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                    journalCollectorController.DeleteNUL();
+                    Search(sender, e);
+                    JournalCollector = null;
                 }
-                journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                journalCollectorController.DeleteNUL();
-                Search(sender, e);
-                JournalCollector = null;
             }
             catch (Exception h)
             {
@@ -230,23 +236,25 @@ namespace B.I.G
         {
             try
             {
-
-                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var Id = ((journalCollector)dGridCollector.SelectedItem).id2;
-                var Name = ((journalCollector)dGridCollector.SelectedItem).name;
-                var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
-                var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
-                string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
-                if (Id != 0)
+                if (AccesText.Text != "Пользователь")
                 {
-                    journalCollectorController.EditAutomate(Id, Name, Convert.ToDateTime(Date.Text), Route2);
-                    journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
-                    journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                    journalCollectorController.DeleteNUL();
-                    Search(sender, e);
-                    JournalCollector = null;
+                    if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                    var Id = ((journalCollector)dGridCollector.SelectedItem).id2;
+                    var Name = ((journalCollector)dGridCollector.SelectedItem).name;
+                    var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
+                    var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
+                    string Permission = ((journalCollector)dGridCollector.SelectedItem).permission;
+                    if (Id != 0)
+                    {
+                        journalCollectorController.EditAutomate(Id, Name, Convert.ToDateTime(Date.Text), Route2);
+                        journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
+                        journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                        journalCollectorController.DeleteNUL();
+                        Search(sender, e);
+                        JournalCollector = null;
+                    }
+                    else { MessageBox.Show("Данные по сотруднику отсутствуют"); }
                 }
-                else { MessageBox.Show("Данные по сотруднику отсутствуют"); }
             }
             catch (Exception h)
             {
@@ -258,23 +266,26 @@ namespace B.I.G
         {
             try
             {
-                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var result = MessageBox.Show("Вы уверены?", "Удалить запись", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                { // получение выбранных строк
-                    List<journalCollector> journalCollectors = dGridCollector.SelectedItems.Cast<journalCollector>().ToList();
-                    {
-                        // проход по списку выбранных строк
-                        foreach (journalCollector JournalCollectors in journalCollectors)
+                if (AccesText.Text != "Пользователь")
+                {
+                    if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
+                    var result = MessageBox.Show("Вы уверены?", "Удалить запись", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    { // получение выбранных строк
+                        List<journalCollector> journalCollectors = dGridCollector.SelectedItems.Cast<journalCollector>().ToList();
                         {
-                            var Route = JournalCollectors.route;
-                            var Id = JournalCollectors.id;
-                            string name = JournalCollectors.fullname;
-                            journalCollectorController.Delete(Route, Id, Convert.ToDateTime(Date.Text));
-                            journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
-                            journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                            journalCollectorController.DeleteNUL();
-                            Search(sender, e);
+                            // проход по списку выбранных строк
+                            foreach (journalCollector JournalCollectors in journalCollectors)
+                            {
+                                var Route = JournalCollectors.route;
+                                var Id = JournalCollectors.id;
+                                string name = JournalCollectors.fullname;
+                                journalCollectorController.Delete(Route, Id, Convert.ToDateTime(Date.Text));
+                                journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
+                                journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
+                                journalCollectorController.DeleteNUL();
+                                Search(sender, e);
+                            }
                         }
                     }
                 }
@@ -643,6 +654,13 @@ namespace B.I.G
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
             JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            journalCollectorWindow.Show();
+            Close();
+        }
+
+        private void Briefing_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
             journalCollectorWindow.Show();
             Close();
         }

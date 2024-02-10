@@ -963,7 +963,7 @@ namespace B.I.G.Controller
                string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE date = @Date";
                 using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
                 {
-                    selectCommand.Parameters.AddWithValue("@Date", date);
+                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
                 int count = Convert.ToInt32(selectCommand.ExecuteScalar());
 
                 connection.Close();

@@ -620,5 +620,13 @@ namespace B.I.G
             journalCollectorWindow.Show();
             Close();
         }
+
+        private void Briefing_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            journalCollectorWindow.Show();
+            Close();
+
+        }
     }
 }
