@@ -368,6 +368,7 @@ namespace B.I.G
                     worksheet.Cells[2, i].Value = i;
                 }
 
+             
                 // Добавление данных
                 for (int i = 1; i < dGridCollector.Items.Count; i++)
                 {
@@ -375,6 +376,7 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
+                    row.Height = 19;
                     worksheet.Cells[i + 2, 1].Value = collectorItem.date.ToString("dd.MM.yyyy");
                     worksheet.Cells[i + 2, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 2, 5].Value = collectorItem.profession;
@@ -383,8 +385,121 @@ namespace B.I.G
 
 
 
-                    // Автоподгон ширины колонок
-                    worksheet.Column(1).Width = 9;
+                worksheet.Cells[3, 3].Value = "Тема №1 - Меры безопасности";
+                worksheet.Cells[4, 3].Value = "при обращении с оружием и";
+                worksheet.Cells[5, 3].Value = "боеприпасам к нему.";
+                worksheet.Cells[6, 3].Value = "Порядок применения и ";
+                worksheet.Cells[7, 3].Value = "использования оружия.";
+
+                worksheet.Cells[9, 3].Value = "Тема №2 - Порядок получения и";
+                worksheet.Cells[10, 3].Value = "использование средств";
+                worksheet.Cells[11, 3].Value = "индивидуальной защиты";
+                worksheet.Cells[12, 3].Value = "и средств связи.";
+
+                worksheet.Cells[14, 3].Value = "Тема №3 - Соблюдение условий";
+                worksheet.Cells[15, 3].Value = "обслуживание клиентов";
+                worksheet.Cells[16, 3].Value = "в соответствии";
+                worksheet.Cells[17, 3].Value = "с договорными отношениями.";
+
+                worksheet.Cells[19, 3].Value = "Тема №4 - Строгое соблюдение";
+                worksheet.Cells[20, 3].Value = "порядка и правил";
+                worksheet.Cells[21, 3].Value = "инкассации и перевозки";
+                worksheet.Cells[22, 3].Value = "ценностей.";
+
+                worksheet.Cells[24, 3].Value = "Тема №5 - Строгое выполнение";
+                worksheet.Cells[25, 3].Value = "требований, предъявляемых к";
+                worksheet.Cells[26, 3].Value = "обеспечению безопасности";
+                worksheet.Cells[27, 3].Value = "членов бригады инкассаторов";
+                worksheet.Cells[28, 3].Value = "при работе на маршрутах";
+                worksheet.Cells[29, 3].Value = "и к обеспечению";
+                worksheet.Cells[30, 3].Value = "сохранности ценностей.";
+
+                worksheet.Cells[32, 3].Value = "Тема №6 - Соблюдение правил";
+                worksheet.Cells[33, 3].Value = "дорожного движения.";
+                worksheet.Cells[34, 3].Value = "Особое внимание";
+                worksheet.Cells[35, 3].Value = "к соблюдению требований,";
+                worksheet.Cells[36, 3].Value = "предъявляемых к скоростному";
+                worksheet.Cells[37, 3].Value = "режиму движения и";
+                worksheet.Cells[38, 3].Value = "безопасной дистанции";
+                worksheet.Cells[39, 3].Value = "до впереди";
+                worksheet.Cells[40, 3].Value = "движущего автомобиля.";
+
+                worksheet.Cells[42, 3].Value = "Тема №7 - Особенность работы";
+                worksheet.Cells[43, 3].Value = "службы инкассации с учетом";
+                worksheet.Cells[44, 3].Value = "погодных условий,";
+                worksheet.Cells[45, 3].Value = "указаний региональных";
+                worksheet.Cells[46, 3].Value = "органов власти.";
+
+                worksheet.Cells[48, 3].Value = "Тема №8 - Доведение";
+                worksheet.Cells[49, 3].Value = "информации о проводимых";
+                worksheet.Cells[50, 3].Value = "в районе работы бригад";
+                worksheet.Cells[51, 3].Value = "инкассаторов митингов,";
+                worksheet.Cells[52, 3].Value = "шествий или других";
+                worksheet.Cells[53, 3].Value = "общественных мероприятий в";
+                worksheet.Cells[54, 3].Value = "связи, проведением которых";
+                worksheet.Cells[55, 3].Value = "может быть перекрыто либо";
+                worksheet.Cells[56, 3].Value = "ограничено движение";
+                worksheet.Cells[57, 3].Value = "транспортных средств.";
+
+
+                worksheet.Cells[61, 3].Value = "Тема №1 - Меры безопасности";
+                worksheet.Cells[62, 3].Value = "при обращении с оружием и";
+                worksheet.Cells[63, 3].Value = "боеприпасам к нему.";
+                worksheet.Cells[64, 3].Value = "Порядок применения и ";
+                worksheet.Cells[65, 3].Value = "использования оружия.";
+
+                worksheet.Cells[67, 3].Value = "Тема №2 - Порядок получения и";
+                worksheet.Cells[68, 3].Value = "использование средств";
+                worksheet.Cells[69, 3].Value = "индивидуальной защиты";
+                worksheet.Cells[70, 3].Value = "и средств связи.";
+
+                worksheet.Cells[72, 3].Value = "Тема №3 - Соблюдение условий";
+                worksheet.Cells[73, 3].Value = "обслуживание клиентов";
+                worksheet.Cells[74, 3].Value = "в соответствии";
+                worksheet.Cells[75, 3].Value = "с договорными отношениями.";
+
+                worksheet.Cells[77, 3].Value = "Тема №4 - Строгое соблюдение";
+                worksheet.Cells[78, 3].Value = "порядка и правил";
+                worksheet.Cells[79, 3].Value = "инкассации и перевозки";
+                worksheet.Cells[80, 3].Value = "ценностей.";
+
+                worksheet.Cells[82, 3].Value = "Тема №5 - Строгое выполнение";
+                worksheet.Cells[83, 3].Value = "требований, предъявляемых к";
+                worksheet.Cells[84, 3].Value = "обеспечению безопасности";
+                worksheet.Cells[85, 3].Value = "членов бригады инкассаторов";
+                worksheet.Cells[86, 3].Value = "при работе на маршрутах";
+                worksheet.Cells[87, 3].Value = "и к обеспечению";
+                worksheet.Cells[88, 3].Value = "сохранности ценностей.";
+
+                worksheet.Cells[90, 3].Value = "Тема №6 - Соблюдение правил";
+                worksheet.Cells[91, 3].Value = "дорожного движения.";
+                worksheet.Cells[92, 3].Value = "Особое внимание";
+                worksheet.Cells[93, 3].Value = "к соблюдению требований,";
+                worksheet.Cells[94, 3].Value = "предъявляемых к скоростному";
+                worksheet.Cells[95, 3].Value = "режиму движения и";
+                worksheet.Cells[96, 3].Value = "безопасной дистанции";
+                worksheet.Cells[97, 3].Value = "до впереди";
+                worksheet.Cells[98, 3].Value = "движущего автомобиля.";
+
+                worksheet.Cells[100, 3].Value = "Тема №7 - Особенность работы";
+                worksheet.Cells[101, 3].Value = "службы инкассации с учетом";
+                worksheet.Cells[102, 3].Value = "погодных условий,";
+                worksheet.Cells[103, 3].Value = "указаний региональных";
+                worksheet.Cells[104, 3].Value = "органов власти.";
+
+                worksheet.Cells[106, 3].Value = "Тема №8 - Доведение";
+                worksheet.Cells[107, 3].Value = "информации о проводимых";
+                worksheet.Cells[108, 3].Value = "в районе работы бригад";
+                worksheet.Cells[109, 3].Value = "инкассаторов митингов,";
+                worksheet.Cells[110, 3].Value = "шествий или других";
+                worksheet.Cells[111, 3].Value = "общественных мероприятий в";
+                worksheet.Cells[112, 3].Value = "связи, проведением которых";
+                worksheet.Cells[113, 3].Value = "может быть перекрыто либо";
+                worksheet.Cells[114, 3].Value = "ограничено движение";
+                worksheet.Cells[115, 3].Value = "транспортных средств.";
+
+                // Автоподгон ширины колонок
+                worksheet.Column(1).Width = 9;
                     worksheet.Column(2).Width = 9;
                     worksheet.Column(3).Width = 23;
                     worksheet.Column(4).Width = 17;

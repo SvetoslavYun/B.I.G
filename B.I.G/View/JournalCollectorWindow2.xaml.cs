@@ -377,7 +377,7 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 2);
-
+                    row.Height = 20;
                     worksheet.Cells[i + 2, 3].Value = collectorItem.profession;
                     worksheet.Cells[i + 2, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;

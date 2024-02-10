@@ -391,7 +391,7 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
-
+                    row.Height = 20;
                     worksheet.Cells[i + 3, 2].Value = collectorItem.name;
                     worksheet.Cells[i + 3, 3].Value = collectorItem.route;
                     worksheet.Cells[i + 3, 6].Value = collectorItem.route2;
