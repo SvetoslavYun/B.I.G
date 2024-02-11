@@ -408,7 +408,7 @@ namespace B.I.G
 
                     for (int col = 2; col <= 8; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 9; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
                     }
 
                     if (worksheet.Cells[i + 3, 3].Value?.ToString() != "")
