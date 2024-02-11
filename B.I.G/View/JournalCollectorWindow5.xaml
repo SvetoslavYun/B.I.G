@@ -20,7 +20,7 @@
             <ImageBrush ImageSource="Image/Big.png" Stretch="UniformToFill"/>
         </Grid.Background>
         <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" CanUserSortColumns="False" AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" RowHeaderWidth="50" CanUserAddRows="False" Margin="145,51,10,24" 
-          Background="Transparent" Foreground="Black" BorderBrush="Transparent" AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick" Grid.Column="1">
+          Background="Transparent" Foreground="Black" BorderBrush="Transparent" AlternatingRowBackground="#F0F0F0" Grid.Column="1">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Маршрут (заезд) №" Binding="{Binding route2}"  Width="*"/>

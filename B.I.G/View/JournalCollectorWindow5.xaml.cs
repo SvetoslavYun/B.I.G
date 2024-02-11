@@ -67,8 +67,7 @@ namespace B.I.G
             if (string.IsNullOrEmpty(Date.Text))
             {
                 Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
-            }
-            FillData();            
+            }          
             ImgBox.DataContext = this;
            
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
@@ -133,24 +132,6 @@ namespace B.I.G
             e.Row.Header = e.Row.GetIndex() + 1;
         }
 
-
-        public void FillData()
-        {
-            try
-
-            {
-                JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors5(Convert.ToDateTime(Date.Text)))
-                {
-                    JournalCollectors.Add(item);
-                }
-
-            }
-            catch (Exception h)
-            {
-                MessageBox.Show(h.Message);
-            }
-        }
 
         private void Button_Add(object sender, RoutedEventArgs e)
         {
@@ -295,7 +276,7 @@ namespace B.I.G
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
            
-                var searchResults = journalCollectorController.SearchCollectorName4(Convert.ToDateTime(Date.Text));
+                var searchResults = journalCollectorController.SearchCollectorName5(Convert.ToDateTime(Date.Text));
 
                 JournalCollectors.Clear();
                 foreach (var result in searchResults)
@@ -320,6 +301,7 @@ namespace B.I.G
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
                 string formattedDate2 = Date2.ToString("dd.MM.yyyy");
+                string formattedDate3 = Date2.ToString("yyyy");
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
@@ -347,7 +329,7 @@ namespace B.I.G
                 }
 
                 // Добавление сетки после последней строки данных
-                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 10, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -357,13 +339,32 @@ namespace B.I.G
                     cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
                     cells.Style.WrapText = true; // Разрешаем перенос текста
+
                 }
+
+                // Объединение ячеек и установка значения
+                worksheet.Cells[1, 1, 1, 5].Merge = true;
+                worksheet.Cells[1, 1].Value = "СПРАВКА\n о выданных инкассаторам сумках (мешках), явочных карточках\n''____''  ____________  _" + formattedDate3 + "г.\nсообщаю, что инкассаторам, обслуживающим указанные маршруты\n(заезды) , на ''____''  ____________  " + formattedDate3 + "г. выдано:";
+
+                // Установка высоты строки
+                worksheet.Row(1).Height = 90;
+                worksheet.Cells[1, 1].Style.Font.Size = 9;
+                // Установка стиля границы на отсутствие для всех ячеек
+                worksheet.Cells[1, 1, 1, 5].Style.Border.Top.Style = ExcelBorderStyle.None;
+                worksheet.Cells[1, 1, 1, 5].Style.Border.Bottom.Style = ExcelBorderStyle.None;
+                worksheet.Cells[1, 1, 1, 5].Style.Border.Left.Style = ExcelBorderStyle.None;
+                worksheet.Cells[1, 1, 1, 5].Style.Border.Right.Style = ExcelBorderStyle.None;
+               
+
 
                 for (int i = 1; i <= dGridCollector.Columns.Count; i++)
                 {
-                    worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
-                    worksheet.Cells[2, i].Value = i;
+                    worksheet.Cells[2, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[3, i].Value = i;
                 }
+
+
+             int I= 0;
 
              
                 // Добавление данных
@@ -373,16 +374,32 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
-                    row.Height = 19;
-                    worksheet.Cells[i + 2, 1].Value = collectorItem.route2;
-                    worksheet.Cells[i + 2, 2].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.name2;
 
+                    row.Height = 22;
+                    worksheet.Cells[i + 3, 1].Value = collectorItem.route2;
+                    worksheet.Cells[i + 3, 2].Value = collectorItem.name;
+                    worksheet.Cells[i + 3, 4].Value = collectorItem.name2;
+                    I=i;
                 }
+                I = I + 4;
+              
 
+                worksheet.Cells[I, 1, I, 5].Merge = true;
+                string Spaces = new string(' ', 116);
+                string spaces = new string(' ', 53);
+                worksheet.Cells[I, 1].Value = "\n\nИтого выдано _____________________________________________________  сумок (мешков) .\n"+ spaces+"(количество цифрами и прописью)\n\n\nНачальник службы инкассации (дежурный инкассатор) _________________\n" + Spaces + "(подпись)\n\n\n''___''  __________" + formattedDate3 + "г. ";
+
+                worksheet.Row(I).Height = 125;
+                // Установка шрифта и выравнивания текста
+                worksheet.Cells[I, 1].Style.Font.Size = 8;
+                worksheet.Cells[I, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                worksheet.Cells[I, 1, I, 5].Style.Border.Top.Style = ExcelBorderStyle.None;
+                worksheet.Cells[I, 1, I, 5].Style.Border.Bottom.Style = ExcelBorderStyle.None;
+                worksheet.Cells[I, 1, I, 5].Style.Border.Left.Style = ExcelBorderStyle.None;
+                worksheet.Cells[I, 1, I, 5].Style.Border.Right.Style = ExcelBorderStyle.None;
 
                 // Автоподгон ширины колонок
-                    worksheet.Column(1).Width = 9;
+                worksheet.Column(1).Width = 9;
                     worksheet.Column(2).Width = 24;
                     worksheet.Column(3).Width = 12;
                     worksheet.Column(4).Width = 24;
@@ -390,9 +407,6 @@ namespace B.I.G
                  
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                    worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 " + formattedDate2;
-
-                    worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
                     var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                     {
@@ -448,7 +462,7 @@ namespace B.I.G
         {
            
             Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
-            FillData();
+            Search(sender, e);
         }
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)

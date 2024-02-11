@@ -238,57 +238,7 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public IEnumerable<journalCollector> GetAllCashCollectors5(DateTime date)
-        {
-            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
-
-            var commandString = @"SELECT 
-    route2,
-    COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'старший бригады инкассаторов' THEN name END), '') AS names_starshego,
-    COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'инкассатор-сборщик' THEN name END), '') AS names_sborschika
-FROM 
-    journalCollectors 
-WHERE 
-    name != ''
-    AND name NOT LIKE '%[^a-zA-Z0-9]%' 
-    AND route2 != 'РЕЗЕРВ' 
-    AND route2 != 'стажер'
-    AND name IS NOT NULL -- Условие для исключения строк с пустым значением name
-GROUP BY 
-    route2
-ORDER BY 
-    MIN(id);";
-
-            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
-            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
-            connection.Open();
-
-            var reader = getAllCommand.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var Name = reader.GetString(reader.GetOrdinal("names_starshego"));
-                var Name2 = reader.GetString(reader.GetOrdinal("names_sborschika"));
-                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
-
-                var JournalCollector = new journalCollector
-                {
-                    name = Name,
-                    name2 = Name2,
-                    route2 = Route2
-                };
-
-                yield return JournalCollector;
-            }
-
-            connection.Close();
-        }
-
-
-
-
+      
         public void Insert(cashCollector CashCollector)
         {
     //        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
@@ -857,6 +807,54 @@ ORDER BY
                     image = Image
                 };
 
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
+
+
+        public IEnumerable<journalCollector> SearchCollectorName5(DateTime date)
+        {
+            connection.Close();
+
+            var commandString = @"SELECT route2,
+                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'старший бригады инкассаторов' THEN name END), '') AS names_starshego,
+                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'инкассатор-сборщик' THEN name END), '') AS names_sborschika
+                          FROM journalCollectors 
+                          WHERE 
+                              name != '' 
+                              AND date = @Date
+                              AND name NOT LIKE '%[^a-zA-Z0-9]%' 
+                              AND route2 != 'РЕЗЕРВ' 
+                              AND route2 != 'стажер'
+                              AND name IS NOT NULL
+                          GROUP BY 
+                              route2
+                          ORDER BY 
+                              MIN(id);";
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            connection.Open();
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                // Получение значений из результата запроса
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+                var NamesStarshego = reader.GetString(reader.GetOrdinal("names_starshego"));
+                var NamesSborschika = reader.GetString(reader.GetOrdinal("names_sborschika"));
+
+                // Создание объекта journalCollector и заполнение его данными из результата запроса
+                var JournalCollector = new journalCollector
+                {
+                    route2 = Route2,
+                    name = NamesStarshego,
+                    name2 = NamesSborschika
+                };
+
+                // Возвращение объекта journalCollector в качестве результата
                 yield return JournalCollector;
             }
 
