@@ -161,7 +161,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="BriefingButton" Content="Журнал инструктажа" Margin="15,0,0,0" VerticalAlignment="Center" Click="Briefing_Button" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="154">
+        <Button x:Name="BriefingButton" Content="Журнал инструктажа" Margin="15,339,0,0" VerticalAlignment="Top" Click="Briefing_Button" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="154">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
