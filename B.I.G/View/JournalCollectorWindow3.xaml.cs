@@ -333,7 +333,7 @@ namespace B.I.G
                 log_Controller.Insert(Log2);
 
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("CashCollectors");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал выдачи инвентаря");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
                 using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
@@ -347,6 +347,7 @@ namespace B.I.G
                     cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
                     cells.Style.WrapText = true; // Разрешаем перенос текста
                     cells.Style.Font.Size = 7;
+                    cells.Style.Font.Bold = true;
                 }
 
                 // Добавление сетки после последней строки данных
@@ -391,7 +392,7 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
-                    row.Height = 20;
+                    row.Height = 19;
                     worksheet.Cells[i + 3, 2].Value = collectorItem.name;
                     worksheet.Cells[i + 3, 3].Value = collectorItem.route;
                     worksheet.Cells[i + 3, 6].Value = collectorItem.route2;
@@ -407,7 +408,7 @@ namespace B.I.G
 
                     for (int col = 2; col <= 8; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 9; // Установите нужный размер шрифта
                     }
 
                     if (worksheet.Cells[i + 3, 3].Value?.ToString() != "")
@@ -587,6 +588,13 @@ namespace B.I.G
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
             JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            journalCollectorWindow.Show();
+            Close();
+        }
+
+        private void Appearances_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
             journalCollectorWindow.Show();
             Close();
         }

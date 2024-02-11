@@ -312,7 +312,7 @@ namespace B.I.G
                 log_Controller.Insert(Log2);
 
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("CashCollectors");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал явочных карточек");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
                 using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
@@ -520,6 +520,13 @@ namespace B.I.G
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
             JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            journalCollectorWindow.Show();
+            Close();
+        }
+
+        private void Briefing_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
             journalCollectorWindow.Show();
             Close();
         }

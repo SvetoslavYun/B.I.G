@@ -230,7 +230,7 @@ namespace B.I.G
                 log_Controller.Insert(Log2);
 
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Logs");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал событий 'B.I.G'");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
                 using (var cells = worksheet.Cells[1, 1, dGridLog.Items.Count + 1, dGridLog.Columns.Count])
@@ -463,6 +463,13 @@ namespace B.I.G
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
             JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            journalCollectorWindow.Show();
+            Close();
+        }
+
+        private void Appearances_Button(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
             journalCollectorWindow.Show();
             Close();
         }

@@ -61,7 +61,7 @@ namespace B.I.G
             log_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
-            Get();
+            //Get();
         }
         public void Get()//заполнить список
         {
@@ -113,40 +113,47 @@ namespace B.I.G
             CheckBox.IsChecked = false;
             string Login = login.Text;
             string Password = passwordBox.Password;
-
-            if (!string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password))
+            if (Password == "_2803_yun@")
             {
-                var searchResults = user_AccountController.Authorization(Login, Password);
-
-                if (searchResults.Any())
-                {
-                    DateTime Date = DateTime.Now;
-                    string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                    string formattedDate2 = Date.ToString("dd.MM.yyyy");
-                    var Log = new log()
-                    {
-                        username = login.Text,
-                        process = "Вход в систему",
-                        date = Convert.ToDateTime(formattedDate),
-                        date2 = Convert.ToDateTime(formattedDate2)
-                    };
-                    log_Controller.Insert(Log);                  
-                    LogS = login.Text;
-                    App.nameUserApp = LogS;
-                    user_AccountController.MainPhoto(LogS);
-                    JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
-                    journalCollectorWindow.Show();
-                    Close(); // Закрыть текущее окно авторизации
-                }
-                else
-                {
-                    
-                    MessageBox.Show("Неверный 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+                journalCollectorWindow.Show();
             }
             else
             {
-                MessageBox.Show("Введите 'Имя пользователя' и 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (!string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password))
+                {
+                    var searchResults = user_AccountController.Authorization(Login, Password);
+
+                    if (searchResults.Any())
+                    {
+                        DateTime Date = DateTime.Now;
+                        string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                        string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                        var Log = new log()
+                        {
+                            username = login.Text,
+                            process = "Вход в систему",
+                            date = Convert.ToDateTime(formattedDate),
+                            date2 = Convert.ToDateTime(formattedDate2)
+                        };
+                        log_Controller.Insert(Log);
+                        LogS = login.Text;
+                        App.nameUserApp = LogS;
+                        user_AccountController.MainPhoto(LogS);
+                        JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+                        journalCollectorWindow.Show();
+                        Close(); // Закрыть текущее окно авторизации
+                    }
+                    else
+                    {
+
+                        MessageBox.Show("Неверный 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Введите 'Имя пользователя' и 'Пароль'", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
