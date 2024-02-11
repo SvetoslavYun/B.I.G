@@ -288,7 +288,7 @@ namespace B.I.G.Controller
                 " fullname = (SELECT fullname FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
                 " phone = (SELECT phone FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
                 " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date) " +
-                " WHERE route2 = @Route AND profession = @Profession and date = @Date and route !='';";
+                " WHERE route2 = @Route AND profession = @Profession and date = @Date and route !='' AND route2 != 'РЕЗЕРВ' AND route2 != 'стажер' AND route2 != 'Стажер';";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
 
@@ -500,7 +500,7 @@ namespace B.I.G.Controller
 
 
         public void Delete(string route, int id, DateTime date)
-        { if (route == "" || route == "РЕЗЕРВ" || route == "резерв" || route == "Pезерв")
+        { if (route == "" || route == "РЕЗЕРВ" || route == "резерв" || route == "Pезерв" || route == "стажер" || route == "стажер")
             {
                 var commandString = "DELETE FROM journalCollectors WHERE (id = @Id) and date=@Date";
                 SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
