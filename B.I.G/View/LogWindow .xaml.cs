@@ -230,7 +230,7 @@ namespace B.I.G
                 log_Controller.Insert(Log2);
 
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал событий 'B.I.G'");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("log");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
                 using (var cells = worksheet.Cells[1, 1, dGridLog.Items.Count + 1, dGridLog.Columns.Count])

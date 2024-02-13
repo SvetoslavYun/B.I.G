@@ -73,8 +73,8 @@ namespace B.I.G
            
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
-            NameText.Text = MainWindow.LogS;   
-          
+            NameText.Text = MainWindow.LogS;
+            Access();
         }
 
         public void Access()
@@ -336,7 +336,7 @@ namespace B.I.G
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал выдачи инвентаря");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -351,7 +351,7 @@ namespace B.I.G
                 }
 
                 // Добавление сетки после последней строки данных
-                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 10, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -386,59 +386,59 @@ namespace B.I.G
               
 
                 // Добавление данных
-                for (int i = 1; i < dGridCollector.Items.Count; i++)
+                for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {
                     var collectorItem = (journalCollector)dGridCollector.Items[i];
 
                     // Создание строки
-                    var row = worksheet.Row(i + 3);
+                    var row = worksheet.Row(i + 4);
                     row.Height = 19;
-                    worksheet.Cells[i + 3, 2].Value = collectorItem.name;
-                    worksheet.Cells[i + 3, 3].Value = collectorItem.route;
-                    worksheet.Cells[i + 3, 6].Value = collectorItem.route2;
-                    worksheet.Cells[i + 3, 7].Value = collectorItem.meaning;
+                    worksheet.Cells[i + 4, 2].Value = collectorItem.name;
+                    worksheet.Cells[i + 4, 3].Value = collectorItem.route;
+                    worksheet.Cells[i + 4, 6].Value = collectorItem.route2;
+                    worksheet.Cells[i + 4, 7].Value = collectorItem.meaning;
 
-                    worksheet.Cells[i + 3, 11].Value = collectorItem.certificate;
-                    worksheet.Cells[i + 3, 12].Value = collectorItem.token;
-                    worksheet.Cells[i + 3, 17].Value = collectorItem.route2;
-                    worksheet.Cells[i + 3, 18].Value = collectorItem.meaning;
-                    worksheet.Cells[i + 3, 22].Value = collectorItem.certificate;
-                    worksheet.Cells[i + 3, 23].Value = collectorItem.token;
+                    worksheet.Cells[i + 4, 11].Value = collectorItem.certificate;
+                    worksheet.Cells[i + 4, 12].Value = collectorItem.token;
+                    worksheet.Cells[i + 4, 17].Value = collectorItem.route2;
+                    worksheet.Cells[i + 4, 18].Value = collectorItem.meaning;
+                    worksheet.Cells[i + 4, 22].Value = collectorItem.certificate;
+                    worksheet.Cells[i + 4, 23].Value = collectorItem.token;
 
 
                     for (int col = 2; col <= 8; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 4, col].Style.Font.Size = 8; // Установите нужный размер шрифта
                     }
 
-                    if (worksheet.Cells[i + 3, 3].Value?.ToString() != "")
+                    if (worksheet.Cells[i + 4, 2].Value?.ToString() != "")
                     {
 
-                        worksheet.Cells[i + 3, 9].Value = "Алмаз";
-                        worksheet.Cells[i + 3, 20].Value = "Алмаз";                      
+                        worksheet.Cells[i + 4, 9].Value = "Алмаз";
+                        worksheet.Cells[i + 4, 20].Value = "Алмаз";                      
                     }
 
 
-                    if (worksheet.Cells[i + 3, 7].Value?.ToString() != "")
+                    if (worksheet.Cells[i + 4, 7].Value?.ToString() != "")
                     {
 
                       
-                        worksheet.Cells[i + 3, 10].Value = "T2 DP2400";
-                        worksheet.Cells[i + 3, 21].Value = "T2 DP2400";
-                        worksheet.Cells[i + 3, 13].Value = "Honeywell";
-                        worksheet.Cells[i + 3, 24].Value = "Honeywell";
+                        worksheet.Cells[i + 4, 10].Value = "T2 DP2400";
+                        worksheet.Cells[i + 4, 21].Value = "T2 DP2400";
+                        worksheet.Cells[i + 4, 13].Value = "Honeywell";
+                        worksheet.Cells[i + 4, 24].Value = "Honeywell";
                     }
                     else
                     {
-                        worksheet.Cells[i + 3, 6].Value = "";
-                        worksheet.Cells[i + 3, 17].Value = "";
+                        worksheet.Cells[i + 4, 6].Value = "";
+                        worksheet.Cells[i + 4, 17].Value = "";
                     }
 
                    
-                        worksheet.Cells[i + 3, 8].Value = "-/-";
-                        worksheet.Cells[i + 3, 14].Value = "-/-";
-                        worksheet.Cells[i + 3, 19].Value = "-/-";
-                        worksheet.Cells[i + 3, 25].Value = "-/-";
+                        worksheet.Cells[i + 4, 8].Value = "-/-";
+                        worksheet.Cells[i + 4, 14].Value = "-/-";
+                        worksheet.Cells[i + 4, 19].Value = "-/-";
+                        worksheet.Cells[i + 4, 25].Value = "-/-";
                     
                 }   
 

@@ -73,8 +73,8 @@ namespace B.I.G
            
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
-            NameText.Text = MainWindow.LogS;   
-          
+            NameText.Text = MainWindow.LogS;
+            Access();
         }
 
         public void Access()
@@ -336,7 +336,7 @@ namespace B.I.G
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал инструктажа");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 2, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -350,7 +350,7 @@ namespace B.I.G
                 }
 
                 // Добавление сетки после последней строки данных
-                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 10, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 2, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -370,16 +370,16 @@ namespace B.I.G
 
              
                 // Добавление данных
-                for (int i = 1; i < dGridCollector.Items.Count; i++)
+                for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {
                     var collectorItem = (journalCollector)dGridCollector.Items[i];
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
                     row.Height = 19;
-                    worksheet.Cells[i + 2, 1].Value = collectorItem.date.ToString("dd.MM.yyyy");
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.profession;
+                    worksheet.Cells[i + 3, 1].Value = collectorItem.date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i + 3, 4].Value = collectorItem.name;
+                    worksheet.Cells[i + 3, 5].Value = collectorItem.profession;
 
                 }
 

@@ -72,8 +72,8 @@ namespace B.I.G
            
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
-            NameText.Text = MainWindow.LogS;   
-          
+            NameText.Text = MainWindow.LogS;
+            Access();
         }
 
         public void Access()
@@ -315,7 +315,7 @@ namespace B.I.G
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал явочных карточек");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;

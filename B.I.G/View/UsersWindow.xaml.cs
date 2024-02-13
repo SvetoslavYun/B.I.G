@@ -232,7 +232,7 @@ namespace B.I.G
                 log_Controller.Insert(Log2);
                
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Список пользователей 'B.I.G'");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("user_account");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
                 using (var cells = worksheet.Cells[1, 1, dGridUser.Items.Count + 1, dGridUser.Columns.Count])
@@ -258,10 +258,10 @@ namespace B.I.G
                 for (int i = 0; i < dGridUser.Items.Count; i++)
                 {
                     var logItem = (user_account)dGridUser.Items[i];
-                    worksheet.Cells[i + 2, 2].Value = logItem.id;
-                    worksheet.Cells[i + 2, 3].Value = logItem.username;
-                    worksheet.Cells[i + 2, 4].Value = logItem.password_hash;
-                    worksheet.Cells[i + 2, 5].Value = logItem.access;
+                    worksheet.Cells[i + 2, 1].Value = logItem.id;
+                    worksheet.Cells[i + 2, 2].Value = logItem.username;
+                    worksheet.Cells[i + 2, 3].Value = logItem.password_hash;
+                    worksheet.Cells[i + 2, 4].Value = logItem.access;
 
                 }
                 worksheet.DeleteColumn(1);

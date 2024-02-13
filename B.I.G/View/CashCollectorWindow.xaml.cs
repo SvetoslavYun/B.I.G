@@ -218,7 +218,7 @@ namespace B.I.G
                 log_Controller.Insert(Log2);
                
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Список инкассаторов и водителей 'B.I.G'");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("cashCollector");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
                 using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])

@@ -94,6 +94,9 @@ namespace B.I.G
 
         }
 
+
+
+
         // Сохранение значения переменной при закрытии окна
         private void Window_Closing(object sender, EventArgs e)
         {
