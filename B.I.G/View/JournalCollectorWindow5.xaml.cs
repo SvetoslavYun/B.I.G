@@ -526,7 +526,7 @@ namespace B.I.G
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
             journalCollectorWindow.Show();
             Close();
         }
