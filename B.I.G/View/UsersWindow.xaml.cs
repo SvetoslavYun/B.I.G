@@ -21,6 +21,7 @@ namespace B.I.G
 {
     public partial class UsersWindow : System.Windows.Window
     {
+        private DateTime daTe;
         public static user_account User;
         public static bool flag;
         public static bool flagEdit;
@@ -29,7 +30,7 @@ namespace B.I.G
         ObservableCollection<user_account> User_Accounts;
         private User_accountController user_AccountController;
         public user_account SelectedProduct { get; set; }
-        public UsersWindow()
+        public UsersWindow(DateTime date)
         {
             Logs = new ObservableCollection<log>();
             log_Controller = new Log_Controller();
@@ -37,6 +38,7 @@ namespace B.I.G
             user_AccountController = new User_accountController();
             InitializeComponent();
             dGridUser.DataContext = User_Accounts;
+            daTe = date;
             FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
@@ -99,7 +101,7 @@ namespace B.I.G
                 if (flagEdit)
                 {
                     flagEdit = false;
-                    UsersWindow usersWindow = new UsersWindow();
+                    UsersWindow usersWindow = new UsersWindow(daTe);
                     usersWindow.Show();
                     Close();                   
                 }
@@ -132,7 +134,7 @@ namespace B.I.G
                 if (flagEdit)
                 {
                     flagEdit = false;
-                    UsersWindow usersWindow = new UsersWindow();
+                    UsersWindow usersWindow = new UsersWindow(daTe);
                     usersWindow.Show();
                     Close();
                 }
@@ -330,14 +332,14 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow();
+            LogWindow logWindow = new LogWindow(daTe);
             logWindow.Show();
             Close();
         }
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
             cashCollectorWindow.Show();
              Close();
         }
@@ -355,7 +357,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
             journalCollectorWindow.Show();
 
           
@@ -365,21 +367,21 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(daTe);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
             journalCollectorWindow.Show();
             Close();
         }

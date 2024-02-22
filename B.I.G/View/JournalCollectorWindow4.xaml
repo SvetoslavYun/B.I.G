@@ -35,7 +35,7 @@
 
             </DataGrid.Columns>
         </DataGrid>
-        <DatePicker x:Name="Date" Margin="508,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25" Grid.Column="1"/>
+        <!--<DatePicker x:Name="Date" Margin="508,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25" Grid.Column="1"/>-->
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
         Margin="0,12,103,0"
@@ -82,24 +82,6 @@
             <Button.Foreground>
                 <SolidColorBrush Color="Black"/>
             </Button.Foreground>
-        </Button>
-
-
-        <Button Content="" HorizontalAlignment="Left" Margin="619,14,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="28" Grid.Column="1">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" BorderThickness="1">
-                        <Grid>
-                            <Image Source="/Image/Cleaning.png"/>
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value= "#FFADD8E6"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
         </Button>
 
 
@@ -203,7 +185,7 @@
         </Button>
 
 
-        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2">
+        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -279,7 +261,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="AppearancesButton" Content="Журнал явочных карточек" Margin="15,512,0,0" VerticalAlignment="Top" Click="Appearances_Button" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="154">
+        <Button x:Name="AppearancesButton" Content="Журнал явочных карточек" Margin="15,426,0,0" VerticalAlignment="Top" Click="Appearances_Button" Height="26" FontFamily="Vivaldi" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="154">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -393,6 +375,10 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
+        <TextBlock x:Name="Date" Grid.Column="1" HorizontalAlignment="Left" Margin="578,8,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="438,9,0,0" TextWrapping="Wrap" Text="Инструктаж на" VerticalAlignment="Top" Width="158" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBox x:Name="Name" Margin="0,15,212,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="168"/>
+        <TextBlock Grid.Column="1" Margin="0,-1,231,0" TextWrapping="Wrap" Text="Инструктирующий" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
 
     </Grid>
 </Window>

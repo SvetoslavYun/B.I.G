@@ -19,16 +19,18 @@ namespace B.I.G
 {
     public partial class LogWindow : System.Windows.Window
     {
-       public static string names= MainWindow.LogS;
+        private DateTime daTe;
+        public static string names= MainWindow.LogS;
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
         public user_account SelectedProduct { get; set; }
-        public LogWindow()
+        public LogWindow(DateTime date)
         {
             Logs = new ObservableCollection<log>();
             log_Controller= new Log_Controller();
             InitializeComponent();
             dGridLog.DataContext = Logs;
+            daTe = date;
             FillData();
             ImgBox.DataContext = this;
             Name.Text = MainWindow.LognameUser;
@@ -426,14 +428,14 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow();
+            UsersWindow usersWindow = new UsersWindow(daTe);
             usersWindow.Show();
             Close();
         }
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
             cashCollectorWindow.Show();
              Close();
         }
@@ -447,7 +449,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
             journalCollectorWindow.Show();
            Close();
 
@@ -455,21 +457,21 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
             journalCollectorWindow.Show();
             Close();
         }

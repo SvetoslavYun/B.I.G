@@ -34,11 +34,7 @@
             </DataGrid.CellStyle>
             <DataGrid.Resources>
                 <ContextMenu x:Key="RowContextMenu">
-                    <MenuItem Header="Удалить" Click="DeleteMenuItem">
-                        <MenuItem.Icon>
-                            <Image Source="/image/Delete.png" Width="16" Height="16"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    
                     <MenuItem Header="Заменить сотрудника" Click="EditMenuItem">
                         <MenuItem.Icon>
                             <Image Source="/image/Employee.png" Width="16" Height="16"/>
@@ -197,7 +193,6 @@
         <TextBox x:Name="Route" Margin="342,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
         <TextBlock HorizontalAlignment="Left" Margin="217,3,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
         <TextBlock HorizontalAlignment="Left" Margin="358,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
-        <DatePicker x:Name="Date" Margin="552,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
         Margin="0,12,103,0"
@@ -244,65 +239,6 @@
             <Button.Foreground>
                 <SolidColorBrush Color="Black"/>
             </Button.Foreground>
-        </Button>
-
-        <Button Content="Загрузить наряд" HorizontalAlignment="Left" Margin="826,12,0,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FF93E842" Offset="1"/>
-                    <GradientStop Color="#FF97A28C" Offset="0"/>
-                    <GradientStop Color="#FF887E64" Offset="0.261"/>
-                    <GradientStop Color="#FF55B5AA" Offset="0.93"/>
-                </LinearGradientBrush>
-            </Button.Background>
-            <Button.Foreground>
-                <SolidColorBrush Color="Black"/>
-            </Button.Foreground>
-        </Button>
-
-
-        <Button Content="" HorizontalAlignment="Left" Margin="663,14,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="28">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" BorderThickness="1">
-                        <Grid>
-                            <Image Source="/Image/Cleaning.png"/>
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value= "#FFADD8E6"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
         </Button>
 
 
@@ -442,7 +378,7 @@
         </Button>
 
 
-        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -480,7 +416,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="AppearancesButton" Content="Журнал явочных карточек" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Appearances_Button" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="AppearancesButton" Content="Журнал явочных карточек" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Appearances_Button" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -594,18 +530,10 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
-        
-        <Calendar x:Name="Calendar" HorizontalAlignment="Left" Margin="771,10,0,0" VerticalAlignment="Top" SelectedDatesChanged="Calendar_SelectedDatesChanged"/>
-        <Button x:Name="ImportButton" Content="Выбрать дату" HorizontalAlignment="Left" Margin="771,174,0,0" VerticalAlignment="Top" Width="179" Click="ImportButton_Click" Height="24"/>
 
-        <Button x:Name="X" Content="X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="953,13,0,0" Padding="5"
-   Click="CloseButton_Click" Height="29" Width="29" Background="#FFE85B5B">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Background" Value="Red" />
-                </Style>
-            </Button.Style>
-        </Button>
+        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="764,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Margin="595,10,0,0" TextWrapping="Wrap" Text="Журнал оружия на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
+
 
     </Grid>
 </Window>

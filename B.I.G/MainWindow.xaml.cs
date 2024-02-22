@@ -32,6 +32,7 @@ namespace B.I.G
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DateTime daTe;
         public static string LogDate;
         public static string LogDate2;
         public static string nameUser;
@@ -74,7 +75,7 @@ namespace B.I.G
             //CashCollectorWindow usersWindow = new CashCollectorWindow();
             //usersWindow.Show();
 
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
             journalCollectorWindow.Show();
 
             //LookCollector lookCollector = new LookCollector();

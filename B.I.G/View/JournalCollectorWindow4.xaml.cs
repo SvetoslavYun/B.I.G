@@ -25,6 +25,7 @@ namespace B.I.G
 {
     public partial class JournalCollectorWindow4 : System.Windows.Window
     {
+        private DateTime daTe;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
@@ -42,7 +43,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow4()
+        public JournalCollectorWindow4(DateTime date)
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
@@ -64,10 +65,11 @@ namespace B.I.G
                 Date.Text = Properties.Settings.Default.dateOrder;
             }
             dGridCollector.DataContext = JournalCollectors;
-            if (string.IsNullOrEmpty(Date.Text))
-            {
-                Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
-            }
+
+            Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+
+
+            daTe = date;
             FillData();            
             ImgBox.DataContext = this;
            
@@ -380,6 +382,7 @@ namespace B.I.G
                     worksheet.Cells[i + 3, 1].Value = collectorItem.date.ToString("dd.MM.yyyy");
                     worksheet.Cells[i + 3, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 3, 5].Value = collectorItem.profession;
+                    worksheet.Cells[i + 3, 7].Value = Name.Text;
 
                 }
 
@@ -440,63 +443,7 @@ namespace B.I.G
                 worksheet.Cells[55, 3].Value = "может быть перекрыто либо";
                 worksheet.Cells[56, 3].Value = "ограничено движение";
                 worksheet.Cells[57, 3].Value = "транспортных средств.";
-
-
-                worksheet.Cells[61, 3].Value = "Тема №1 - Меры безопасности";
-                worksheet.Cells[62, 3].Value = "при обращении с оружием и";
-                worksheet.Cells[63, 3].Value = "боеприпасам к нему.";
-                worksheet.Cells[64, 3].Value = "Порядок применения и ";
-                worksheet.Cells[65, 3].Value = "использования оружия.";
-
-                worksheet.Cells[67, 3].Value = "Тема №2 - Порядок получения и";
-                worksheet.Cells[68, 3].Value = "использование средств";
-                worksheet.Cells[69, 3].Value = "индивидуальной защиты";
-                worksheet.Cells[70, 3].Value = "и средств связи.";
-
-                worksheet.Cells[72, 3].Value = "Тема №3 - Соблюдение условий";
-                worksheet.Cells[73, 3].Value = "обслуживание клиентов";
-                worksheet.Cells[74, 3].Value = "в соответствии";
-                worksheet.Cells[75, 3].Value = "с договорными отношениями.";
-
-                worksheet.Cells[77, 3].Value = "Тема №4 - Строгое соблюдение";
-                worksheet.Cells[78, 3].Value = "порядка и правил";
-                worksheet.Cells[79, 3].Value = "инкассации и перевозки";
-                worksheet.Cells[80, 3].Value = "ценностей.";
-
-                worksheet.Cells[82, 3].Value = "Тема №5 - Строгое выполнение";
-                worksheet.Cells[83, 3].Value = "требований, предъявляемых к";
-                worksheet.Cells[84, 3].Value = "обеспечению безопасности";
-                worksheet.Cells[85, 3].Value = "членов бригады инкассаторов";
-                worksheet.Cells[86, 3].Value = "при работе на маршрутах";
-                worksheet.Cells[87, 3].Value = "и к обеспечению";
-                worksheet.Cells[88, 3].Value = "сохранности ценностей.";
-
-                worksheet.Cells[90, 3].Value = "Тема №6 - Соблюдение правил";
-                worksheet.Cells[91, 3].Value = "дорожного движения.";
-                worksheet.Cells[92, 3].Value = "Особое внимание";
-                worksheet.Cells[93, 3].Value = "к соблюдению требований,";
-                worksheet.Cells[94, 3].Value = "предъявляемых к скоростному";
-                worksheet.Cells[95, 3].Value = "режиму движения и";
-                worksheet.Cells[96, 3].Value = "безопасной дистанции";
-                worksheet.Cells[97, 3].Value = "до впереди";
-                worksheet.Cells[98, 3].Value = "движущего автомобиля.";
-
-                worksheet.Cells[100, 3].Value = "Тема №7 - Особенность работы";
-                worksheet.Cells[101, 3].Value = "службы инкассации с учетом";
-                worksheet.Cells[102, 3].Value = "погодных условий,";
-                worksheet.Cells[103, 3].Value = "указаний региональных";
-                worksheet.Cells[104, 3].Value = "органов власти.";
-
-                worksheet.Cells[106, 3].Value = "Тема №8 - Доведение";
-                worksheet.Cells[107, 3].Value = "информации о проводимых";
-                worksheet.Cells[108, 3].Value = "в районе работы бригад";
-                worksheet.Cells[109, 3].Value = "инкассаторов митингов,";
-                worksheet.Cells[110, 3].Value = "шествий или других";
-                worksheet.Cells[111, 3].Value = "общественных мероприятий в";
-                worksheet.Cells[112, 3].Value = "связи, проведением которых";
-                worksheet.Cells[113, 3].Value = "может быть перекрыто либо";
-                worksheet.Cells[114, 3].Value = "ограничено движение";
-                worksheet.Cells[115, 3].Value = "транспортных средств.";
+  
 
                 // Автоподгон ширины колонок
                 worksheet.Column(1).Width = 9;
@@ -572,7 +519,7 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow();
+            LogWindow logWindow = new LogWindow(daTe);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -582,7 +529,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow();
+            UsersWindow usersWindow = new UsersWindow(daTe);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -597,7 +544,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -607,7 +554,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -624,14 +571,14 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
             journalCollectorWindow.Show();
             Close();
         }

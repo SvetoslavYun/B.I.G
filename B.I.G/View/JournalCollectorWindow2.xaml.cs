@@ -491,7 +491,7 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow();
+            LogWindow logWindow = new LogWindow(Convert.ToDateTime(Date.Text));
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -501,7 +501,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow();
+            UsersWindow usersWindow = new UsersWindow(Convert.ToDateTime(Date.Text));
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -635,7 +635,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(Convert.ToDateTime(Date.Text));
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -645,7 +645,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text));
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -655,21 +655,21 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(Convert.ToDateTime(Date.Text));
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5();
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(Convert.ToDateTime(Date.Text));
             journalCollectorWindow.Show();
             Close();
 

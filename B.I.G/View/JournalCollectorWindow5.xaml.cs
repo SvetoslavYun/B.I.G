@@ -25,6 +25,7 @@ namespace B.I.G
 {
     public partial class JournalCollectorWindow5 : System.Windows.Window
     {
+        private DateTime daTe;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
@@ -42,7 +43,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow5()
+        public JournalCollectorWindow5(DateTime date)
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
@@ -64,10 +65,13 @@ namespace B.I.G
                 Date.Text = Properties.Settings.Default.dateOrder;
             }
             dGridCollector.DataContext = JournalCollectors;
-            if (string.IsNullOrEmpty(Date.Text))
-            {
-                Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
-            }          
+          
+               Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+
+            daTe = date;
+
+            Search();
+            
             ImgBox.DataContext = this;
            
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
@@ -156,7 +160,7 @@ namespace B.I.G
                 lookCollector.Show();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                 journalCollectorController.DeleteNUL();
-                Search(sender, e);
+                Search();
                 JournalCollector = null;
             }
             catch (Exception ex)
@@ -184,7 +188,7 @@ namespace B.I.G
                 }
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                 journalCollectorController.DeleteNUL();
-                Search(sender, e);
+                Search();
                 JournalCollector = null;
             }
             catch (Exception h)
@@ -210,7 +214,7 @@ namespace B.I.G
                     journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
                     journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                     journalCollectorController.DeleteNUL();
-                    Search(sender, e);
+                    Search();
                     JournalCollector = null;
                 }
                 else { MessageBox.Show("Данные по сотруднику отсутствуют"); }
@@ -241,7 +245,7 @@ namespace B.I.G
                             journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
                             journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                             journalCollectorController.DeleteNUL();
-                            Search(sender, e);
+                            Search();
                         }
                     }
                 }
@@ -257,7 +261,7 @@ namespace B.I.G
         private void Date_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             //Обработки изменения даты
-            Search(sender, e);
+            Search();
         }
 
 
@@ -267,7 +271,7 @@ namespace B.I.G
         }
 
 
-        private void Search(object sender, RoutedEventArgs e)
+        private void Search()
         {
             try
 
@@ -420,7 +424,7 @@ namespace B.I.G
                         SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
                     }
 
-                    Search(sender, e);
+                    Search();
                 }
             
             catch (Exception ex)
@@ -462,12 +466,12 @@ namespace B.I.G
         {
            
             Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
-            Search(sender, e);
+            Search();
         }
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow();
+            LogWindow logWindow = new LogWindow(daTe);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -477,7 +481,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow();
+            UsersWindow usersWindow = new UsersWindow(daTe);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -492,7 +496,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow();
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -502,7 +506,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow();
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -519,14 +523,14 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3();
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4();
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
             journalCollectorWindow.Show();
             Close();
         }

@@ -65,20 +65,14 @@ namespace B.I.G
         }
         private void Button_Save(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Name.Text) || string.IsNullOrWhiteSpace(Fullname.Text) || string.IsNullOrWhiteSpace(Gun.Text) || string.IsNullOrWhiteSpace(Automaton_serial.Text) || string.IsNullOrWhiteSpace(Automaton.Text) || string.IsNullOrWhiteSpace(Permission.Text) || string.IsNullOrWhiteSpace(Certificate.Text) || string.IsNullOrWhiteSpace(Token.Text) || string.IsNullOrWhiteSpace(Power.Text) || string.IsNullOrWhiteSpace(Profession.Text))
+            if (Permission.Text == ".") { Permission.Text = ""; }
+            if (Fullname.Text == ".") { Fullname.Text = ""; }
+            if (string.IsNullOrWhiteSpace(Name.Text))
             {
                 MessageBox.Show("Заполните все обязательные поля.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 Name.BorderBrush = Brushes.Red;
                 if (string.IsNullOrWhiteSpace(Name.Text)) { Name.BorderBrush = Brushes.Red; } else { Name.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Fullname.Text)) { Fullname.BorderBrush = Brushes.Red; } else { Fullname.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Gun.Text)) { Gun.BorderBrush = Brushes.Red; } else { Gun.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Automaton_serial.Text)) { Automaton_serial.BorderBrush = Brushes.Red; } else { Automaton_serial.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Automaton.Text)) { Automaton.BorderBrush = Brushes.Red; } else { Automaton.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Permission.Text)) { Permission.BorderBrush = Brushes.Red; } else { Permission.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Certificate.Text)) { Certificate.BorderBrush = Brushes.Red; } else { Certificate.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Token.Text)) { Token.BorderBrush = Brushes.Red; } else { Token.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Power.Text)) { Power.BorderBrush = Brushes.Red; } else { Power.BorderBrush = Brushes.Black; }
-                if (string.IsNullOrWhiteSpace(Profession.Text)) { Profession.BorderBrush = Brushes.Red; } else { Profession.BorderBrush = Brushes.Black; }
+
                 return;
             }
 

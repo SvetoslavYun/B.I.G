@@ -441,7 +441,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="CollectoButton" Content="Инкассаторы" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Button_CollectorWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -517,7 +517,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="AppearancesButton" Content="Журнал явочных карточек" HorizontalAlignment="Left" Margin="15,512,0,0" VerticalAlignment="Top" Width="154" Click="Appearances_Button" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="AppearancesButton" Content="Журнал явочных карточек" HorizontalAlignment="Left" Margin="15,426,0,0" VerticalAlignment="Top" Width="154" Click="Appearances_Button" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
