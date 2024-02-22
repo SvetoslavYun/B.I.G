@@ -310,7 +310,7 @@ namespace B.I.G
             {
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                string formattedDate2 = Date.ToString("dd.MM.yyyy") + " " + Date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
@@ -391,7 +391,7 @@ namespace B.I.G
                 worksheet.Cells.AutoFitColumns();
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов";
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 

@@ -346,7 +346,7 @@ namespace B.I.G
             {
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date.ToString("dd.MM.yyyy");
+                string formattedDate2 = Date.ToString("dd.MM.yyyy") + " " + Date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
@@ -428,7 +428,7 @@ namespace B.I.G
                 worksheet.Column(6).Width = 11;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + Date2;
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + formattedDate2;
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 

@@ -321,7 +321,7 @@ namespace B.I.G
             {
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date2.ToString("dd.MM.yyyy");
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
