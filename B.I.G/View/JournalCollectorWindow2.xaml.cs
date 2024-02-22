@@ -674,5 +674,18 @@ namespace B.I.G
             Close();
 
         }
+
+        private void Button_DelDate(object sender, RoutedEventArgs e)
+        {
+            if (AccesText.Text != "Пользователь")
+            {
+                var result = MessageBox.Show("Вы уверены?", "Удалить наряд на " + Date.Text, MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text));
+                    Search(sender, e);
+                }
+            }
+        }
     }
 }

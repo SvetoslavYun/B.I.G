@@ -340,6 +340,26 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
+
+        <Button Content="" HorizontalAlignment="Left" Margin="729,12,0,0" VerticalAlignment="Top" Click="Button_DelDate" Width="30" Height="29" RenderTransformOrigin="4.423,0.386">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderThickness="1">
+                        <Grid>
+                            <Image Source="/Image/8207958.png"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFF0000"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+
+
         <Image x:Name="ImgBox" Margin="10,40,0,0" Source="{Binding SelectedProduct.image}" Height="171" VerticalAlignment="Top" HorizontalAlignment="Left" Width="172"/>
         <TextBlock HorizontalAlignment="Left" Margin="50,12,0,0" TextWrapping="Wrap" Text="Пользователь" VerticalAlignment="Top" Foreground="#FFF7F3EF" FontFamily="Cooper Black" FontSize="14"/>
         <TextBlock x:Name="NameText" Margin="10,224,1096,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontFamily="Cooper Black" Foreground="#FFF3EFEB" FontSize="10"/>
@@ -611,7 +631,7 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
-        
+
         <Calendar x:Name="Calendar2" HorizontalAlignment="Left" Margin="771,10,0,0" VerticalAlignment="Top" SelectedDatesChanged="Calendar_SelectedDatesChanged"/>
         <Button x:Name="ImportButton" Content="Выбрать дату" HorizontalAlignment="Left" Margin="771,174,0,0" VerticalAlignment="Top" Width="179" Click="ImportButton_Click" Height="24"/>
 
@@ -623,6 +643,7 @@
                 </Style>
             </Button.Style>
         </Button>
+        <TextBlock HorizontalAlignment="Left" Margin="703,-3,0,0" TextWrapping="Wrap" Text="Удалить наряд" VerticalAlignment="Top" Foreground="#FFF7F3EF" Width="82"/>
 
     </Grid>
 </Window>
