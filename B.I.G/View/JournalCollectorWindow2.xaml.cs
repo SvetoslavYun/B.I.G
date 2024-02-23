@@ -40,6 +40,7 @@ namespace B.I.G
 
         private Log_Controller log_Controller;
         ObservableCollection<log> Logs;
+        private bool flag2;
         public static bool flag;
         public static bool flagEdit;
         public JournalCollectorWindow2()
@@ -316,21 +317,24 @@ namespace B.I.G
         private void Search(object sender, RoutedEventArgs e)
         {
             try
-
+                
             {
-                SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
-                AccesText.Text = MainWindow.acces;
-                NameText.Text = MainWindow.LogS;
-                MainWindow.NameJorunal = Name.Text;
-                var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
-
-                JournalCollectors.Clear();
-                foreach (var result in searchResults)
+                if (flag2 == true) { Empty(); }
+                else
                 {
-                    JournalCollectors.Add(result);
+                    SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
+                    AccesText.Text = MainWindow.acces;
+                    NameText.Text = MainWindow.LogS;
+                    MainWindow.NameJorunal = Name.Text;
+                    var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
+
+                    JournalCollectors.Clear();
+                    foreach (var result in searchResults)
+                    {
+                        JournalCollectors.Add(result);
+                    }
+
                 }
-
-
             }
             catch (Exception h)
             {
@@ -483,9 +487,9 @@ namespace B.I.G
 
         private void Button_cleaning(object sender, RoutedEventArgs e)
         {
+            flag2 = false;
             Name.Text = string.Empty;
             Route.Text = string.Empty;
-            Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
             FillData();
         }
 
@@ -685,6 +689,41 @@ namespace B.I.G
                     journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text));
                     Search(sender, e);
                 }
+            }
+        }
+
+        private void Empty()
+        {
+            try
+
+            {
+                SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
+                AccesText.Text = MainWindow.acces;
+                NameText.Text = MainWindow.LogS;
+                MainWindow.NameJorunal = Name.Text;
+                var searchResults = journalCollectorController.SearchEmpty(Convert.ToDateTime(Date.Text));
+
+                JournalCollectors.Clear();
+                foreach (var result in searchResults)
+                {
+                    JournalCollectors.Add(result);
+                }
+
+
+            }
+            catch (Exception h)
+            {
+                MessageBox.Show(h.Message);
+            }
+        }
+
+        private void Button_Empty(object sender, RoutedEventArgs e)
+        {
+            if (flag2 == true) { flag2 = false; Search(sender, e); }
+            else 
+            { 
+            flag2 = true;
+            Empty();
             }
         }
     }

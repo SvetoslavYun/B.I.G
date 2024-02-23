@@ -583,6 +583,79 @@ namespace B.I.G.Controller
                 connection.Close();          
         }
 
+
+        public IEnumerable<journalCollector> SearchEmpty(DateTime date)
+        {
+           
+
+
+            connection.Close();
+
+
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
+
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.dateWork ='Данные отсутствуют' AND jc.date= @Date ";
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
+            connection.Open();
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var Id = reader.GetInt32(reader.GetOrdinal("id"));
+                var Name = reader.GetString(reader.GetOrdinal("name"));
+                var Gun = reader.GetString(reader.GetOrdinal("gun"));
+                var AutomatonSerial = reader.GetString(reader.GetOrdinal("automaton_serial"));
+                var Automaton = reader.GetString(reader.GetOrdinal("automaton"));
+                var Permission = reader.GetString(reader.GetOrdinal("permission"));
+                var Meaning = reader.GetString(reader.GetOrdinal("meaning"));
+                var Certificate = reader.GetString(reader.GetOrdinal("certificate"));
+                var Token = reader.GetString(reader.GetOrdinal("token"));
+                var Power = reader.GetString(reader.GetOrdinal("power"));
+                var FullName = reader.GetString(reader.GetOrdinal("fullname"));
+                var Profession = reader.GetString(reader.GetOrdinal("profession"));
+                var Phone = reader.GetString(reader.GetOrdinal("phone"));
+                var Id2 = reader.GetInt32(reader.GetOrdinal("id2"));
+                var Route = reader.GetString(reader.GetOrdinal("route"));
+                var Date = reader.GetDateTime(reader.GetOrdinal("date"));
+                var DateWork = reader.GetString(reader.GetOrdinal("dateWork"));
+                var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+                var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+
+                var JournalCollector = new journalCollector
+                {
+                    id = Id,
+                    name = Name,
+                    gun = Gun,
+                    automaton_serial = AutomatonSerial,
+                    automaton = Automaton,
+                    permission = Permission,
+                    meaning = Meaning,
+                    certificate = Certificate,
+                    token = Token,
+                    power = Power,
+                    fullname = FullName,
+                    profession = Profession,
+                    phone = Phone,
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
+                    route2 = Route2, // Добавлено новое поле route2
+                    image = Image
+                };
+
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
+
+
         public IEnumerable<journalCollector> SearchCollectorName(string name, DateTime date, string route)
         {
             connection.Open();
