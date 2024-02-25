@@ -164,7 +164,7 @@ namespace B.I.G
 
                 LookCollector lookCollector = new LookCollector(selectedCollector);
 
-                lookCollector.Show();
+                lookCollector.ShowDialog();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                 journalCollectorController.DeleteNUL();
                 Search(sender, e);
