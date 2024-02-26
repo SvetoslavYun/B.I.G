@@ -35,6 +35,20 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+        public void DeleteRound2(DateTime date)
+        {
+            var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND dateWork LIKE '%АТМ%' and date= @Date);";
+            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date);";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+            deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            connection.Open();
+            deleteCommand.ExecuteNonQuery();
+            deleteCommand2.ExecuteNonQuery();
+            connection.Close();
+        }
+
         public IEnumerable<journalCollector> GetAllCashCollectors(DateTime date)
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
@@ -314,35 +328,7 @@ namespace B.I.G.Controller
 
 
 
-        //public void EditAutomate(int idColl, string name,DateTime date, string rote)
-        //{
-        //    var commandString = "UPDATE journalCollectors SET " +
-        //        "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Автомат не повторяется'," +
-        //        " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
-        //        "WHERE journalCollectors.name = @Name and date = @Date;";
-
-        //    var commandString2 = "UPDATE journalCollectors SET " +
-        //       "automaton_serial = ''," +
-        //       " automaton = '' " +
-        //       "WHERE route2 = @Route2 and date = @Date;";
-
-
-        //    SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
-        //     updateCommand.Parameters.AddRange(new SQLiteParameter[] {
-        //     new SQLiteParameter("@IdColl", idColl),
-        //     new SQLiteParameter("@Name", name),
-        //     new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
-
-        //    SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
-        //    updateCommand2.Parameters.AddRange(new SQLiteParameter[] {
-        //     new SQLiteParameter("@Route2", rote),
-        //     new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
-
-        //    connection.Open();
-        //    updateCommand2.ExecuteNonQuery();
-        //    updateCommand.ExecuteNonQuery();
-        //    connection.Close();
-        //}
+    
 
 
         public void EditAutomate(int idColl, string name, DateTime date, string rote)

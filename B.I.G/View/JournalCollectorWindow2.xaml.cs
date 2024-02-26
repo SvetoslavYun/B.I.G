@@ -560,6 +560,7 @@ namespace B.I.G
                         }
                         journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
                         journalCollectorController.UpdateResponsibilities(date);
+                        journalCollectorController.DeleteRound2(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
                         FillData();
                     }
@@ -592,6 +593,7 @@ namespace B.I.G
                             journalCollectorController.DeleteToDate(date);
                             journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
                             journalCollectorController.UpdateResponsibilities(date);
+                            journalCollectorController.DeleteRound2(date);
                             Date.Text = date.ToString("yyyy-MM-dd");
                             journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                             journalCollectorController.DeleteNUL();
