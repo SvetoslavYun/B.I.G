@@ -120,7 +120,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' ";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' and jc.route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%Фабрициуса%' and date= @Date) ";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -887,7 +887,7 @@ namespace B.I.G.Controller
                               AND name NOT LIKE '%[^a-zA-Z0-9]%' 
                               AND route2 != 'РЕЗЕРВ' 
                               AND route2 != 'стажер'
-                              AND name IS NOT NULL
+                              AND name IS NOT NULL AND route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%АТМ%' or dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date)
                           GROUP BY 
                               route2
                           ORDER BY 
