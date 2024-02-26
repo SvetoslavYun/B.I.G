@@ -387,6 +387,29 @@ namespace B.I.G
                 }
 
 
+                // Добавление 10 пустых строк
+                int rowCount = dGridCollector.Items.Count + 3;
+                for (int i = 0; i < 10; i++)
+                {
+                    var row = worksheet.Row(rowCount + i);
+                    row.Height = 19;
+
+                    // Устанавливаем стили для линий ячеек
+                    using (var cells = worksheet.Cells[rowCount + i, 1, rowCount + i, dGridCollector.Columns.Count])
+                    {
+                        cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                        cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                        cells.Style.WrapText = true; // Разрешаем перенос текста
+                        cells.Style.Font.Size = 7;
+                        cells.Style.Font.Bold = true;
+                    }
+                }
+
 
                 worksheet.Cells[3, 3].Value = "Тема №1 - Меры безопасности";
                 worksheet.Cells[4, 3].Value = "при обращении с оружием и";
@@ -445,8 +468,8 @@ namespace B.I.G
                 worksheet.Cells[57, 3].Value = "транспортных средств.";
   
 
-                // Автоподгон ширины колонок
-                worksheet.Column(1).Width = 9;
+            
+                    worksheet.Column(1).Width = 9;
                     worksheet.Column(2).Width = 9;
                     worksheet.Column(3).Width = 23;
                     worksheet.Column(4).Width = 17;

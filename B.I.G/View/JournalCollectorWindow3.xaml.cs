@@ -429,8 +429,15 @@ namespace B.I.G
                     }
                     else
                     {
-                        worksheet.Cells[i + 4, 6].Value = "";
-                        worksheet.Cells[i + 4, 17].Value = "";
+                        worksheet.Cells[i + 4, 7].Value = "-/-";
+                        worksheet.Cells[i + 4, 6].Value = "-/-";
+                        worksheet.Cells[i + 4, 17].Value = "-/-";
+                        worksheet.Cells[i + 4, 18].Value = "-/-";
+
+                        worksheet.Cells[i + 4, 10].Value = "-/-";
+                        worksheet.Cells[i + 4, 21].Value = "-/-";
+                        worksheet.Cells[i + 4, 13].Value = "-/-";
+                        worksheet.Cells[i + 4, 24].Value = "-/-";
                     }
 
                    
@@ -439,9 +446,33 @@ namespace B.I.G
                         worksheet.Cells[i + 4, 19].Value = "-/-";
                         worksheet.Cells[i + 4, 25].Value = "-/-";
                     
-                }   
+                }
 
-                // Автоподгон ширины колонок
+                // Добавление 20 пустых строк
+                int rowCount = dGridCollector.Items.Count + 4;
+                for (int i = 0; i < 20; i++)
+                {
+                    var row = worksheet.Row(rowCount + i);
+                    row.Height = 19;
+
+                    // Устанавливаем стили для линий ячеек
+                    using (var cells = worksheet.Cells[rowCount + i, 1, rowCount + i, dGridCollector.Columns.Count])
+                    {
+                        cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                        cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                        cells.Style.WrapText = true; // Разрешаем перенос текста
+                        cells.Style.Font.Size = 7;
+                        cells.Style.Font.Bold = true;
+                    }
+                }
+
+
+
                 worksheet.Column(1).Width = 8;
                 worksheet.Column(2).Width = 15;
                 worksheet.Column(3).Width = 8;

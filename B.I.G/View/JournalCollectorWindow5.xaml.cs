@@ -385,7 +385,30 @@ namespace B.I.G
                     worksheet.Cells[i + 3, 4].Value = collectorItem.name2;
                     I=i;
                 }
-                I = I + 4;
+
+                // Добавление 5 пустых строк
+                int rowCount = dGridCollector.Items.Count + 3;
+                for (int i = 0; i < 6; i++)
+                {
+                    var row = worksheet.Row(rowCount + i);
+                    row.Height = 19;
+
+                    // Устанавливаем стили для линий ячеек
+                    using (var cells = worksheet.Cells[rowCount + i, 1, rowCount + i, dGridCollector.Columns.Count])
+                    {
+                        cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                        cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                        cells.Style.WrapText = true; // Разрешаем перенос текста
+                        cells.Style.Font.Size = 7;
+                        cells.Style.Font.Bold = true;
+                    }
+                }
+                I = I + 9;
               
 
                 worksheet.Cells[I, 1, I, 5].Merge = true;
