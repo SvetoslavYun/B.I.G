@@ -38,7 +38,7 @@ namespace B.I.G.Controller
         public void DeleteRound2(DateTime date)
         {
             var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND dateWork LIKE '%АТМ%' and date= @Date);";
-            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date);";
+            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND (dateWork LIKE '%перевозка%' OR dateWork LIKE '%Перевозка%') and date= @Date);";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
             SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
             deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -886,8 +886,7 @@ namespace B.I.G.Controller
                               AND date = @Date
                               AND name NOT LIKE '%[^a-zA-Z0-9]%' 
                               AND route2 != 'РЕЗЕРВ' 
-                              AND route2 != 'стажер'
-                              AND name IS NOT NULL AND route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%АТМ%' or dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date)
+                              AND route2 != 'стажер'  
                           GROUP BY 
                               route2
                           ORDER BY 

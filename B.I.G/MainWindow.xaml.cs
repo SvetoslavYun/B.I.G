@@ -75,8 +75,8 @@ namespace B.I.G
             //CashCollectorWindow usersWindow = new CashCollectorWindow();
             //usersWindow.Show();
 
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
-            journalCollectorWindow.Show();
+            //JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
+            //journalCollectorWindow.Show();
 
             //LookCollector lookCollector = new LookCollector();
             //lookCollector.Show();
@@ -84,6 +84,8 @@ namespace B.I.G
             //EditJournal editJournal = new EditJournal();
             //editJournal.Show();
 
+            AtmWindow atmWindow = new AtmWindow();
+            atmWindow.Show();
             Close(); // Закрыть текущее окно авторизации
         }
 

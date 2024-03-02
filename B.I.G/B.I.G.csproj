@@ -198,7 +198,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller\JournalCollectorController.cs" />
+    <Compile Include="Controller\Atm_Controller.cs" />
     <Compile Include="Controller\СashCollectorController .cs" />
+    <Compile Include="Model\atm.cs" />
     <Compile Include="Model\journalCollector.cs" />
     <Compile Include="Model\cashCollector.cs" />
     <Compile Include="View\Add_СashCollector.xaml.cs">
@@ -211,6 +213,9 @@
     <Compile Include="Model\log.cs" />
     <Compile Include="View\EditJournal.xaml.cs">
       <DependentUpon>EditJournal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AtmWindow.xaml.cs">
+      <DependentUpon>AtmWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\JournalCollectorWindow5.xaml.cs">
       <DependentUpon>JournalCollectorWindow5.xaml</DependentUpon>
@@ -263,6 +268,10 @@
     <Page Include="View\EditJournal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AtmWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\JournalCollectorWindow5.xaml">
       <Generator>MSBuild:Compile</Generator>

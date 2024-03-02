@@ -23,12 +23,16 @@ using B.I.G.View;
 namespace B.I.G
 
 {
-    public partial class JournalCollectorWindow : System.Windows.Window
+    public partial class AtmWindow : System.Windows.Window
     {
         private DateTime daTe;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
+
+        public static atm Atm;
+        ObservableCollection<atm> Atms;
+        private Atm_Controller atm_Controller;
 
         public static cashCollector CashCollector;
         ObservableCollection<cashCollector> CashCollectors;
@@ -43,8 +47,11 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow(DateTime date)
+        public AtmWindow()
         {
+            Atms = new ObservableCollection<atm>();
+            atm_Controller = new Atm_Controller();
+
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
 
@@ -65,9 +72,9 @@ namespace B.I.G
                 Route.Text = Properties.Settings.Default.routeOrder;
                 Date.Text = Properties.Settings.Default.dateOrder;
             }
-            dGridCollector.DataContext = JournalCollectors;
-            Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-            daTe = date;
+            dGridCollector.DataContext = Atms;
+            //Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+            //daTe = date;
             FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
@@ -131,10 +138,10 @@ namespace B.I.G
             try
 
             {
-                JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors(Convert.ToDateTime(Date.Text)))
+                Atms.Clear();
+                foreach (var item in atm_Controller.GetAllAtm())
                 {
-                    JournalCollectors.Add(item);
+                    Atms.Add(item);
                 }
 
             }
@@ -306,12 +313,11 @@ namespace B.I.G
 
         private void Button_export_to_excel(object sender, RoutedEventArgs e)
         {
-            DateTime Date2 = Convert.ToDateTime(Date.Text);
             try
             {
-                DateTime Date = DateTime.Now;               
+                DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                string formattedDate2 = Date.ToString("dd.MM.yyyy") + " " + Date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
@@ -390,7 +396,7 @@ namespace B.I.G
                 worksheet.DeleteColumn(11);
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
-                worksheet.Column(4).Width = 25;
+
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
