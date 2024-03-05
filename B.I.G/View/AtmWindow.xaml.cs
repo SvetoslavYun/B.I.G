@@ -47,7 +47,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public AtmWindow()
+        public AtmWindow(DateTime date)
         {
             Atms = new ObservableCollection<atm>();
             atm_Controller = new Atm_Controller();
@@ -73,8 +73,8 @@ namespace B.I.G
                 Date.Text = Properties.Settings.Default.dateOrder;
             }
             dGridCollector.DataContext = Atms;
-            //Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-            //daTe = date;
+            Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+            daTe = date;
             FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
@@ -139,7 +139,7 @@ namespace B.I.G
 
             {
                 Atms.Clear();
-                foreach (var item in atm_Controller.GetAllAtm())
+                foreach (var item in atm_Controller.GetAllAtm(Convert.ToDateTime(Date.Text)))
                 {
                     Atms.Add(item);
                 }
@@ -247,18 +247,13 @@ namespace B.I.G
                 var result = MessageBox.Show("Вы уверены?", "Удалить запись", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 { // получение выбранных строк
-                    List<journalCollector> journalCollectors = dGridCollector.SelectedItems.Cast<journalCollector>().ToList();
+                    List<atm> atms = dGridCollector.SelectedItems.Cast<atm>().ToList();
                     {
                         // проход по списку выбранных строк
-                        foreach (journalCollector JournalCollectors in journalCollectors)
+                        foreach (atm Atms in atms)
                         {
-                            var Route = JournalCollectors.route;
-                            var Id = JournalCollectors.id;
-                            string name = JournalCollectors.fullname;
-                            journalCollectorController.Delete(Route, Id, Convert.ToDateTime(Date.Text));
-                            journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
-                            journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                            journalCollectorController.DeleteNUL();
+                            var Id = Atms.id;
+                            atm_Controller.Delete( Id);
                             Search(sender, e);
                         }
                     }
@@ -294,12 +289,12 @@ namespace B.I.G
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
                 MainWindow.NameJorunal = Name.Text;
-                var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
+                var searchResults = atm_Controller.SearchAtmName(Name.Text, Route.Text, Convert.ToDateTime(Date.Text));
 
-                JournalCollectors.Clear();
+                Atms.Clear();
                 foreach (var result in searchResults)
                 {
-                    JournalCollectors.Add(result);
+                    Atms.Add(result);
                 }
 
 
@@ -313,11 +308,12 @@ namespace B.I.G
 
         private void Button_export_to_excel(object sender, RoutedEventArgs e)
         {
+            DateTime Date2 = Convert.ToDateTime(Date.Text);
             try
             {
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date.ToString("dd.MM.yyyy") + " " + Date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
@@ -520,6 +516,40 @@ namespace B.I.G
             journalCollectorWindow.Show();
             Close();
 
+        }
+
+        private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
+        {
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text));
+            journalCollectorWindow.Show();
+            var currentWindow = Window.GetWindow(this);
+
+            // Закрыть текущее окно
+            currentWindow.Close();
+        }
+
+        private void Button_import_to_excel(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // создание диалогового окна для выбора файла Excel
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+
+                // проверка, был ли выбран файл
+                if (openFileDialog.ShowDialog() == true)
+                {
+
+                    atm_Controller.ImportExcelToDatabase(openFileDialog.FileName, Convert.ToDateTime(Date.Text));
+                    Search(sender, e);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

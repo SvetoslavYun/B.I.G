@@ -84,8 +84,8 @@ namespace B.I.G
             //EditJournal editJournal = new EditJournal();
             //editJournal.Show();
 
-            AtmWindow atmWindow = new AtmWindow();
-            atmWindow.Show();
+            //AtmWindow atmWindow = new AtmWindow();
+            //atmWindow.Show();
             Close(); // Закрыть текущее окно авторизации
         }
 

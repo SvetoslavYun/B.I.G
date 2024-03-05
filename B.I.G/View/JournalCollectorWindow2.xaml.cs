@@ -728,5 +728,12 @@ namespace B.I.G
             Empty();
             }
         }
+
+        private void Button_AtmWindow(object sender, RoutedEventArgs e)
+        {
+            AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text));
+            atmWindow.Show();
+            Close();
+        }
     }
 }

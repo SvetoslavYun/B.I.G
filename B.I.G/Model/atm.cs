@@ -13,6 +13,7 @@ namespace B.I.G.Model
         public String name { get; set; }
         public String name2 { get; set; }
         public String route { get; set; }
+        public String circle { get; set; }
         public DateTime date { get; set; }
     }
 }

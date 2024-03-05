@@ -15,14 +15,27 @@
         <Grid.Background>
             <ImageBrush ImageSource="Image/Big.png" Stretch="UniformToFill"/>
         </Grid.Background>
-        <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" CanUserSortColumns="False" AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" RowHeaderWidth="50" CanUserAddRows="False" Margin="189,51,10,24" 
-   Background="Transparent" Foreground="Black" BorderBrush="Transparent" AlternatingRowBackground="#F0F0F0">
 
+
+        <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" CanUserSortColumns="False" AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" RowHeaderWidth="50" CanUserAddRows="False" Margin="189,51,10,24" 
+          Background="Transparent" Foreground="Black" BorderBrush="Transparent" AlternatingRowBackground="#F0F0F0">
+            <DataGrid.Resources>
+                <ContextMenu x:Key="RowContextMenu">
+                    <MenuItem Header="Удалить" Click="DeleteMenuItem">
+                        <MenuItem.Icon>
+                            <Image Source="/image/Delete.png" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}"/>
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№ п/п" Binding="{Binding route}"  Width="*"/>
                 <DataGridTextColumn Header="дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}"  Width="*"/>
                 <DataGridTextColumn Header="время" Width="*"/>
-                <DataGridTextColumn Header="Номер УС (рабочего комплекта ключей УС, конверта с кодом сейфа УС)" Binding="{Binding atm}" Width="*"/>
+                <DataGridTextColumn Header="Номер УС (рабочего комплекта ключей УС, конверта с кодом сейфа УС)" Binding="{Binding atmname}" Width="*"/>
                 <DataGridTextColumn Header="Фамилия, инициалы" Binding="{Binding name}" Width="*"/>
                 <DataGridTextColumn Header="роспись в получении"  Width="*"/>
                 <DataGridTextColumn Header="Фамилия, инициалы" Binding="{Binding name2}" Width="*"/>
@@ -30,15 +43,14 @@
                 <DataGridTextColumn Header="дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}"  Width="*"/>
                 <DataGridTextColumn Header="время" Width="*"/>
                 <DataGridTextColumn Header="Расписка лица, принявшего рабочий комплект ключей УС, конверт с кодом сейфа УС"  Width="*"/>
-
-
             </DataGrid.Columns>
         </DataGrid>
 
-        <TextBox x:Name="Name" Margin="189,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
-        <TextBox x:Name="Route" Margin="342,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
-        <TextBlock HorizontalAlignment="Left" Margin="217,3,0,0" TextWrapping="Wrap" Text="Поиск устройства" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="101"/>
-        <TextBlock HorizontalAlignment="Left" Margin="358,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
+
+        <TextBox x:Name="Route" Margin="189,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
+        <TextBox x:Name="Name" Margin="342,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
+        <TextBlock HorizontalAlignment="Left" Margin="366,4,0,0" TextWrapping="Wrap" Text="Поиск устройства" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="100"/>
+        <TextBlock HorizontalAlignment="Left" Margin="205,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
         Margin="0,12,103,0"
@@ -186,6 +198,44 @@
         </Button>
 
         <Button x:Name="InventoryButton" Content="Журнал выдачи инвентаря" HorizontalAlignment="Left" Margin="15,383,0,0" VerticalAlignment="Top" Width="154" Click="Inventory_Button" Height="26" FontFamily="Vivaldi">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FF2EACD4" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
+
+        <Button x:Name="LookCollectoButton" Content="Журнал оружия" HorizontalAlignment="Left" Margin="15,469,0,0" VerticalAlignment="Top" Width="154" Click="LookCollectoButton_LogWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -376,9 +426,50 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
+        <Button x:Name="BatenOrder"  Content="Загрузить У.С." Margin="945,12,0,0" VerticalAlignment="Top" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel" HorizontalAlignment="Left" Width="104">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FF93E842" Offset="1"/>
+                    <GradientStop Color="#FF97A28C" Offset="0"/>
+                    <GradientStop Color="#FF887E64" Offset="0.261"/>
+                    <GradientStop Color="#FF55B5AA" Offset="0.93"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="Black"/>
+            </Button.Foreground>
+        </Button>
 
-        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="764,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
-        <TextBlock HorizontalAlignment="Left" Margin="595,10,0,0" TextWrapping="Wrap" Text="Журнал оружия на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
+
+        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="730,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="200" Height="25" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Margin="595,10,0,0" TextWrapping="Wrap" Text="Журнал У.С. на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
 
 
     </Grid>
