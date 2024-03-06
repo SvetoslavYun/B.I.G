@@ -71,17 +71,10 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public void Update(user_account User)
+        public void UpdateNull()
         {
-            var commandString = "UPDATE user_accounts SET username=@Username, password_hash=@Password_hash, access=@Access, image=@Image WHERE id = @Id";
+            var commandString = "UPDATE atms SET route = CASE WHEN route IS NULL THEN '' ELSE route END, atmname = CASE WHEN atmname IS NULL THEN '' ELSE atmname END, name = CASE WHEN name IS NULL THEN '' ELSE name END, name2 = CASE WHEN name2 IS NULL THEN '' ELSE name2 END, circle = CASE WHEN circle IS NULL THEN '' ELSE circle END;";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
-            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
-                 new SQLiteParameter("Username", User.username),
-                new SQLiteParameter("Password_hash", User.password_hash),
-                new SQLiteParameter("Access", User.access),
-                new SQLiteParameter("Image", User.image),
-                new SQLiteParameter("Id", User.id),
-            });
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
@@ -94,6 +87,19 @@ namespace B.I.G.Controller
             deleteCommand.Parameters.AddWithValue("Id", id);
             connection.Open();
             deleteCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public void DeleteToDate(DateTime date)
+        {
+
+            var commandString2 = "DELETE FROM atms WHERE (date = @Date)";
+            SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+            deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            connection.Open();
+            deleteCommand2.ExecuteNonQuery();
             connection.Close();
         }
 

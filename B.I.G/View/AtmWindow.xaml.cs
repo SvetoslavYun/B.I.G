@@ -317,17 +317,17 @@ namespace B.I.G
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
-                    process = "Сформировал: Журнал оружия и боеприпасов",
+                    process = "Сформировал: Журнал устройств самообслуживания",
                     date = Convert.ToDateTime(formattedDate),
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
                 log_Controller.Insert(Log2);
 
                 var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал оружия и боеприпасов");
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Журнал устройств самообслуживания");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -336,73 +336,151 @@ namespace B.I.G
 
                     cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
-
-                    cells.Style.Font.Size = 10; // Установите нужный размер шрифта
-
+                    cells.Style.WrapText = true; // Разрешаем перенос текста
+                    cells.Style.Font.Size = 7;
+                    cells.Style.Font.Bold = true;
                 }
 
+                // Добавление сетки после последней строки данных
+                using (var cells = worksheet.Cells[dGridCollector.Items.Count + 2, 1, dGridCollector.Items.Count + 3, dGridCollector.Columns.Count])
+                {
+                    cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                    cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                    cells.Style.WrapText = true; // Разрешаем перенос текста
+                }
+
+                worksheet.Row(1).Height = 25;
+                worksheet.Row(2).Height = 40;
+
+                worksheet.Cells[1, 1, 2, 1].Merge = true; // Объединение колонки 1 в строках 1 и 2
+                worksheet.Cells[1, 1].Value = "№ п/п";
+
+                worksheet.Cells[1, 4, 2, 4].Merge = true; 
+                worksheet.Cells[1, 4].Value = "Номер УС (рабочего комплекта ключей УС, конверта с кодом сейфа УС)";
+
+                worksheet.Cells[1, 11, 2, 11].Merge = true; 
+                worksheet.Cells[1, 11].Value = "Расписка лица, принявшего рабочий комплект ключей УС, конверт с кодом сейфа УС";
+
+                worksheet.Cells[1, 12, 2, 12].Merge = true; 
+                worksheet.Cells[1, 12].Value = "Примечание";
+                worksheet.Cells[1, 12].Style.TextRotation = 90;
+
+                // Объединение второй и третьей колонок в первой строке
+                worksheet.Cells[1, 2, 1, 3].Merge = true;
+
+                // Установка значения в объединенной ячейке
+                worksheet.Cells[1, 2].Value = "Рабочий комплект ключей УС, конверт с кодом сейфа УС выдан";
+                // Добавление заголовков столбцов и порядковых номеров
+
+                // Объединение второй и третьей колонок в первой строке
+                worksheet.Cells[1, 5, 1, 6].Merge = true;
+
+                // Установка значения в объединенной ячейке
+                worksheet.Cells[1, 5].Value = "Рабочий комплект ключей УС, конверт с кодом сейфа УС получил";
+                // Добавление заголовков столбцов и порядковых номеров
+
+                // Объединение второй и третьей колонок в первой строке
+                worksheet.Cells[1, 7, 1, 8].Merge = true;
+
+                // Установка значения в объединенной ячейке
+                worksheet.Cells[1, 7].Value = "Ключ от сейфа из рабочего комплекта УС получил";
+                // Добавление заголовков столбцов и порядковых номеров
+
+                // Объединение второй и третьей колонок в первой строке
+                worksheet.Cells[1, 9, 1, 10].Merge = true;
+
+                // Установка значения в объединенной ячейке
+                worksheet.Cells[1, 9].Value = "Рабочий комплект ключей УС, конверт с кодом сейфа УС принят";
                 // Добавление заголовков столбцов и порядковых номеров
 
                 for (int i = 1; i <= dGridCollector.Columns.Count; i++)
                 {
-                    worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[2, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[3, i].Value = i;
                 }
+
 
 
                 // Добавление данных
                 for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {
-                    var collectorItem = (journalCollector)dGridCollector.Items[i];
+                    var collectorItem = (atm)dGridCollector.Items[i];
 
                     // Создание строки
-                    var row = worksheet.Row(i + 2);
+                    var row = worksheet.Row(i + 4);
+                    row.Height = 19;
+                    worksheet.Cells[i + 4, 1].Value = collectorItem.route;
+                    worksheet.Cells[i + 4, 2].Value = collectorItem.date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i + 4, 9].Value = collectorItem.date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i + 4, 4].Value = collectorItem.atmname;
+                    worksheet.Cells[i + 4, 5].Value = collectorItem.name;
 
-                    worksheet.Cells[i + 2, 2].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.gun;
-                    worksheet.Cells[i + 2, 6].Value = collectorItem.dateWork;
-                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton_serial;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.automaton;
-                    worksheet.Cells[i + 2, 9].Value = collectorItem.permission;
+                    worksheet.Cells[i + 4, 7].Value = collectorItem.name2;
+                  
 
-                    for (int col = 2; col <= 8; col++)
+
+                    for (int col = 2; col <= 12; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 4, col].Style.Font.Size = 8; // Установите нужный размер шрифта
                     }
 
-                    // Добавьте условие для проверки значения collectorItem.fullname
-                    if (collectorItem.fullname == ".")
+                   
+                }
+
+                // Добавление 20 пустых строк
+                int rowCount = dGridCollector.Items.Count + 4;
+                for (int i = 0; i < 40; i++)
+                {
+                    var row = worksheet.Row(rowCount + i);
+                    row.Height = 19;
+
+                    // Устанавливаем стили для линий ячеек
+                    using (var cells = worksheet.Cells[rowCount + i, 1, rowCount + i, dGridCollector.Columns.Count])
                     {
-                        // Установите стиль заливки для первых семь колонок
-                        for (int col = 2; col <= 9; col++)
-                        {
-                            worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Black);
-                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.White);
-                        }
+                        cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                        cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                        cells.Style.WrapText = true; // Разрешаем перенос текста
+                        cells.Style.Font.Size = 7;
+                        cells.Style.Font.Bold = true;
                     }
                 }
 
 
-                worksheet.DeleteColumn(1);
-                worksheet.DeleteColumn(2);
-                worksheet.DeleteColumn(8);
-                worksheet.DeleteColumn(9);
-                worksheet.DeleteColumn(10);
-                worksheet.DeleteColumn(11);
-                // Автоподгон ширины колонок
-                worksheet.Cells.AutoFitColumns();
+
+                worksheet.Column(1).Width = 6;
+                worksheet.Column(2).Width = 10;
+                worksheet.Column(3).Width = 9;
+                worksheet.Column(4).Width = 22;
+                worksheet.Column(5).Width = 12;
+                worksheet.Column(6).Width = 8;
+                worksheet.Column(7).Width = 12;
+                worksheet.Column(8).Width = 8;
+                worksheet.Column(9).Width = 10;
+                worksheet.Column(10).Width = 9;
+                worksheet.Column(11).Width = 10;
+                worksheet.Column(12).Width = 6;
+
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
-                worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
+                worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:3"];
 
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "Excel Files|*.xlsx",
                     DefaultExt = ".xlsx",
-                    FileName = "Журнал оружия и боеприпасов'"
+                    FileName = "Журнал устройств самообслуживания"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -417,10 +495,6 @@ namespace B.I.G
                 MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
-
-
 
 
 
@@ -539,8 +613,9 @@ namespace B.I.G
                 // проверка, был ли выбран файл
                 if (openFileDialog.ShowDialog() == true)
                 {
-
+                    atm_Controller.DeleteToDate(Convert.ToDateTime(Date.Text));
                     atm_Controller.ImportExcelToDatabase(openFileDialog.FileName, Convert.ToDateTime(Date.Text));
+                    atm_Controller.UpdateNull();
                     Search(sender, e);
                 }
 
@@ -549,6 +624,16 @@ namespace B.I.G
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Button_DelDate(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Вы уверены?", "Удалить наряд на " + Date.Text, MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                atm_Controller.DeleteToDate(Convert.ToDateTime(Date.Text));
+                Search(sender, e);
             }
         }
     }

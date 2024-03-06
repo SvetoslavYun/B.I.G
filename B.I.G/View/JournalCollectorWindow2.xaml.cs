@@ -19,6 +19,7 @@ using DocumentFormat.OpenXml.Drawing;
 using Microsoft.Graph.Models;
 using System.Windows.Input;
 using B.I.G.View;
+using System.Web.UI.HtmlControls;
 
 namespace B.I.G
 
@@ -100,6 +101,8 @@ namespace B.I.G
             }
             if (AccesText.Text == "Пользователь")
             {
+                AtmButton.Visibility = Visibility.Collapsed;
+                AtmButton.IsEnabled = false;
                 AppearancesButton.Visibility = Visibility.Collapsed;
                 AppearancesButton.IsEnabled = false;
                 BatenOrder.Visibility = Visibility.Collapsed;

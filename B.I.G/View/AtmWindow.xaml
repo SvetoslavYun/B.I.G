@@ -43,6 +43,7 @@
                 <DataGridTextColumn Header="дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}"  Width="*"/>
                 <DataGridTextColumn Header="время" Width="*"/>
                 <DataGridTextColumn Header="Расписка лица, принявшего рабочий комплект ключей УС, конверт с кодом сейфа УС"  Width="*"/>
+                <DataGridTextColumn Header="Примечание"  Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -467,9 +468,28 @@
             </Button.Foreground>
         </Button>
 
+        <Button Content="" HorizontalAlignment="Left" Margin="517,17,0,0" VerticalAlignment="Top" Click="Button_DelDate" Width="30" Height="29" RenderTransformOrigin="4.423,0.386">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderThickness="1">
+                        <Grid>
+                            <Image Source="/Image/8207958.png"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFF0000"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+
 
         <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="730,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="200" Height="25" FontSize="20"/>
         <TextBlock HorizontalAlignment="Left" Margin="595,10,0,0" TextWrapping="Wrap" Text="Журнал У.С. на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBlock HorizontalAlignment="Left" Margin="499,-1,0,0" TextWrapping="Wrap" Text="Удалить У.С." VerticalAlignment="Top" Foreground="#FFF9F6F3"/>
 
 
     </Grid>
