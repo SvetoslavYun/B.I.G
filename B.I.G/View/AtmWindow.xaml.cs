@@ -460,7 +460,7 @@ namespace B.I.G
                 worksheet.Column(1).Width = 6;
                 worksheet.Column(2).Width = 10;
                 worksheet.Column(3).Width = 9;
-                worksheet.Column(4).Width = 22;
+                worksheet.Column(4).Width = 23;
                 worksheet.Column(5).Width = 12;
                 worksheet.Column(6).Width = 8;
                 worksheet.Column(7).Width = 12;
@@ -468,7 +468,7 @@ namespace B.I.G
                 worksheet.Column(9).Width = 10;
                 worksheet.Column(10).Width = 9;
                 worksheet.Column(11).Width = 10;
-                worksheet.Column(12).Width = 6;
+                worksheet.Column(12).Width = 5;
 
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;

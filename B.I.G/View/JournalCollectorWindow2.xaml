@@ -596,7 +596,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button x:Name="UserButton" Content="Пользователи" HorizontalAlignment="Left" Margin="15,555,0,0" VerticalAlignment="Top" Width="154" Click="Button_UsersWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="UserButton" Content="Пользователи" HorizontalAlignment="Left" Margin="15,641,0,0" VerticalAlignment="Top" Width="154" Click="Button_UsersWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -674,7 +674,7 @@
         </Button>
 
 
-        <Button x:Name="AtmButton" Content="Журнал У.С." HorizontalAlignment="Left" Margin="15,641,0,0" VerticalAlignment="Top" Width="154" Click="Button_AtmWindow" Height="26" FontFamily="Vivaldi">
+        <Button x:Name="AtmButton" Content="Журнал У.С." HorizontalAlignment="Left" Margin="15,555,0,0" VerticalAlignment="Top" Width="154" Click="Button_AtmWindow" Height="26" FontFamily="Vivaldi">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">

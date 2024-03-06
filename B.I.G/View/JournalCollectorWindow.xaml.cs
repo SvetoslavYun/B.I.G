@@ -515,5 +515,12 @@ namespace B.I.G
             Close();
 
         }
+
+        private void Button_AtmWindow(object sender, RoutedEventArgs e)
+        {
+            AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text));
+            atmWindow.Show();
+            Close();
+        }
     }
 }

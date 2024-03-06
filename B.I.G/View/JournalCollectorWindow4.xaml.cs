@@ -605,5 +605,12 @@ namespace B.I.G
             journalCollectorWindow.Show();
             Close();
         }
+
+        private void Button_AtmWindow(object sender, RoutedEventArgs e)
+        {
+            AtmWindow atmWindow = new AtmWindow(daTe);
+            atmWindow.Show();
+            Close();
+        }
     }
 }

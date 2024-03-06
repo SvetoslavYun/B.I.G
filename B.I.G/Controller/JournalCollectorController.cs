@@ -887,6 +887,7 @@ namespace B.I.G.Controller
                               AND name NOT LIKE '%[^a-zA-Z0-9]%' 
                               AND route2 != 'РЕЗЕРВ' 
                               AND route2 != 'стажер'  
+                              AND name IS NOT NULL AND route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%АТМ%' or dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date)
                           GROUP BY 
                               route2
                           ORDER BY 
