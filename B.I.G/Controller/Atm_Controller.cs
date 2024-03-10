@@ -23,7 +23,16 @@ namespace B.I.G.Controller
             connection = new SQLiteConnection(connString);
         }
 
-    
+
+        public void DeleteAfterSixMonthsLog()
+        {
+            var commandString = "DELETE FROM atms  WHERE date <= date('now', '-1 months')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            connection.Open();
+            deleteCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
         public IEnumerable<atm> GetAllAtm(DateTime date)
         {
             var commandString = "SELECT * FROM atms WHERE date = @Date ";

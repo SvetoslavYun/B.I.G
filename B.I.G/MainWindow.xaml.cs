@@ -46,6 +46,7 @@ namespace B.I.G
         ObservableCollection<journalCollector> JournalCollectors;
         private Log_Controller log_Controller;
         private JournalCollectorController journalCollectorController;
+        private Atm_Controller atm_Controller;
         ObservableCollection<user_account> Users;
         private User_accountController user_AccountController;
         public MainWindow()
@@ -54,6 +55,7 @@ namespace B.I.G
             log_Controller = new Log_Controller();
  
             journalCollectorController = new JournalCollectorController();
+            atm_Controller = new Atm_Controller();
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
@@ -61,6 +63,7 @@ namespace B.I.G
 
             log_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteAfterSixMonthsLog();
+            atm_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
             //Get();
         }
