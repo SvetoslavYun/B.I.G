@@ -132,7 +132,7 @@ namespace B.I.G
 
             {
                 JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors(Convert.ToDateTime(Date.Text)))
+                foreach (var item in journalCollectorController.GetAllCashCollectors0(Convert.ToDateTime(Date.Text)))
                 {
                     JournalCollectors.Add(item);
                 }
@@ -287,7 +287,7 @@ namespace B.I.G
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
                 MainWindow.NameJorunal = Name.Text;
-                var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
+                var searchResults = journalCollectorController.SearchCollectorName0(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
 
                 JournalCollectors.Clear();
                 foreach (var result in searchResults)
@@ -390,7 +390,7 @@ namespace B.I.G
                 worksheet.DeleteColumn(11);
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
-                worksheet.Column(4).Width = 25;
+                worksheet.Column(4).Width = 22;
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;

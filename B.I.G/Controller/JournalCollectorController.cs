@@ -53,6 +53,73 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+        public IEnumerable<journalCollector> GetAllCashCollectors0(DateTime date)
+        {
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
+
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%Фабрициус%'";
+
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
+            connection.Open();
+
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var Id = reader.GetInt32(reader.GetOrdinal("id"));
+                var Name = reader.GetString(reader.GetOrdinal("name"));
+                var Gun = reader.GetString(reader.GetOrdinal("gun"));
+                var AutomatonSerial = reader.GetString(reader.GetOrdinal("automaton_serial"));
+                var Automaton = reader.GetString(reader.GetOrdinal("automaton"));
+                var Permission = reader.GetString(reader.GetOrdinal("permission"));
+                var Meaning = reader.GetString(reader.GetOrdinal("meaning"));
+                var Certificate = reader.GetString(reader.GetOrdinal("certificate"));
+                var Token = reader.GetString(reader.GetOrdinal("token"));
+                var Power = reader.GetString(reader.GetOrdinal("power"));
+                var FullName = reader.GetString(reader.GetOrdinal("fullname"));
+                var Profession = reader.GetString(reader.GetOrdinal("profession"));
+                var Phone = reader.GetString(reader.GetOrdinal("phone"));
+                var Id2 = reader.GetInt32(reader.GetOrdinal("id2"));
+                var Route = reader.GetString(reader.GetOrdinal("route"));
+                var Date = reader.GetDateTime(reader.GetOrdinal("date"));
+                var DateWork = reader.GetString(reader.GetOrdinal("dateWork"));
+                var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+                var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+
+                var JournalCollector = new journalCollector
+                {
+                    id = Id,
+                    name = Name,
+                    gun = Gun,
+                    automaton_serial = AutomatonSerial,
+                    automaton = Automaton,
+                    permission = Permission,
+                    meaning = Meaning,
+                    certificate = Certificate,
+                    token = Token,
+                    power = Power,
+                    fullname = FullName,
+                    profession = Profession,
+                    phone = Phone,
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
+                    route2 = Route2, // Добавлено новое поле route2
+                    image = Image
+                };
+
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
+
         public IEnumerable<journalCollector> GetAllCashCollectors(DateTime date)
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
@@ -646,7 +713,98 @@ namespace B.I.G.Controller
         }
 
 
+
         public IEnumerable<journalCollector> SearchCollectorName(string name, DateTime date, string route)
+        {
+            connection.Open();
+            if (!string.IsNullOrEmpty(name))
+            {
+                string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE Name = @Name";
+                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
+                    long existingRecords = (long)selectCommand.ExecuteScalar();
+                    if (existingRecords == 0)
+                    {
+                        name = char.ToUpper(name[0]) + name.Substring(1);
+
+                    }
+                }
+                name = char.ToUpper(name[0]) + name.Substring(1);
+            }
+            connection.Close();
+
+
+
+            connection.Close();
+
+
+            var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
+
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route;";
+            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
+            getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
+            getAllCommand.Parameters.AddWithValue("@Route", "" + route + "%");
+            getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+
+            connection.Open();
+            var reader = getAllCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var Id = reader.GetInt32(reader.GetOrdinal("id"));
+                var Name = reader.GetString(reader.GetOrdinal("name"));
+                var Gun = reader.GetString(reader.GetOrdinal("gun"));
+                var AutomatonSerial = reader.GetString(reader.GetOrdinal("automaton_serial"));
+                var Automaton = reader.GetString(reader.GetOrdinal("automaton"));
+                var Permission = reader.GetString(reader.GetOrdinal("permission"));
+                var Meaning = reader.GetString(reader.GetOrdinal("meaning"));
+                var Certificate = reader.GetString(reader.GetOrdinal("certificate"));
+                var Token = reader.GetString(reader.GetOrdinal("token"));
+                var Power = reader.GetString(reader.GetOrdinal("power"));
+                var FullName = reader.GetString(reader.GetOrdinal("fullname"));
+                var Profession = reader.GetString(reader.GetOrdinal("profession"));
+                var Phone = reader.GetString(reader.GetOrdinal("phone"));
+                var Id2 = reader.GetInt32(reader.GetOrdinal("id2"));
+                var Route = reader.GetString(reader.GetOrdinal("route"));
+                var Date = reader.GetDateTime(reader.GetOrdinal("date"));
+                var DateWork = reader.GetString(reader.GetOrdinal("dateWork"));
+                var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
+                var Route2 = reader.GetString(reader.GetOrdinal("route2"));
+                var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+
+                var JournalCollector = new journalCollector
+                {
+                    id = Id,
+                    name = Name,
+                    gun = Gun,
+                    automaton_serial = AutomatonSerial,
+                    automaton = Automaton,
+                    permission = Permission,
+                    meaning = Meaning,
+                    certificate = Certificate,
+                    token = Token,
+                    power = Power,
+                    fullname = FullName,
+                    profession = Profession,
+                    phone = Phone,
+                    id2 = Id2,
+                    route = Route,
+                    date = Date,
+                    dateWork = DateWork,
+                    appropriation = Appropriation,
+                    route2 = Route2, // Добавлено новое поле route2
+                    image = Image
+                };
+
+                yield return JournalCollector;
+            }
+
+            connection.Close();
+        }
+
+        public IEnumerable<journalCollector> SearchCollectorName0(string name, DateTime date, string route)
         {
             connection.Open();
             if (!string.IsNullOrEmpty(name))
@@ -673,7 +831,7 @@ namespace B.I.G.Controller
 
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route;";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%Фабрициус%';";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
