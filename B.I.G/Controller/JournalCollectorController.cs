@@ -39,13 +39,17 @@ namespace B.I.G.Controller
         {
             var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND dateWork LIKE '%АТМ%' and date= @Date);";
             var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND (dateWork LIKE '%перевозка%' OR dateWork LIKE '%Перевозка%') and date= @Date);";
+            var commandString3 = "DELETE FROM journalCollectors WHERE (profession LIKE 'старший бригады инкассаторов' and route ='') or (profession LIKE 'инкассатор-сборщик' and route ='') or (profession LIKE 'водитель автомобиля' and route ='');";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
             SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+            SQLiteCommand deleteCommand3 = new SQLiteCommand(commandString3, connection);
             deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            deleteCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             deleteCommand2.ExecuteNonQuery();
+            deleteCommand3.ExecuteNonQuery();
             connection.Close();
         }
 
@@ -120,7 +124,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' and jc.route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%Фабрициуса%' and date= @Date) ";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' and jc.route NOT IN (SELECT route FROM journalCollectors  WHERE CAST(route2 AS UNSIGNED) >= 90 and date= @Date) AND jc.profession NOT LIKE '%Фабрициус%' ";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -189,7 +193,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' GROUP BY jc.name  ORDER BY jc.name ";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' AND jc.profession NOT LIKE '%Фабрициус%' AND CAST(jc.route2 AS UNSIGNED) < 90 GROUP BY jc.name  ORDER BY jc.name ";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -377,7 +381,7 @@ namespace B.I.G.Controller
             var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
-            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 5), route2 = SUBSTRING(Route, 10, 5) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
+            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 6), route2 = SUBSTRING(Route, 10, 6) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
             var commandString6 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
             var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ' AND date = @Date";
@@ -887,7 +891,7 @@ namespace B.I.G.Controller
                               AND name NOT LIKE '%[^a-zA-Z0-9]%' 
                               AND route2 != 'РЕЗЕРВ' 
                               AND route2 != 'стажер'  
-                              AND name IS NOT NULL AND route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%АТМ%' or dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date)
+                              AND name IS NOT NULL AND route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%АТМ%' or dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date) and CAST(route2 AS UNSIGNED) <90
                           GROUP BY 
                               route2
                           ORDER BY 
