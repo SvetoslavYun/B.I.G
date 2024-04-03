@@ -26,7 +26,7 @@ namespace B.I.G.Controller
 
         public void DeleteAfterSixMonthsLog()
         {
-            var commandString = "DELETE FROM atms  WHERE date <= date('now', '-1 months')";
+            var commandString = "DELETE FROM atms  WHERE date <= date('now', '-14 days')";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
             connection.Open();
             deleteCommand.ExecuteNonQuery();
@@ -35,7 +35,7 @@ namespace B.I.G.Controller
 
         public IEnumerable<atm> GetAllAtm(DateTime date)
         {
-            var commandString = "SELECT * FROM atms WHERE date = @Date ";
+            var commandString = "SELECT * FROM atms WHERE date = @Date ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             connection.Open();
@@ -115,7 +115,7 @@ namespace B.I.G.Controller
         public IEnumerable<atm> SearchAtmName(string name, string route, DateTime date)
         {
             connection.Open();
-            var commandString = "SELECT id, route, atmname, name, name2, date, circle FROM atms WHERE atmname LIKE @Name And route LIKE @Route AND date = @Date;";
+            var commandString = "SELECT id, route, atmname, name, name2, date, circle FROM atms WHERE atmname LIKE @Name And route LIKE @Route AND date = @Date ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");

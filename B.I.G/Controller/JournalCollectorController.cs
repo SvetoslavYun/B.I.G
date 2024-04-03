@@ -28,7 +28,7 @@ namespace B.I.G.Controller
 
         public void DeleteAfterSixMonthsLog()
         {
-            var commandString = "DELETE FROM journalCollectors  WHERE date <= date('now', '-1 months')";
+            var commandString = "DELETE FROM journalCollectors  WHERE date <= date('now', '-14 days')";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
             connection.Open();
             deleteCommand.ExecuteNonQuery();
