@@ -10,7 +10,7 @@
         <BitmapImage UriSource="/image/edit2.png"/>
     </Window.Icon>
 
-    <Grid Name="grid">
+    <Grid Name="grid" Margin="0,0,-54,0">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
@@ -55,7 +55,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="247,113,0,0" TextWrapping="Wrap" Text="Номер телефона" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,143,0,0" TextWrapping="Wrap" Text="Пистолет" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,173,0,0" TextWrapping="Wrap" Text="Номер автомата" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="247,203,0,0" TextWrapping="Wrap" Text="Автомата" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,203,0,0" TextWrapping="Wrap" Text="Автомат" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,233,0,0" TextWrapping="Wrap" Text="Разрешение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,263,0,0" TextWrapping="Wrap" Text="Доверенность" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,293,0,0" TextWrapping="Wrap" Text="Удостоверение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>

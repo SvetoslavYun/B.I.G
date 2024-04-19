@@ -403,7 +403,11 @@ namespace B.I.G
                     worksheet.Cells[i + 4, 18].Value = collectorItem.meaning;
                     worksheet.Cells[i + 4, 22].Value = collectorItem.certificate;
                     worksheet.Cells[i + 4, 23].Value = collectorItem.token;
+                    worksheet.Cells[i + 4, 29].Value = collectorItem.profession;
 
+                    worksheet.Cells[i + 4, 4].Value = "-/-";
+                    worksheet.Cells[i + 4, 5].Value = "-/-";
+                    worksheet.Cells[i + 4, 16].Value = "-/-";
 
                     for (int col = 2; col <= 8; col++)
                     {
@@ -417,13 +421,13 @@ namespace B.I.G
                         worksheet.Cells[i + 4, 20].Value = "Алмаз";                      
                     }
 
-
-                    if (worksheet.Cells[i + 4, 7].Value?.ToString() != "")
+                  
+                    if (worksheet.Cells[i + 4, 29].Value?.ToString() == "инкассатор-сборщик")
                     {
-
-                      
-                        worksheet.Cells[i + 4, 10].Value = "T2 DP2400";
-                        worksheet.Cells[i + 4, 21].Value = "T2 DP2400";
+                        worksheet.Cells[i + 4, 16].Value = "";
+                        worksheet.Cells[i + 4, 5].Value = "";
+                        worksheet.Cells[i + 4, 10].Value = "-/-";
+                        worksheet.Cells[i + 4, 21].Value = "-/-";
                         worksheet.Cells[i + 4, 13].Value = "Honeywell";
                         worksheet.Cells[i + 4, 24].Value = "Honeywell";
                     }
@@ -439,8 +443,26 @@ namespace B.I.G
                         worksheet.Cells[i + 4, 13].Value = "-/-";
                         worksheet.Cells[i + 4, 24].Value = "-/-";
                     }
+                    if (worksheet.Cells[i + 4, 29].Value?.ToString() == "старший бригады инкассаторов")
+                    {
 
-                   
+                        worksheet.Cells[i + 4, 4].Value = "";
+                        worksheet.Cells[i + 4, 10].Value = "T2 DP2400";
+                        worksheet.Cells[i + 4, 21].Value = "T2 DP2400";
+
+                    }
+                    if (worksheet.Cells[i + 4, 29].Value?.ToString() != "старший бригады инкассаторов" && worksheet.Cells[i + 4, 7].Value?.ToString() == "")
+                    {
+                       
+
+                        worksheet.Cells[i + 4, 10].Value = "-/-";
+                        worksheet.Cells[i + 4, 21].Value = "-/-";
+                     
+                    }
+
+                    if (worksheet.Cells[i + 4, 3].Value?.ToString() == "")
+                    { worksheet.Cells[i + 4, 3].Value = "-/-"; }
+
                         worksheet.Cells[i + 4, 8].Value = "-/-";
                         worksheet.Cells[i + 4, 14].Value = "-/-";
                         worksheet.Cells[i + 4, 19].Value = "-/-";
@@ -501,6 +523,7 @@ namespace B.I.G
                 worksheet.Column(26).Width = 8;
                 worksheet.Column(27).Width = 11;
                 worksheet.Column(28).Width = 8;
+                worksheet.Column(29).Width = 0;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 " + formattedDate2;

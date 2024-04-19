@@ -67,6 +67,7 @@
                 <DataGridTextColumn Header="Дата и время (в часах и минутах) выдачи"  Width="*"/>
                 <DataGridTextColumn Header="Расписка начальника (дежурного) службы инкассации в получении явочных карточек, печатей, доверенностей, ключей от сейфов, металлических печатей, бронежилетов, средств радиосвязи, удостоверений личности инкассатора, номерных жетонов, планшетов и таблиц кодограмм" Width="*"/>
                 <DataGridTextColumn Header="Примечание"  Width="*"/>
+                <DataGridTextColumn Header="Професия" Binding="{Binding profession}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="Экспорт в Excel"

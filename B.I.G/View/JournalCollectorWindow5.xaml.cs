@@ -388,7 +388,7 @@ namespace B.I.G
 
                 // Добавление 5 пустых строк
                 int rowCount = dGridCollector.Items.Count + 3;
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     var row = worksheet.Row(rowCount + i);
                     row.Height = 19;
@@ -408,7 +408,7 @@ namespace B.I.G
                         cells.Style.Font.Bold = true;
                     }
                 }
-                I = I + 9;
+                I = I + 8;
               
 
                 worksheet.Cells[I, 1, I, 5].Merge = true;

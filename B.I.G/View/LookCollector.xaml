@@ -10,7 +10,7 @@
         <BitmapImage UriSource="/image/Employee.png"/>
     </Window.Icon>
 
-    <Grid Name="grid">
+    <Grid Name="grid" Margin="0,0,-98,0">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
@@ -28,7 +28,7 @@
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="Name" Text="{Binding Path=name}" HorizontalAlignment="Left" Margin="273,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="2" Foreground="#FFFFFEFD" FontWeight="Bold" FontStyle="Italic"/>
-        <TextBlock x:Name="Fullname" Text="{Binding Path=fullname}" HorizontalAlignment="Left" Margin="273,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="2" Foreground="#FFF9F9F9" FontWeight="Bold" FontStyle="Italic"/>
+        <TextBlock x:Name="Fullname" Text="{Binding Path=fullname}" HorizontalAlignment="Left" Margin="273,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348" Grid.ColumnSpan="2" Height="22" Grid.Column="2" Foreground="#FFF9F9F9" FontWeight="Bold" FontStyle="Italic"/>
         <TextBlock x:Name="Profession" Text="{Binding Path=profession}" HorizontalAlignment="Left" Margin="273,80,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="2" Foreground="#FFFBF7F7" FontWeight="Bold" FontStyle="Italic"/>
         <TextBlock x:Name="Phone" Text="{Binding Path=phone}" HorizontalAlignment="Left" Margin="273,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="2" Foreground="#FFF9F3F3" FontWeight="Bold" FontStyle="Italic"/>
         <TextBlock x:Name="Meaning" Text="{Binding Path=meaning}" HorizontalAlignment="Left" Margin="273,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="2" Foreground="White" FontWeight="Bold" FontStyle="Italic"/>
