@@ -199,10 +199,12 @@
     </ApplicationDefinition>
     <Compile Include="Controller\JournalCollectorController.cs" />
     <Compile Include="Controller\Atm_Controller.cs" />
+    <Compile Include="Controller\Puth_Controller .cs" />
     <Compile Include="Controller\СashCollectorController .cs" />
     <Compile Include="Model\atm.cs" />
     <Compile Include="Model\journalCollector.cs" />
     <Compile Include="Model\cashCollector.cs" />
+    <Compile Include="Model\puth.cs" />
     <Compile Include="View\Add_СashCollector.xaml.cs">
       <DependentUpon>Add_СashCollector.xaml</DependentUpon>
     </Compile>

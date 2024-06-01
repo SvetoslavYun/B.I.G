@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Авторизация пользователя" Height="450" Width="600" WindowStartupLocation="CenterScreen" Foreground="#FFF1E5E5">
+        Title="Авторизация пользователя" Height="450" Width="600" WindowStartupLocation="CenterScreen" Foreground="#FFF1E5E5" ResizeMode="CanMinimize">
     <Window.Icon>
         <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
@@ -20,15 +20,17 @@
             <Image Source="Image/Big.png" Stretch="UniformToFill" Grid.RowSpan="2"/>
             <PasswordBox x:Name="passwordBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Margin="0,155,0,0" Grid.RowSpan="2"/>
             <CheckBox x:Name="CheckBox" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Margin="230,158,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="16" />
+            <CheckBox x:Name="CheckBoxPuth" VerticalAlignment="Top" Checked="CheckBox_Checked2" Unchecked="CheckBox_Unchecked2" Margin="399,48,0,0" HorizontalAlignment="Left" Width="16" />
             <TextBox x:Name="visiblePasswordTextBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="206" Height="22" Visibility="Collapsed" Margin="0,155,0,0" Grid.RowSpan="2"/>
             <TextBlock HorizontalAlignment="Center" Margin="-100,76,0,0" TextWrapping="Wrap" Text="Имя пользователя" VerticalAlignment="Top" Foreground="#FFFDFAFA" Width="102"/>
             <TextBlock HorizontalAlignment="Center" Margin="-109,132,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Foreground="#FFFDF9F9" Width="94"/>
             <TextBlock Margin="0,0,2,0" TextWrapping="Wrap" Text="sviatoslavyun@gmail.com" VerticalAlignment="Top" FontSize="10" HorizontalAlignment="Right" Width="121"/>
-            <TextBlock Margin="10,0,526,22" Grid.Row="1" TextWrapping="Wrap" Text="v. 0.1.67" VerticalAlignment="Bottom"/>
+            <TextBlock Margin="10,0,526,22" Grid.Row="1" TextWrapping="Wrap" Text="v. 0.1.71" VerticalAlignment="Bottom"/>
         </Grid>
 
         <ComboBox  HorizontalAlignment="Center" x:Name="login" VerticalAlignment="Top" Width="206" Margin="0,101,0,0"/>
         <Button Content="Подтвердить" HorizontalAlignment="Center" Margin="0,207,0,0" VerticalAlignment="Top" Width="104" Click="Button_Click" Background="#FFF1B255"/>
-
+        <TextBlock HorizontalAlignment="Left" Margin="252,42,0,0" TextWrapping="Wrap" Text="Путь к серверу" VerticalAlignment="Top" Foreground="#FFFFFBFB"/>
+        <TextBox Name="sourcePathTextBox" Margin="0,44,189,0" Height="22" VerticalAlignment="Top" HorizontalAlignment="Right" Width="355"/>
     </Grid>
 </Window>

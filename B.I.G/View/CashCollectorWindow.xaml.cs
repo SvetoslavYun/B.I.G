@@ -152,6 +152,7 @@ namespace B.I.G
                             var Id = CashCollectors.id;
                             string name = CashCollectors.fullname;
                             сashCollectorController.Delete(Id, NameText.Text);
+                            сashCollectorController.Delete2(Id, NameText.Text);
 
                             DateTime Date = DateTime.Now;
                             string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");

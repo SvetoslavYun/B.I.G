@@ -20,6 +20,7 @@ using Microsoft.Graph.Models;
 using System.Windows.Input;
 using B.I.G.View;
 using System.Web.UI.HtmlControls;
+using System.ComponentModel;
 
 namespace B.I.G
 
@@ -353,7 +354,7 @@ namespace B.I.G
             {
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date.ToString("dd.MM.yyyy") + " " + Date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
@@ -412,12 +413,19 @@ namespace B.I.G
                     // Добавьте условие для проверки значения collectorItem.fullname
                     if (collectorItem.fullname == ".")
                     {
+                        worksheet.Cells[i + 2, 3].Style.Font.Size = 10; // Установите нужный размер шрифта
+                        row.Height = 15;
+                        worksheet.Cells[i + 2, 3].Value = worksheet.Cells[i + 2, 5].Value;
+                        worksheet.Cells[i + 2, 3, i + 2, 8].Merge = true;
                         // Установите стиль заливки для первых семь колонок
                         for (int col = 2; col <= 8; col++)
                         {
                             worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Black);
-                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.White);
+                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.White);
+                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.Black);
+
+                            worksheet.Cells[i + 2, col].Style.Font.Bold = true; // Установите шрифт жирным
+                            worksheet.Cells[i + 2, col].Style.Font.Italic = true; // Установите шрифт курсивом
                         }
                     }
                 }
@@ -536,12 +544,12 @@ namespace B.I.G
 
         }
 
-        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        private void ImportButton_Click2(object sender, RoutedEventArgs e)
         {
             try
             {
 
-              
+
                 DateTime date = DateTime.Now;
                 if (Calendar2.SelectedDate.HasValue)
                 {
@@ -561,9 +569,13 @@ namespace B.I.G
                         {
                             ; date = Calendar2.SelectedDate.Value;
                         }
-                        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
+                        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date, sender as BackgroundWorker, (progressPercentage) =>
+                        {
+                            (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                        });
                         journalCollectorController.UpdateResponsibilities(date);
                         journalCollectorController.DeleteRound2(date);
+                        journalCollectorController.UpdateJournalBase2(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
                         FillData();
                     }
@@ -594,9 +606,13 @@ namespace B.I.G
                                 ; date = Calendar2.SelectedDate.Value;
                             }
                             journalCollectorController.DeleteToDate(date);
-                            journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date);
+                            journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date, sender as BackgroundWorker, (progressPercentage) =>
+                            {
+                                (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                            });
                             journalCollectorController.UpdateResponsibilities(date);
                             journalCollectorController.DeleteRound2(date);
+                            journalCollectorController.UpdateJournalBase2(date);
                             Date.Text = date.ToString("yyyy-MM-dd");
                             journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                             journalCollectorController.DeleteNUL();
@@ -608,9 +624,9 @@ namespace B.I.G
                         ImportButton.IsEnabled = false;
                         X.Visibility = Visibility.Collapsed;
                         X.IsEnabled = false;
-                        ImportButton.Content = "Выбрать дату";     
+                        ImportButton.Content = "Выбрать дату";
                     }
-                
+
                 }
             }
             catch (Exception ex)
@@ -618,6 +634,136 @@ namespace B.I.G
                 MessageBox.Show(ex.Message);
             }
         }
+
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                JournalCollectors.Clear();
+                DateTime date = DateTime.Now;
+                if (Calendar2.SelectedDate.HasValue)
+                {
+                    date = Calendar2.SelectedDate.Value;
+                }
+
+                if (!journalCollectorController.ImportSerchData(date))
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+
+                    if (openFileDialog.ShowDialog() == true)
+                    {
+                        if (Calendar2.SelectedDate.HasValue)
+                        {
+                            date = Calendar2.SelectedDate.Value;
+                        }
+
+                        StartImport(openFileDialog.FileName, date);
+                    }
+
+                    Calendar2.Visibility = Visibility.Collapsed;
+                    Calendar2.IsEnabled = false;
+                    ImportButton.Visibility = Visibility.Collapsed;
+                    ImportButton.IsEnabled = false;
+                    X.Visibility = Visibility.Collapsed;
+                    X.IsEnabled = false;
+                    ImportButton.Content = "Выбрать дату";
+                }
+                else
+                {
+                    var result = MessageBox.Show("Наряд с этой датой уже сформирован.\nПереформировать заново?", "", MessageBoxButton.YesNo);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            if (Calendar2.SelectedDate.HasValue)
+                            {
+                                date = Calendar2.SelectedDate.Value;
+                            }
+
+                            journalCollectorController.DeleteToDate(date);
+                            StartImport(openFileDialog.FileName, date);
+                        }
+
+                        Calendar2.Visibility = Visibility.Collapsed;
+                        Calendar2.IsEnabled = false;
+                        ImportButton.Visibility = Visibility.Collapsed;
+                        ImportButton.IsEnabled = false;
+                        X.Visibility = Visibility.Collapsed;
+                        X.IsEnabled = false;
+                        ImportButton.Content = "Выбрать дату";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void StartImport(string filePath, DateTime date)
+        {
+            ProgressBar.Visibility = Visibility.Visible;
+            ProgressText.Visibility = Visibility.Visible;
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.DoWork += (sender, e) =>
+            {
+                dynamic arguments = e.Argument;
+
+                try
+                {
+                    journalCollectorController.ImportExcelToDatabase(filePath, date, sender as BackgroundWorker, (progressPercentage) =>
+                    {
+                        (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    e.Result = ex.Message;
+                }
+            };
+            backgroundWorker.ProgressChanged += (sender, e) =>
+            {
+                ProgressBar.Value = e.ProgressPercentage;
+                ProgressText.Text = $"{e.ProgressPercentage}%";
+            };
+            backgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                ProgressBar.Visibility = Visibility.Collapsed;
+                ProgressText.Visibility = Visibility.Collapsed;
+
+                if (e.Error != null)
+                {
+                    MessageBox.Show(e.Error.Message);
+                }
+                else if (e.Result != null)
+                {
+                    MessageBox.Show($"Операция завершена с результатом: {e.Result}");
+                }
+                else
+                {
+                    MessageBox.Show("Операция успешно завершена.");
+                }
+                journalCollectorController.UpdateResponsibilities(date);
+                journalCollectorController.DeleteRound2(date);
+                journalCollectorController.UpdateJournalBase2(date);
+                Date.Text = date.ToString("yyyy-MM-dd");
+               
+                FillData();
+            };
+
+            backgroundWorker.RunWorkerAsync(new { filePath, date });
+        }
+
+
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {

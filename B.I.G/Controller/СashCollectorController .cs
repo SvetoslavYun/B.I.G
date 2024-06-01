@@ -169,7 +169,30 @@ namespace B.I.G.Controller
             deleteCommand.ExecuteNonQuery();
             connection.Close();
         }
+        public void Delete2(int id, string name)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    string commandString = "DELETE FROM cashCollectors WHERE (id = @Id) AND (name != @Name)";
+                    SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
 
+                    deleteCommand.Parameters.AddWithValue("@Id", id);
+                    deleteCommand.Parameters.AddWithValue("@Name", name);
+
+                    connection.Open();
+                    deleteCommand.ExecuteNonQuery();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при удалении данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         public IEnumerable<cashCollector> SearchCollectorName(string name)
         {

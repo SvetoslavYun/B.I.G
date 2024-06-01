@@ -726,5 +726,7 @@
         </Button>
         <TextBlock HorizontalAlignment="Left" Margin="703,-3,0,0" TextWrapping="Wrap" Text="Удалить наряд" VerticalAlignment="Top" Foreground="#FFF7F3EF" Width="82"/>
 
+        <ProgressBar x:Name="ProgressBar" Height="20"  Margin="427,248,353,0" VerticalAlignment="Top" Visibility="Collapsed" />
+        <TextBlock x:Name="ProgressText" Margin="427,220,798,0" VerticalAlignment="Top"    Text="Загрузка..." Foreground="#FFFBF9F7" Visibility="Collapsed"/>
     </Grid>
 </Window>

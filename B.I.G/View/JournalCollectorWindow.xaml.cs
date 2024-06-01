@@ -371,12 +371,17 @@ namespace B.I.G
                     // Добавьте условие для проверки значения collectorItem.fullname
                     if (collectorItem.fullname == ".")
                     {
+                        worksheet.Cells[i + 2, 2].Value = worksheet.Cells[i + 2, 6].Value;
+                        worksheet.Cells[i + 2, 2, i + 2, 9].Merge = true;
                         // Установите стиль заливки для первых семь колонок
                         for (int col = 2; col <= 9; col++)
                         {
                             worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Black);
-                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.White);
+                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Wheat);
+                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.Black);
+
+                            worksheet.Cells[i + 2, col].Style.Font.Bold = true; // Установите шрифт жирным
+                            worksheet.Cells[i + 2, col].Style.Font.Italic = true; // Установите шрифт курсивом
                         }
                     }
                 }
@@ -390,7 +395,8 @@ namespace B.I.G
                 worksheet.DeleteColumn(11);
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
-                worksheet.Column(4).Width = 22;
+                worksheet.Column(4).Width = 18;
+                worksheet.Column(1).Width = 25;
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;

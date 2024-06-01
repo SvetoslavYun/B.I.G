@@ -24,6 +24,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System;
+using System.IO;
+using System.Windows;
+using Path = System.IO.Path;
 
 namespace B.I.G
 {
@@ -33,6 +37,7 @@ namespace B.I.G
     public partial class MainWindow : Window
     {
         private DateTime daTe;
+        public static string puth;
         public static string LogDate;
         public static string LogDate2;
         public static string nameUser;
@@ -45,6 +50,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         ObservableCollection<journalCollector> JournalCollectors;
         private Log_Controller log_Controller;
+        private Puth_Controller puth_Controller;
         private JournalCollectorController journalCollectorController;
         private Atm_Controller atm_Controller;
         ObservableCollection<user_account> Users;
@@ -53,18 +59,19 @@ namespace B.I.G
         {
             Logs = new ObservableCollection<log>();
             log_Controller = new Log_Controller();
+            puth_Controller =new Puth_Controller();  
  
             journalCollectorController = new JournalCollectorController();
             atm_Controller = new Atm_Controller();
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
-            InitializeComponent();
+            InitializeComponent();           
             GetUsernames();
-
-            log_Controller.DeleteAfterSixMonthsLog();
-            journalCollectorController.DeleteAfterSixMonthsLog();
+            LoadPathsIntoTextBox();
+            log_Controller.DeleteAfterSixMonthsLog();          
             atm_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
+            sourcePathTextBox.Visibility = Visibility.Collapsed;
             //Get();
         }
         public void Get()//заполнить список
@@ -91,6 +98,54 @@ namespace B.I.G
             //atmWindow.Show();
             Close(); // Закрыть текущее окно авторизации
         }
+
+
+        public void LoadPathsIntoTextBox()
+        {
+            var paths = puth_Controller.GetAllPaths();
+            sourcePathTextBox.Text = string.Join(Environment.NewLine, paths);
+        }
+
+
+        public void OverwriteDatabase()
+        {
+            try
+            {
+                // Получение пути к директории базы данных из текстового поля
+                string sourceDirectory = sourcePathTextBox.Text;
+
+                // Добавление имени файла базы данных к указанному пути
+                string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
+
+                // Путь к файлу базы данных в целевом расположении (корень программы)
+                string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+                // Проверка наличия файла базы данных в источнике
+                if (!File.Exists(sourcePath))
+                {
+                    MessageBox.Show("Файл базы данных в указанном источнике не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Копирование файла базы данных с заменой существующего файла
+                File.Copy(sourcePath, destinationPath, true);
+                var Puth = new puth()
+                {
+                   
+                    adres = sourcePathTextBox.Text,
+                   
+                };
+                puth = sourcePathTextBox.Text;
+                puth_Controller.Update(Puth);
+                puth_Controller.Update2(Puth, sourcePathTextBox.Text);               
+                //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         public void GetUsernames()//заполнить список
         {
@@ -146,6 +201,8 @@ namespace B.I.G
                         LogS = login.Text;
                         App.nameUserApp = LogS;
                         user_AccountController.MainPhoto(LogS);
+                        OverwriteDatabase();
+                        journalCollectorController.DeleteAfterSixMonthsLog();
                         JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
                         journalCollectorWindow.Show();
                         Close(); // Закрыть текущее окно авторизации
@@ -178,6 +235,19 @@ namespace B.I.G
             passwordBox.Password = visiblePasswordTextBox.Text;
             passwordBox.Visibility = Visibility.Visible;
             visiblePasswordTextBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void CheckBox_Checked2(object sender, RoutedEventArgs e)
+        {
+
+            sourcePathTextBox.Visibility = Visibility.Visible;
+           
+        }
+
+        private void CheckBox_Unchecked2(object sender, RoutedEventArgs e)
+        {
+           
+            sourcePathTextBox.Visibility = Visibility.Collapsed;
         }
 
     }
