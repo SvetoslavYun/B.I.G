@@ -19,6 +19,7 @@ using DocumentFormat.OpenXml.Drawing;
 using Microsoft.Graph.Models;
 using System.Windows.Input;
 using B.I.G.View;
+using System.ComponentModel;
 
 namespace B.I.G
 
@@ -613,10 +614,66 @@ namespace B.I.G
                 // проверка, был ли выбран файл
                 if (openFileDialog.ShowDialog() == true)
                 {
+                    Atms.Clear();
                     DateTime selectedDate = Convert.ToDateTime(Date.Text);
                     atm_Controller.DeleteToDate(selectedDate);
-                    atm_Controller.ImportExcelToDatabase(openFileDialog.FileName, selectedDate);
+                    StartImport(openFileDialog.FileName, selectedDate);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private void StartImport(string filePath, DateTime date)
+        {
+            ProgressBar.Visibility = Visibility.Visible;
+            ProgressText.Visibility = Visibility.Visible;
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.DoWork += (sender, e) =>
+            {
+                dynamic arguments = e.Argument;
+
+                try
+                {
+                    atm_Controller.ImportExcelToDatabase(filePath, date, sender as BackgroundWorker, (progressPercentage) =>
+                    {
+                        (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                    });
                     atm_Controller.UpdateNull();
+                }
+                catch (Exception ex)
+                {
+                    e.Result = ex.Message;
+                }
+            };
+            backgroundWorker.ProgressChanged += (sender, e) =>
+            {
+                ProgressBar.Value = e.ProgressPercentage;
+                ProgressText.Text = $"{e.ProgressPercentage}%";
+            };
+            backgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                ProgressBar.Visibility = Visibility.Collapsed;
+                ProgressText.Visibility = Visibility.Collapsed;
+
+                if (e.Error != null)
+                {
+                    MessageBox.Show(e.Error.Message);
+                }
+                else if (e.Result != null)
+                {
+                    MessageBox.Show($"Операция завершена с результатом: {e.Result}");
+                }
+                else
+                {
+                    // Только если вам нужно выполнить дополнительную логику после успешного импорта.
+                    // Например, обновление данных на интерфейсе.
+                    DateTime selectedDate = Convert.ToDateTime(Date.Text);
                     int empty = atm_Controller.EmptyRouteCount(selectedDate); // Вызов метода и присвоение результата переменной empty
 
                     if (empty == 0)
@@ -627,15 +684,14 @@ namespace B.I.G
                     {
                         MessageBox.Show("Данные не могут быть опубликованы на сервере, так как имеют несоответствие", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-                 
-                    Search(sender, e);
+                    FillData();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            };
+
+            backgroundWorker.RunWorkerAsync(new { filePath, date });
         }
+
+
 
 
         private void Button_DelDate(object sender, RoutedEventArgs e)

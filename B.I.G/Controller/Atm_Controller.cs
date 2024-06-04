@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
@@ -310,7 +311,7 @@ namespace B.I.G.Controller
         }
 
 
-        public void ImportExcelToDatabase(string filePath, DateTime date)
+        public void ImportExcelToDatabase(string filePath, DateTime date, BackgroundWorker worker, Action<int> reportProgress)
         {
             Excel.Application excel = null;
             Excel.Workbook workbook = null;
@@ -361,8 +362,11 @@ namespace B.I.G.Controller
                     command.Parameters.Add(new SQLiteParameter("@Date", DbType.String));
                     command.Parameters.Add(new SQLiteParameter("@Circle", DbType.String));
 
+                    // Определение общего количества строк для подсчета прогресса
+                    int totalRows = range.Rows.Count;
+
                     // Проход по строкам диапазона
-                    for (int row = 2; row <= range.Rows.Count; row++)
+                    for (int row = 2; row <= totalRows; row++)
                     {
                         // Создание массива для хранения значений ячеек строки
                         object[] rowValues = new object[columnCount];
@@ -384,7 +388,7 @@ namespace B.I.G.Controller
                         if (rowValues.All(value => value != null))
                         {
                             command.Parameters["@Route"].Value = rowValues[0].ToString();
-                            command.Parameters["@AtmName"].Value = rowValues[3]?.ToString() ;
+                            command.Parameters["@AtmName"].Value = rowValues[3]?.ToString();
                             command.Parameters["@Name"].Value = "";
                             command.Parameters["@Name2"].Value = "";
                             command.Parameters["@Date"].Value = date.ToString("yyyy-MM-dd");
@@ -393,6 +397,10 @@ namespace B.I.G.Controller
                             // Выполнение SQL-запроса
                             command.ExecuteNonQuery();
                         }
+
+                        // Расчет и передача прогресса в процентах
+                        int progressPercentage = (int)((row - 1) / (double)(totalRows - 1) * 100);
+                        reportProgress(progressPercentage);
                     }
 
                     // Закрытие книги Excel
@@ -417,6 +425,7 @@ namespace B.I.G.Controller
                 }
             }
         }
+
 
 
 

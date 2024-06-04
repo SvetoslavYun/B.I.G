@@ -21,7 +21,7 @@
    Background="Transparent"
    Foreground="Black"
    BorderBrush="Transparent"
-   AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
+   AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick" IsReadOnly="True">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>

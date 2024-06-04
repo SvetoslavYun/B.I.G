@@ -16,7 +16,7 @@
             <ImageBrush ImageSource="Image/Big.png" Stretch="UniformToFill"/>
         </Grid.Background>
         <DataGrid x:Name="dGridCollector" ItemsSource="{Binding}" CanUserSortColumns="False" AutoGenerateColumns="False" LoadingRow="dGrid_LoadingRow" RowHeaderWidth="50" CanUserAddRows="False" Margin="189,51,10,24" 
-          Background="Transparent" Foreground="Black" BorderBrush="Transparent" AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick">
+          Background="Transparent" Foreground="Black" BorderBrush="Transparent" AlternatingRowBackground="#F0F0F0" MouseDoubleClick="DoubleClick" IsReadOnly="True">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
