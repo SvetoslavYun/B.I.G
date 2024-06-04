@@ -21,7 +21,7 @@ namespace B.I.G.Controller
             var connString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
             // Создание объекта подключения
             connection = new SQLiteConnection(connString);
-        } 
+        }
 
         public IEnumerable<log> GetAllLogs()
         {

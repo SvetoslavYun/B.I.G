@@ -31,7 +31,37 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
+            DeleteAfterSixMonthsLog2();
         }
+
+        public void DeleteAfterSixMonthsLog2()
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    var commandString = "DELETE FROM atms  WHERE date <= date('now', '-14 days')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            connection.Open();
+            deleteCommand.ExecuteNonQuery();
+            connection.Close();
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка SixATM: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         public IEnumerable<atm> GetAllAtm(DateTime date)
         {
@@ -97,8 +127,36 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
+            Delete2(id);
         }
 
+        public void Delete2(int id)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    var commandString = "DELETE FROM atms WHERE(id = @Id)";
+                    SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+                    deleteCommand.Parameters.AddWithValue("Id", id);
+                    connection.Open();
+                    deleteCommand.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка связи с сервером: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         public void DeleteToDate(DateTime date)
         {
 
@@ -360,6 +418,114 @@ namespace B.I.G.Controller
             }
         }
 
+
+
+        public int EmptyRouteCount(DateTime date)
+        {
+            int emptyRoute = 0;
+            try
+            {
+                // Установка пути к базе данных
+                string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open();
+                    var commandString = "SELECT COUNT(*) FROM atms WHERE date = @Date AND route = ''";
+                    SQLiteCommand selectCommand = new SQLiteCommand(commandString, connection);
+                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+                    emptyRoute = Convert.ToInt32(selectCommand.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при проверке данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return emptyRoute;
+        }
+
+
+        public void UpdateJournalBase2(DateTime date)
+        {
+            // Путь к исходной базе данных (корень программы)
+            string sourceDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+            // Путь к целевой базе данных (из переменной MainWindow.puth)
+            string destinationDbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            var journalEntries = new List<atm>();
+
+            try
+            {
+                // Чтение данных из исходной базы данных
+                using (SQLiteConnection sourceConnection = new SQLiteConnection($"Data Source={sourceDbPath};Version=3;"))
+                {
+                    sourceConnection.Open();
+                    var commandString = "SELECT * FROM atms WHERE date = @Date";
+                    SQLiteCommand selectCommand = new SQLiteCommand(commandString, sourceConnection);
+                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+                    using (SQLiteDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var entry = new atm
+                            {
+                                id = reader.GetInt32(0),
+                                route = reader.GetString(1),
+                                atmname = reader.GetString(2),
+                                name = reader.GetString(3),
+                                name2 = reader.GetString(4),
+                                date = reader.GetDateTime(5),
+                                circle = reader.GetString(6)
+                            };
+                            journalEntries.Add(entry);
+                        }
+                    }
+                }
+
+                // Перезапись данных в целевой базе данных
+                using (SQLiteConnection destinationConnection = new SQLiteConnection($"Data Source={destinationDbPath};Version=3;"))
+                {
+                    destinationConnection.Open();
+
+                    using (var transaction = destinationConnection.BeginTransaction())
+                    {
+                        // Удаление существующих данных с той же датой
+                        var deleteCommandString = "DELETE FROM atms WHERE date = @Date";
+                        SQLiteCommand deleteCommand = new SQLiteCommand(deleteCommandString, destinationConnection);
+                        deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                        deleteCommand.ExecuteNonQuery();
+
+                        // Вставка новых данных
+                        var insertCommandString = @"INSERT INTO atms (id, route, atmname, name, name2, date, circle) VALUES (@Id, @Route, @AtmName, @Name, @Name2, @Date, @Circle)";
+
+                        foreach (var entry in journalEntries)
+                        {
+                            SQLiteCommand insertCommand = new SQLiteCommand(insertCommandString, destinationConnection);
+                            insertCommand.Parameters.AddWithValue("@Id", entry.id);
+                            insertCommand.Parameters.AddWithValue("@Route", entry.route);
+                            insertCommand.Parameters.AddWithValue("@AtmName", entry.atmname);
+                            insertCommand.Parameters.AddWithValue("@Name", entry.name);
+                            insertCommand.Parameters.AddWithValue("@Name2", entry.name2);
+                            insertCommand.Parameters.AddWithValue("@Date", entry.date.ToString("yyyy-MM-dd"));
+                            insertCommand.Parameters.AddWithValue("@Circle", entry.circle);
+                            insertCommand.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                }
+
+                MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при перезаписи данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
 
     }

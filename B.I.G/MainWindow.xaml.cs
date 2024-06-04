@@ -104,6 +104,7 @@ namespace B.I.G
         {
             var paths = puth_Controller.GetAllPaths();
             sourcePathTextBox.Text = string.Join(Environment.NewLine, paths);
+            puth = sourcePathTextBox.Text;
         }
 
 

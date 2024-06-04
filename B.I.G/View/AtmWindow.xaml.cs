@@ -613,19 +613,30 @@ namespace B.I.G
                 // проверка, был ли выбран файл
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    atm_Controller.DeleteToDate(Convert.ToDateTime(Date.Text));
-                    atm_Controller.ImportExcelToDatabase(openFileDialog.FileName, Convert.ToDateTime(Date.Text));
+                    DateTime selectedDate = Convert.ToDateTime(Date.Text);
+                    atm_Controller.DeleteToDate(selectedDate);
+                    atm_Controller.ImportExcelToDatabase(openFileDialog.FileName, selectedDate);
                     atm_Controller.UpdateNull();
+                    int empty = atm_Controller.EmptyRouteCount(selectedDate); // Вызов метода и присвоение результата переменной empty
+
+                    if (empty == 0)
+                    {
+                        atm_Controller.UpdateJournalBase2(selectedDate);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Данные не могут быть опубликованы на сервере, так как имеют несоответствие", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                 
                     Search(sender, e);
                 }
-
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
 
         private void Button_DelDate(object sender, RoutedEventArgs e)
         {
