@@ -15,5 +15,6 @@ namespace B.I.G.Model
         public String dateWork { get; set; }
         public String name2 { get; set; }
         public String appropriation { get; set; }
+        public String data { get; set; }
     }
 }

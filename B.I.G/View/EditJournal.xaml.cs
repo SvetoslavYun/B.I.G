@@ -126,6 +126,7 @@ namespace B.I.G.View
                     // Если пользователь выбрал "Да", обновляем данные
                     journalCollectorController.Update(Id2, Id, Route2, Date, Profession);
                     journalCollectorController.UpdateResponsibilities2(Date);
+                    imgBox.Source = null;
                     Close();
                 }
                 // Если пользователь выбрал "Нет", ничего не делаем

@@ -421,8 +421,8 @@ namespace B.I.G
                         worksheet.Cells[i + 4, 20].Value = "Алмаз";                      
                     }
 
-                  
-                    if (worksheet.Cells[i + 4, 29].Value?.ToString() == "инкассатор-сборщик")
+
+                    if (worksheet.Cells[i + 4, 29].Value?.ToString().Contains("борщик") == true)
                     {
                         worksheet.Cells[i + 4, 16].Value = "";
                         worksheet.Cells[i + 4, 5].Value = "";
@@ -443,7 +443,7 @@ namespace B.I.G
                         worksheet.Cells[i + 4, 13].Value = "-/-";
                         worksheet.Cells[i + 4, 24].Value = "-/-";
                     }
-                    if (worksheet.Cells[i + 4, 29].Value?.ToString() == "старший бригады инкассаторов")
+                    if (worksheet.Cells[i + 4, 29].Value?.ToString().Contains("арший") == true)
                     {
 
                         worksheet.Cells[i + 4, 4].Value = "";
@@ -451,7 +451,7 @@ namespace B.I.G
                         worksheet.Cells[i + 4, 21].Value = "T2 DP2400";
 
                     }
-                    if (worksheet.Cells[i + 4, 29].Value?.ToString() != "старший бригады инкассаторов" && worksheet.Cells[i + 4, 7].Value?.ToString() == "")
+                    if (worksheet.Cells[i + 4, 29].Value?.ToString().Contains("арший") == true && worksheet.Cells[i + 4, 7].Value?.ToString() == "")
                     {
                        
 

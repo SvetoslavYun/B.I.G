@@ -143,11 +143,11 @@ namespace B.I.G
             {
                 SolidColorBrush backgroundBrush = new SolidColorBrush(Colors.White);
 
-                if (rowContext.dateWork == "Данные отсутствуют")
+                if (rowContext.data == "Данные отсутствуют")
                 {
                     backgroundBrush = new SolidColorBrush(Colors.Orange);
                 }
-                else if (rowContext.dateWork.Contains("Повтор автомата")) 
+                else if (rowContext.data.Contains("Повтор автомата")) 
                 {
                     backgroundBrush = new SolidColorBrush(Colors.RosyBrown);
                 }
@@ -437,9 +437,9 @@ namespace B.I.G
                 // Автоподгон ширины колонок
                 worksheet.Column(1).Width = 20;
                 worksheet.Column(2).Width = 13;
-                worksheet.Column(3).Width = 20;
-                worksheet.Column(4).Width = 10;
-                worksheet.Column(5).Width = 10;
+                worksheet.Column(3).Width = 8;
+                worksheet.Column(4).Width = 11;
+                worksheet.Column(5).Width = 11;
                 worksheet.Column(6).Width = 11;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
@@ -639,8 +639,7 @@ namespace B.I.G
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             try
-            {
-                JournalCollectors.Clear();
+            {               
                 DateTime date = DateTime.Now;
                 if (Calendar2.SelectedDate.HasValue)
                 {
@@ -649,6 +648,7 @@ namespace B.I.G
 
                 if (!journalCollectorController.ImportSerchData(date))
                 {
+                    JournalCollectors.Clear();
                     OpenFileDialog openFileDialog = new OpenFileDialog();
                     openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
 
@@ -681,6 +681,7 @@ namespace B.I.G
 
                         if (openFileDialog.ShowDialog() == true)
                         {
+                            JournalCollectors.Clear();
                             if (Calendar2.SelectedDate.HasValue)
                             {
                                 date = Calendar2.SelectedDate.Value;
@@ -753,8 +754,7 @@ namespace B.I.G
                     MessageBox.Show("Операция успешно завершена.");
                 }
                 journalCollectorController.UpdateResponsibilities(date);
-                journalCollectorController.DeleteRound2(date);
-                journalCollectorController.UpdateJournalBase2(date);
+                journalCollectorController.DeleteRound2(date);               
                 Date.Text = date.ToString("yyyy-MM-dd");
                
                 FillData();
@@ -883,6 +883,16 @@ namespace B.I.G
             AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text));
             atmWindow.Show();
             Close();
+        }
+
+        private void Button_export_to_Base(object sender, RoutedEventArgs e)
+        {
+            DateTime date = DateTime.Now;
+            if (Calendar2.SelectedDate.HasValue)
+            {
+                date = Calendar2.SelectedDate.Value;
+            }
+            journalCollectorController.UpdateJournalBase2(date);
         }
     }
 }

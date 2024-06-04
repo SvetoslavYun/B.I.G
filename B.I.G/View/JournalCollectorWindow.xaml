@@ -125,7 +125,7 @@
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Начала работы" Binding="{Binding dateWork}"  Width="*">
+                <DataGridTextColumn Header="Время" Binding="{Binding dateWork}"  Width="*">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -143,6 +143,26 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Повтор" Binding="{Binding data}"  Width="*">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding permission}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
                 <DataGridTextColumn Header="№Автомат" Binding="{Binding automaton_serial}" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">

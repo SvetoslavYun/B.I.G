@@ -83,7 +83,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date)";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -115,6 +115,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -137,7 +138,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data= Data
                 };
 
                 yield return JournalCollector;
@@ -150,7 +152,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -182,6 +184,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -204,7 +207,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -217,7 +221,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' and jc.route NOT IN (SELECT route FROM journalCollectors  WHERE CAST(route2 AS UNSIGNED) >= 90 and date= @Date) AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) ";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' and jc.route NOT IN (SELECT route FROM journalCollectors  WHERE CAST(route2 AS UNSIGNED) >= 90 and date= @Date) AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -249,6 +253,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -271,7 +276,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -318,6 +324,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -340,7 +347,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -382,11 +390,11 @@ namespace B.I.G.Controller
             var commandString = "UPDATE journalCollectors" +
                 " SET name = cashCollectors.name,  gun = cashCollectors.gun," +
                 " automaton_serial = cashCollectors.automaton_serial,  automaton = cashCollectors.automaton, " +
-                " permission = cashCollectors.permission,dateWork ='',  meaning = cashCollectors.meaning," +
+                " permission = cashCollectors.permission,data ='',  meaning = cashCollectors.meaning," +
                 " certificate = cashCollectors.certificate, token = cashCollectors.token, power = cashCollectors.power," +
                 " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id " +
                 " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn  ;";
-            var commandString2 = "UPDATE journalCollectors SET dateWork =''," +
+            var commandString2 = "UPDATE journalCollectors SET data =''," +
                 " name = (SELECT name FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
                 " gun = (SELECT gun FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
                 " automaton_serial = (SELECT automaton_serial FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
@@ -431,7 +439,7 @@ namespace B.I.G.Controller
         public void EditAutomate(int idColl, string name, DateTime date, string rote)
         {
             var commandString = "UPDATE journalCollectors SET " +
-                "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), dateWork ='Автомат не повторяется'," +
+                "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), data ='Автомат не повторяется'," +
                 " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
                 "WHERE date = @Date and journalCollectors.name = @Name;";
 
@@ -441,8 +449,8 @@ namespace B.I.G.Controller
                "WHERE date = @Date and route2 = @Route2;";
 
             var commandString3 = "UPDATE journalCollectors SET " +
-              "dateWork =''" +
-              "WHERE date = @Date and route2 = @Route2 and fullname !='.' AND dateWork != 'Данные отсутствуют';";
+              "data =''" +
+              "WHERE date = @Date and route2 = @Route2 and fullname !='.' AND data != 'Данные отсутствуют';";
 
 
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
@@ -471,14 +479,14 @@ namespace B.I.G.Controller
 
         public void UpdateResponsibilities(DateTime date)
         {
-            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
-            var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
+            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%Водитель%' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%орщик%' AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
-            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 6), route2 = SUBSTRING(Route, 10, 6) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
+            var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 9, 6), route2 = SUBSTRING(Route, 9, 6) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
             var commandString6 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
             var commandString7 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR gun='РЕЗЕРВ' AND date = @Date";
-            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*' OR name GLOB '*[!A-Za-z/\\]*'";
+            var commandString8 = "DELETE FROM journalCollectors WHERE SUBSTRING(dateWork, 1, 7) != 'Маршрут' and date = @Date and route='' and name = '' or name = ' ' or name = '  ' OR name GLOB '*[-9]*'";
             var commandString9 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE profession = 'РЕЗЕРВ' AND name ='' AND date = @Date";
             var commandString10 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '/') - 1) WHERE route2 LIKE '%/%'AND date = @Date";
             var commandString15 = "UPDATE journalCollectors SET route2 = SUBSTR(route, 1, INSTR(route2, '\\') - 1) WHERE REPLACE(route2, '\\', '/') LIKE '%/%' AND date = @Date;";
@@ -487,8 +495,8 @@ namespace B.I.G.Controller
             var commandString13 = "UPDATE journalCollectors SET route = SUBSTR(route, 1, INSTR(route || ' ', ' ') - 1), route2 = SUBSTR(route2, 1, INSTR(route2 || ' ', ' ') - 1) WHERE route LIKE '% %' OR route2 LIKE '% %' and date = @Date;";
             //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
             //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '');";
-            var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
-            var commandString16 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
+            var commandString14 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
+            var commandString16 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             connection.Open();
 
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
@@ -550,11 +558,11 @@ namespace B.I.G.Controller
       
         public void UpdateResponsibilities2(DateTime date)
         {
-            var commandString1 = "UPDATE journalCollectors SET dateWork ='' WHERE date = @Date AND dateWork != 'Данные отсутствуют' and dateWork !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
-            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession != 'водитель автомобиля' and dateWork !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString1 = "UPDATE journalCollectors SET data ='' WHERE date = @Date AND data != 'Данные отсутствуют' and data !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
+            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%одитель%' and data !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
-            var commandString4 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
-            var commandString5 = "UPDATE journalCollectors AS j1 SET dateWork = dateWork || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE dateWork = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
+            var commandString4 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
+            var commandString5 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND data = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
 
             connection.Open();
@@ -639,9 +647,10 @@ namespace B.I.G.Controller
                                     id2 = COALESCE(id2, 0),
                                     route = COALESCE(route, 'Данные отсутствуют'),
                                     date = COALESCE(date, @Date),
-                                    dateWork = COALESCE(dateWork, ''),
+                                    dateWork = COALESCE(dateWork, 'Данные отсутствуют'),
                                     appropriation = COALESCE(appropriation, 'Данные отсутствуют'),
-                                    route2 = COALESCE(route2, 'Данные отсутствуют');";
+                                    route2 = COALESCE(route2, 'Данные отсутствуют'),
+                                    data = COALESCE(data, '');";
           
             SQLiteCommand updateCommand = new SQLiteCommand(updateCommandString, connection);
             updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -707,6 +716,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -729,7 +739,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -767,7 +778,7 @@ namespace B.I.G.Controller
 
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route;";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route ORDER BY CAST(jc.route2 AS INT);";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
@@ -799,6 +810,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -821,7 +833,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -857,7 +870,7 @@ namespace B.I.G.Controller
 
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) ";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date)  ORDER BY CAST(jc.route2 AS INT)";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
@@ -889,6 +902,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -911,7 +925,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -959,6 +974,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -981,7 +997,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -999,7 +1016,7 @@ namespace B.I.G.Controller
 
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' GROUP BY jc.name  ORDER BY jc.name;";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' GROUP BY jc.name  ORDER BY jc.name ;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
@@ -1029,6 +1046,7 @@ namespace B.I.G.Controller
                 var Appropriation = reader.GetString(reader.GetOrdinal("appropriation"));
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
+                var Data = reader.GetString(reader.GetOrdinal("data"));
 
                 var JournalCollector = new journalCollector
                 {
@@ -1051,7 +1069,8 @@ namespace B.I.G.Controller
                     dateWork = DateWork,
                     appropriation = Appropriation,
                     route2 = Route2, // Добавлено новое поле route2
-                    image = Image
+                    image = Image,
+                    data = Data
                 };
 
                 yield return JournalCollector;
@@ -1066,20 +1085,17 @@ namespace B.I.G.Controller
             connection.Close();
 
             var commandString = @"SELECT route2,
-                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'старший бригады инкассаторов' THEN name END), '') AS names_starshego,
-                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession = 'инкассатор-сборщик' THEN name END), '') AS names_sborschika
+                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%тарший%' THEN name END), '') AS names_starshego,
+                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika
                           FROM journalCollectors 
                           WHERE 
-                              name != '' 
-                              AND date = @Date
-                              AND name NOT LIKE '%[^a-zA-Z0-9]%' 
-                              AND route2 != 'РЕЗЕРВ' 
-                              AND route2 != 'стажер'  
-                              AND name IS NOT NULL AND route NOT IN (SELECT route FROM journalCollectors  WHERE dateWork LIKE '%АТМ%' or dateWork LIKE '%перевозка%' or dateWork LIKE '%Перевозка%' and date= @Date) and CAST(route2 AS UNSIGNED) <90
+                              date = @Date
+                             
+                            
                           GROUP BY 
                               route2
                           ORDER BY 
-                              MIN(id);";
+                               CAST(route2 AS INT);";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
@@ -1214,18 +1230,73 @@ namespace B.I.G.Controller
 
                     // Определение количества строк в таблице Excel
                     int rowCount = range.Rows.Count;
-
+                    string data="";
                     // Проход по строкам диапазона
-                    for (int row = 5; row <= rowCount; row++)
+                    for (int row = 10; row <= rowCount; row++)
                     {
+                        data = "";
                         // Получение значений из колонок B и C
                         string profession = (range.Cells[row, 2].Value2 ?? "").ToString();
-                        string name = (range.Cells[row, 3].Value2 ?? "").ToString();
-                        string dateWork = (range.Cells[row, 4].Value2 ?? "").ToString();
-                        string appropriation = (range.Cells[row, 7].Value2 ?? "").ToString();
+                        string name = (range.Cells[row, 3].Value2 ?? "").ToString();                      
+                       
+
+                        string dateWork = string.Empty;
+                        object cellValue = range.Cells[row, 4].Value2;
+
+                        if (cellValue != null)
+                        {
+                            if (double.TryParse(cellValue.ToString(), out double oaDate))
+                            {
+                                // Преобразование числа в DateTime и форматирование в строку времени
+                                dateWork = DateTime.FromOADate(oaDate).ToString("HH:mm");
+                            }
+                            else
+                            {
+                                dateWork = cellValue.ToString();
+                            }
+                        }
+
+
+                        string appropriation = string.Empty;
+                        Excel.Range cell = range.Cells[row, 7];
+
+                        if (cell.Value2 != null)
+                        {
+                            if (cell.HasFormula)
+                            {
+                                appropriation = string.Empty;
+                            }
+                            else
+                            {
+                                string cellValueString = cell.Value2.ToString();
+
+                                // Проверяем длину строки
+                                if (cellValueString.Length == 4)
+                                {
+                                    // Если строка состоит из четырех символов, оставляем её как есть
+                                    appropriation = cellValueString;
+                                }
+                                else if (double.TryParse(cellValueString, out double oaDate))
+                                {
+                                    // Преобразование числа в DateTime и форматирование в строку времени
+                                    appropriation = DateTime.FromOADate(oaDate).ToString("HH:mm");
+                                }
+                                else if (DateTime.TryParse(cellValueString, out DateTime parsedDate))
+                                {
+                                    // Преобразование строки, которая является временем, в строку времени
+                                    appropriation = parsedDate.ToString("HH:mm");
+                                }
+                                else
+                                {
+                                    // Оставляем строку как есть, если это не число и не время
+                                    appropriation = cellValueString;
+                                }
+                            }
+                        }
+
 
                         // Создание SQL-запроса для вставки данных в таблицу journalCollectors
-                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2 ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2 )";
+                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data )";
 
                         // Привязка SQL-запроса к объекту команды
                         command.CommandText = query;
@@ -1241,7 +1312,7 @@ namespace B.I.G.Controller
                                 long existingRecords = (long)selectCommand.ExecuteScalar();
                                 if (existingRecords == 0)
                                 {
-                                    dateWork = "Данные отсутствуют";
+                                  data = "Данные отсутствуют";
                                 }
                             }
                         }
@@ -1259,12 +1330,13 @@ namespace B.I.G.Controller
                         command.Parameters.Add(new SQLiteParameter("@Fullname", DbType.String) { Value = "" });
                         command.Parameters.Add(new SQLiteParameter("@Phone", DbType.String) { Value = "" });
                         command.Parameters.Add(new SQLiteParameter("@Id2", DbType.Int32) { Value = 0 }); // Предполагая, что это int, иначе укажите правильный тип данных
-                        if (profession != "старший бригады инкассаторов" && profession != "инкассатор-сборщик" && profession != "водитель автомобиля") { raute = profession; }
+                        if (!profession.Contains("тарший") && !profession.Contains("орщик") && !profession.Contains("одитель")) { raute = profession; }
                         command.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = raute });
                         command.Parameters.Add(new SQLiteParameter("@Date", DbType.String) { Value = date.ToString("yyyy-MM-dd") });
                         command.Parameters.Add(new SQLiteParameter("@DateWork", DbType.String) { Value = dateWork });
                         command.Parameters.Add(new SQLiteParameter("@Appropriation", DbType.String) { Value = appropriation });
                         command.Parameters.Add(new SQLiteParameter("@Route2", DbType.String) { Value = raute });
+                        command.Parameters.Add(new SQLiteParameter("@Data", DbType.String) { Value = data });
 
                         // Выполнение SQL-запроса
                         command.ExecuteNonQuery();
@@ -1342,7 +1414,8 @@ namespace B.I.G.Controller
                                 date = reader.GetDateTime(15),
                                 dateWork = reader.GetString(16),
                                 appropriation = reader.GetString(17),
-                                route2 = reader.GetString(18)
+                                route2 = reader.GetString(18),
+                                data = reader.GetString(19),
                             };
                             journalEntries.Add(entry);
                         }
@@ -1365,9 +1438,9 @@ namespace B.I.G.Controller
                         // Вставка новых данных
                         var insertCommandString = @"
                 INSERT INTO journalCollectors (
-                    id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2
+                    id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data
                 ) VALUES (
-                    @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2
+                    @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data
                 )";
 
                         foreach (var entry in journalEntries)
@@ -1392,6 +1465,7 @@ namespace B.I.G.Controller
                             insertCommand.Parameters.AddWithValue("@DateWork", entry.dateWork);
                             insertCommand.Parameters.AddWithValue("@Appropriation", entry.appropriation);
                             insertCommand.Parameters.AddWithValue("@Route2", entry.route2);
+                            insertCommand.Parameters.AddWithValue("@Data", entry.data);
                             insertCommand.ExecuteNonQuery();
                         }
 
@@ -1399,7 +1473,7 @@ namespace B.I.G.Controller
                     }
                 }
 
-                MessageBox.Show("Данные успешно перезаписаны.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

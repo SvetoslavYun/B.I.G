@@ -110,11 +110,11 @@ namespace B.I.G
             {
                 SolidColorBrush backgroundBrush = new SolidColorBrush(Colors.White);
 
-                if (rowContext.dateWork == "Данные отсутствуют")
+                if (rowContext.data == "Данные отсутствуют")
                 {
                     backgroundBrush = new SolidColorBrush(Colors.Orange);
                 }
-                else if (rowContext.dateWork.Contains("Повтор автомата"))
+                else if (rowContext.data.Contains("Повтор автомата"))
                 {
                     backgroundBrush = new SolidColorBrush(Colors.RosyBrown);
                 }
@@ -359,11 +359,12 @@ namespace B.I.G
                     worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;
                     worksheet.Cells[i + 2, 5].Value = collectorItem.gun;
                     worksheet.Cells[i + 2, 6].Value = collectorItem.dateWork;
-                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton_serial;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.automaton;
-                    worksheet.Cells[i + 2, 9].Value = collectorItem.permission;
+                    worksheet.Cells[i + 2, 7].Value = collectorItem.data;
+                    worksheet.Cells[i + 2, 8].Value = collectorItem.automaton_serial;                  
+                    worksheet.Cells[i + 2, 9].Value = collectorItem.automaton;
+                    worksheet.Cells[i + 2, 10].Value = collectorItem.permission;                   
 
-                    for (int col = 2; col <= 8; col++)
+                    for (int col = 2; col <= 10; col++)
                     {
                         worksheet.Cells[i + 2, col].Style.Font.Size = 8; // Установите нужный размер шрифта
                     }
@@ -372,9 +373,9 @@ namespace B.I.G
                     if (collectorItem.fullname == ".")
                     {
                         worksheet.Cells[i + 2, 2].Value = worksheet.Cells[i + 2, 6].Value;
-                        worksheet.Cells[i + 2, 2, i + 2, 9].Merge = true;
+                        worksheet.Cells[i + 2, 2, i + 2, 10].Merge = true;
                         // Установите стиль заливки для первых семь колонок
-                        for (int col = 2; col <= 9; col++)
+                        for (int col = 2; col <= 10; col++)
                         {
                             worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.Wheat);
@@ -389,14 +390,12 @@ namespace B.I.G
 
                 worksheet.DeleteColumn(1);
                 worksheet.DeleteColumn(2);
-                worksheet.DeleteColumn(8);
-                worksheet.DeleteColumn(9);
-                worksheet.DeleteColumn(10);
-                worksheet.DeleteColumn(11);
+               
                 // Автоподгон ширины колонок
-                worksheet.Cells.AutoFitColumns();
-                worksheet.Column(4).Width = 18;
-                worksheet.Column(1).Width = 25;
+                worksheet.Cells.AutoFitColumns();               
+                worksheet.Column(1).Width = 22;
+                worksheet.Column(4).Width = 0;
+                worksheet.Column(6).Width = 9;
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;

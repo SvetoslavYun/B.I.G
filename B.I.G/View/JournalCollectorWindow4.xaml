@@ -24,7 +24,7 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy}"  Width="*"/>
-                <DataGridTextColumn Header="Время"  Width="*"/>
+                <DataGridTextColumn Header="Время" Binding="{Binding dateWork}"  Width="*"/>
                 <DataGridTextColumn Header="Краткое содержание инструктажа"  Width="*"/>
                 <DataGridTextColumn Header="Фамилия и инициалы инструктируемого работника" Binding="{Binding name}" Width="*"/>
                 <DataGridTextColumn Header="Должность инструктируемого работника" Binding="{Binding profession}" Width="*"/>

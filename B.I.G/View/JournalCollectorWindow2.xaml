@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Наряды 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
+        Title="Наряды 'B.I.G'" Height="720" Width="1300" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
     <Window.Icon>
         <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
@@ -110,7 +110,7 @@
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}"  Width="*">
+                <DataGridTextColumn Header="Фамилии и инициалы работника службы инкассации" Binding="{Binding name}"  Width="*">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -130,7 +130,7 @@
                 </DataGridTextColumn>
 
 
-                <DataGridTextColumn Header="Начала работы" Binding="{Binding dateWork}"  Width="*">
+                <DataGridTextColumn Header="Время начала работы" Binding="{Binding dateWork}"  Width="*">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -148,8 +148,28 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <!--<DataGridTextColumn Header="Телефон" Binding="{Binding phone}" Width="*"/>-->
-                <DataGridTextColumn Header="Ознакомлен с нарядом"  Width="140">
+
+                <DataGridTextColumn Header="Расписка в ознакомлении с нарядом" Binding="{Binding data}"  Width="*">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding permission}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+
+                <DataGridTextColumn Header="Отметка о прохождении мед. освидетельствования и подпись дежурного инкассатора"  Width="*">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -167,25 +187,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Мед.освид-ния и подпись дежурного инкассатора"  Width="*">
-                    <DataGridTextColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.HeaderStyle>
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding permission}" Value=".">
-                                    <Setter Property="Background" Value="Black"/>
-                                    <Setter Property="Foreground" Value="Black"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Примечание" Binding="{Binding appropriation}"  Width="80">
+                <DataGridTextColumn Header="Примечание*" Binding="{Binding appropriation}"  Width="80">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -263,6 +265,59 @@
                 <SolidColorBrush Color="Black"/>
             </Button.Foreground>
         </Button>
+
+
+        <Button Content="Публиковать"
+  HorizontalAlignment="Right"
+  Margin="0,12,10,0"
+  VerticalAlignment="Top"
+  Width="84"
+  BorderBrush="#FF1E1F1D"
+  FontFamily="High Tower Text"
+  Height="28"
+  Click="Button_export_to_Base">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FF93E842" Offset="1"/>
+                    <GradientStop Color="#FF97A28C" Offset="0.048"/>
+                    <GradientStop Color="#FF4EC7D0" Offset="0.009"/>
+                    <GradientStop Color="#FF52C5EC" Offset="0.948"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="Black"/>
+            </Button.Foreground>
+        </Button>
+
+
+
 
 
         <Button Content="Данные отсутствуют"
