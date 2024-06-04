@@ -267,7 +267,7 @@
         </Button>
 
 
-        <Button Content="Публиковать"
+        <Button Content="Опубликовать"
   HorizontalAlignment="Right"
   Margin="0,12,10,0"
   VerticalAlignment="Top"

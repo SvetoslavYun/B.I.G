@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Data.SQLite;
 using B.I.G.Model;
+using System.Windows;
+using System.IO;
 
 
 namespace B.I.G.Controller
@@ -62,7 +64,52 @@ namespace B.I.G.Controller
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            Insert2(Log);
         }
+
+
+        public void Insert2(log Log)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open();
+
+                    var commandString = "INSERT INTO logs (username, process, date, date2) VALUES (@Username, @Process, @Date, @Date2)";
+                    using (SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection))
+                    {
+                        insertCommand.Parameters.AddRange(new SQLiteParameter[]
+                        {
+                    new SQLiteParameter("@Username", Log.username),
+                    new SQLiteParameter("@Process", Log.process),
+                    new SQLiteParameter("@Date", Log.date),
+                    new SQLiteParameter("@Date2", Log.date2)
+                        });
+
+                        insertCommand.ExecuteNonQuery();
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка Log: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+
+
 
         public void Delete(int id)
         {

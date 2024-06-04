@@ -436,11 +436,11 @@ namespace B.I.G
 
                 // Автоподгон ширины колонок
                 worksheet.Column(1).Width = 20;
-                worksheet.Column(2).Width = 13;
+                worksheet.Column(2).Width = 15;
                 worksheet.Column(3).Width = 8;
                 worksheet.Column(4).Width = 11;
-                worksheet.Column(5).Width = 11;
-                worksheet.Column(6).Width = 11;
+                worksheet.Column(5).Width = 15;
+                worksheet.Column(6).Width = 15;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + formattedDate2;

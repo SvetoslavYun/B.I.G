@@ -65,9 +65,9 @@ namespace B.I.G
             atm_Controller = new Atm_Controller();
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
-            InitializeComponent();           
-            GetUsernames();
+            InitializeComponent();
             LoadPathsIntoTextBox();
+            GetUsernames();          
             log_Controller.DeleteAfterSixMonthsLog();          
             atm_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
@@ -197,6 +197,7 @@ namespace B.I.G
                             date = Convert.ToDateTime(formattedDate),
                             date2 = Convert.ToDateTime(formattedDate2)
                         };
+                        puth = sourcePathTextBox.Text;
                         log_Controller.Insert(Log);
                         LogS = login.Text;
                         App.nameUserApp = LogS;
