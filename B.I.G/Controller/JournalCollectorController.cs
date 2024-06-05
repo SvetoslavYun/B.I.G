@@ -83,7 +83,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%'  ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -221,7 +221,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' and jc.route NOT IN (SELECT route FROM journalCollectors  WHERE CAST(route2 AS UNSIGNED) >= 90 and date= @Date) AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !=''  ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -292,7 +292,7 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' AND jc.profession NOT LIKE '%абрициуса%' AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date) GROUP BY jc.name  ORDER BY jc.name ";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' GROUP BY jc.name  ORDER BY jc.name ";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -357,31 +357,108 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-      
-        public void Insert(cashCollector CashCollector)
+
+        public int EmptyRouteCount(DateTime date)
         {
-    //        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
-    //        SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+            int emptyRoute = 0;
+            try
+            {
+                // Установка пути к базе данных
+                string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
 
-    //        insertCommand.Parameters.AddRange(new SQLiteParameter[] {
-    //    new SQLiteParameter("Name", CashCollector.name),
-    //    new SQLiteParameter("Gun", CashCollector.gun),
-    //    new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
-    //    new SQLiteParameter("Automaton", CashCollector.automaton),
-    //    new SQLiteParameter("Permission", CashCollector.permission),
-    //    new SQLiteParameter("Meaning", CashCollector.meaning),
-    //    new SQLiteParameter("Certificate", CashCollector.certificate),
-    //    new SQLiteParameter("Token", CashCollector.token),
-    //    new SQLiteParameter("Power", CashCollector.power),
-    //    new SQLiteParameter("FullName", CashCollector.fullname),
-    //    new SQLiteParameter("Profession", CashCollector.profession),
-    //    new SQLiteParameter("Phone", CashCollector.phone),
-    //    new SQLiteParameter("Image", CashCollector.image),
-    //});
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open();
+                    var commandString = "SELECT COUNT(*) FROM journalCollectors WHERE date = @Date AND dateWork = 'Резерв'";
+                    SQLiteCommand selectCommand = new SQLiteCommand(commandString, connection);
+                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
-    //        connection.Open();
-    //        insertCommand.ExecuteNonQuery();
-    //        connection.Close();
+                    emptyRoute = Convert.ToInt32(selectCommand.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при проверке данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return emptyRoute;
+        }
+
+        public void Insert(DateTime date)
+        {
+            // Получаем максимальное значение из столбца route2
+            int maxRoute2 = GetMaxRoute2();
+
+            // Увеличиваем значение на 1
+            int newRoute2 = maxRoute2 + 1;
+
+            // Вставляем новую запись
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '', '','" + newRoute2 + "', 'Данные отсутствуют' )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd"))
+    });
+            connection.Open();
+            insertCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        // Метод для получения максимального значения из столбца route2
+        private int GetMaxRoute2()
+        {
+            int maxRoute2 = 0;
+
+            try
+            {
+                var commandString = "SELECT MAX(CAST(route2 AS INT)) FROM journalCollectors";
+                SQLiteCommand command = new SQLiteCommand(commandString, connection);
+
+                connection.Open();
+                var result = command.ExecuteScalar();
+                connection.Close();
+
+                if (result != DBNull.Value)
+                {
+                    maxRoute2 = Convert.ToInt32(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                Console.WriteLine("Произошла ошибка при получении максимального значения route2: " + ex.Message);
+            }
+
+            return maxRoute2;
+        }
+
+
+        public void Insert2(DateTime date)
+        {
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', '', @Date, 'Резерв', '.','998', '' )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd"))
+            });
+            connection.Open();
+            insertCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
+        public void UpdateCollector(int id, int id2, DateTime date)
+        {
+            var commandString = "UPDATE journalCollectors SET profession = (SELECT profession FROM cashCollectors WHERE id=@Id) WHERE id =@Id2 and date = @Date and route = 'Резерв'";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+        new SQLiteParameter("@Id", id),
+        new SQLiteParameter("@Id2", id2)
+    });
+            connection.Open();
+            updateCommand.ExecuteNonQuery();
+            connection.Close();
         }
 
 
@@ -870,7 +947,7 @@ namespace B.I.G.Controller
 
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route AND CAST(jc.route2 AS UNSIGNED) < 90 AND jc.profession NOT LIKE '%абрициуса%' AND jc.appropriation NOT LIKE '%абрициуса%' or (jc.appropriation LIKE '%ержинского%' and jc.date= @Date)  ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route ORDER BY CAST(jc.route2 AS INT)";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
@@ -1089,11 +1166,7 @@ namespace B.I.G.Controller
                                  COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika
                           FROM journalCollectors 
                           WHERE 
-                              date = @Date
-                             
-                            
-                          GROUP BY 
-                              route2
+                              date = @Date and profession LIKE '%тарший%' or profession LIKE '%борщик%'  GROUP BY route2
                           ORDER BY 
                                CAST(route2 AS INT);";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
@@ -1340,7 +1413,7 @@ namespace B.I.G.Controller
 
                         // Выполнение SQL-запроса
                         command.ExecuteNonQuery();
-
+                        UpdateJournalCollectorsFromCashCollectors(name);
                         // Сообщение о прогрессе через делегат
                         int progressPercentage = (int)((row - 5) / (float)(rowCount - 5) * 100);
                         progressCallback(progressPercentage);
@@ -1368,6 +1441,44 @@ namespace B.I.G.Controller
             }
         }
 
+
+        private void UpdateJournalCollectorsFromCashCollectors(string name)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=B.I.G.db"))
+                {
+                    connection.Open();
+
+                    string updateQuery = @"
+                UPDATE journalCollectors
+                SET
+                    gun = c.gun,
+                    automaton_serial = c.automaton_serial,
+                    automaton = c.automaton,
+                    permission = c.permission,
+                    meaning = c.meaning,
+                    certificate = c.certificate,
+                    token = c.token,
+                    power = c.power,
+                    fullname = c.fullname,
+                    phone = c.phone,
+                    id2 = c.id
+                FROM cashCollectors c
+                WHERE
+                    REPLACE(REPLACE(REPLACE(c.name, ' ', ''), '.', ','), ',', '.') = REPLACE(REPLACE(REPLACE(@Name, ' ', ''), '.', ','), ',', '.') 
+                    AND journalCollectors.name = @Name";
+
+                    SQLiteCommand command = new SQLiteCommand(updateQuery, connection);
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при обновлении данных из cashCollectors: " + ex.Message);
+            }
+        }
 
 
         public void UpdateJournalBase2(DateTime date)

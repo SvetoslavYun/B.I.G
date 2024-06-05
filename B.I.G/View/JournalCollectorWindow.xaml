@@ -211,7 +211,7 @@
 
         <TextBox x:Name="Name" Margin="189,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
         <TextBox x:Name="Route" Margin="342,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
-        <TextBlock HorizontalAlignment="Left" Margin="217,3,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
+        <TextBlock HorizontalAlignment="Left" Margin="217,3,0,0" TextWrapping="Wrap" Text="Поиск по Ф.И.О" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
         <TextBlock HorizontalAlignment="Left" Margin="358,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"

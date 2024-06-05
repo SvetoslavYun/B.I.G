@@ -179,11 +179,14 @@ namespace B.I.G
 
         private void Button_Add(object sender, RoutedEventArgs e)
         {
-            //flag = true;
-            //Add_СashCollector add_СashCollector = new Add_СashCollector();
-            //add_СashCollector.Owner = this;
-            //add_СashCollector.ShowDialog();
-            //Search(sender, e);
+            int empty = journalCollectorController.EmptyRouteCount(Convert.ToDateTime(Date.Text)); // Вызов метода и присвоение результата переменной empty
+
+            if (empty == 0)
+            {
+                journalCollectorController.Insert2(Convert.ToDateTime(Date.Text));
+            }
+            journalCollectorController.Insert(Convert.ToDateTime(Date.Text));
+            Search(sender, e);
         }
 
         private void DoubleClick(object sender, RoutedEventArgs e)
