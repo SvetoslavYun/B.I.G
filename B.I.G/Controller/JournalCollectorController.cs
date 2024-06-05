@@ -419,7 +419,7 @@ namespace B.I.G.Controller
             int newRoute2 = maxRoute2 + 1;
 
             // Вставляем новую запись
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '', '','" + newRoute2 + "', 'Данные отсутствуют' )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '00:00', '','" + newRoute2 + "', 'Данные отсутствуют' )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -472,6 +472,21 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
+
+        public void UpdateColumn(journalCollector JournalCollector, int id)
+        {
+            var commandString = "UPDATE journalCollectors SET profession = @Profession, appropriation = @Appropriation, dateWork=@DateWork WHERE id =@Id ";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Profession", JournalCollector.profession),
+        new SQLiteParameter("@Appropriation", JournalCollector.appropriation),
+         new SQLiteParameter("@DateWork", JournalCollector.dateWork),
+        new SQLiteParameter("@Id",id)
+    });
+            connection.Open();
+            updateCommand.ExecuteNonQuery();
+            connection.Close();
+        }
 
         public void UpdateCollector(int id, int id2, DateTime date)
         {

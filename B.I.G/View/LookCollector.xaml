@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Данные сотрудника" Height="300" Width="635" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="Данные сотрудника" Height="450" Width="635" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Window.Icon>
         <BitmapImage UriSource="/image/Employee.png"/>
     </Window.Icon>
@@ -43,8 +43,68 @@
         <TextBlock HorizontalAlignment="Left" Margin="170,173,0,0" TextWrapping="Wrap" Text="Удостоверение" VerticalAlignment="Top" Height="16" Width="121" Foreground="#FFF9E8E8" Grid.Column="2" FontSize="11"/>
         <TextBlock HorizontalAlignment="Left" Margin="170,203,0,0" TextWrapping="Wrap" Text="Номер жетона" VerticalAlignment="Top" Height="16" Width="121" Foreground="#FFF9E8E8" Grid.Column="2" FontSize="11"/>
         <TextBlock HorizontalAlignment="Left" Margin="170,233,0,0" TextWrapping="Wrap" Text="Бронежилет" VerticalAlignment="Top" Height="16" Width="121" Foreground="#FFF9E8E8" Grid.Column="2" FontSize="11"/>
+        <TextBlock x:Name="Route" Text="{Binding Path=route}" HorizontalAlignment="Left" Margin="40,295,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="63" Height="22" Grid.Column="2" Foreground="White" FontWeight="Bold" FontStyle="Italic"/>
+        <Image x:Name="imgBox" Height="291" Margin="6,10,0,0" Source="{Binding Path=image}"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="257" Grid.ColumnSpan="3"/>
+        <TextBox x:Name="Profession2" Text="{Binding Path=profession}" Grid.Column="2" Grid.ColumnSpan="2" Margin="273,283,111,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="31"/>
+        <TextBox x:Name="Appropriation" Text="{Binding Path=appropriation}" Grid.Column="2" Grid.ColumnSpan="2" Margin="273,324,111,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="31"/>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,287,0,0" TextWrapping="Wrap" Text="Изменить обязанности" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,329,0,0" TextWrapping="Wrap" Text="Изменить примичание" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,370,0,0" TextWrapping="Wrap" Text="Изменить время" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
+        <TextBox x:Name="DateWork"
+         Text="{Binding Path=dateWork, UpdateSourceTrigger=PropertyChanged}"
+         Grid.Column="2"
+         HorizontalAlignment="Left"
+         Margin="273,366,0,0"
+         TextWrapping="Wrap"
+         VerticalAlignment="Top"
+         Width="66"
+         Height="23"
+         PreviewTextInput="DateWork_PreviewTextInput"
+         TextChanged="DateWork_TextChanged"
+         PreviewKeyDown="DateWork_PreviewKeyDown"
+         MouseEnter="DateWork_MouseEnter"
+         GotFocus="DateWork_GotFocus"
+         LostFocus="DateWork_LostFocus"/>
 
-        <Image x:Name="imgBox" Height="255" Margin="11,10,0,0" Source="{Binding Path=image}"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="237" Grid.ColumnSpan="3"/>
+        <Button x:Name="BriefingButton" Content="Изменить" HorizontalAlignment="Left" Margin="10,345,0,0" VerticalAlignment="Top" Width="197" Click="Ubdate_Button" Height="26" FontFamily="Vivaldi" Grid.Column="1" Grid.ColumnSpan="2">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FFADD8E6" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="#FFFFA500" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF000080" Offset="0"/>
+                    <GradientStop Color="#FFC18BF1" Offset="1"/>
+                    <GradientStop Color="#FFDC8A26" Offset="0.126"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Button.Foreground>
+        </Button>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="60,295,0,0" TextWrapping="Wrap" Text="Маршрут:" VerticalAlignment="Top" Width="57" Foreground="#FFF1E9E9" Grid.ColumnSpan="2"/>
 
 
     </Grid>

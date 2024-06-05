@@ -166,11 +166,11 @@ namespace B.I.G
             try
             {
                 if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-
+                var id = ((journalCollector)dGridCollector.SelectedItem).id;
                 var selectedCollector = (journalCollector)dGridCollector.SelectedItem;
                 JournalCollector = selectedCollector;
 
-                LookCollector lookCollector = new LookCollector(selectedCollector);
+                LookCollector lookCollector = new LookCollector(selectedCollector, id);
 
                 lookCollector.ShowDialog();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
