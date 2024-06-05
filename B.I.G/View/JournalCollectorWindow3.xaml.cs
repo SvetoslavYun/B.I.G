@@ -396,11 +396,12 @@ namespace B.I.G
                     worksheet.Cells[i + 4, 3].Value = collectorItem.route;
                     worksheet.Cells[i + 4, 6].Value = collectorItem.route2;
                     worksheet.Cells[i + 4, 7].Value = collectorItem.meaning;
-
+                    worksheet.Cells[i + 4, 9].Value = collectorItem.cc_power;
                     worksheet.Cells[i + 4, 11].Value = collectorItem.certificate;
                     worksheet.Cells[i + 4, 12].Value = collectorItem.token;
                     worksheet.Cells[i + 4, 17].Value = collectorItem.route2;
                     worksheet.Cells[i + 4, 18].Value = collectorItem.meaning;
+                    worksheet.Cells[i + 4, 20].Value = collectorItem.cc_power;
                     worksheet.Cells[i + 4, 22].Value = collectorItem.certificate;
                     worksheet.Cells[i + 4, 23].Value = collectorItem.token;
                     worksheet.Cells[i + 4, 29].Value = collectorItem.profession;
@@ -414,12 +415,12 @@ namespace B.I.G
                         worksheet.Cells[i + 4, col].Style.Font.Size = 8; // Установите нужный размер шрифта
                     }
 
-                    if (worksheet.Cells[i + 4, 2].Value?.ToString() != "")
-                    {
+                    //if (worksheet.Cells[i + 4, 2].Value?.ToString() != "")
+                    //{
 
-                        worksheet.Cells[i + 4, 9].Value = "Алмаз";
-                        worksheet.Cells[i + 4, 20].Value = "Алмаз";                      
-                    }
+                    //    worksheet.Cells[i + 4, 9].Value = "Алмаз";
+                    //    worksheet.Cells[i + 4, 20].Value = "Алмаз";                      
+                    //}
 
 
                     if (worksheet.Cells[i + 4, 29].Value?.ToString().Contains("борщик") == true)

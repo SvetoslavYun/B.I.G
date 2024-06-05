@@ -43,7 +43,7 @@
                 <DataGridTextColumn Header="номера печатей" Binding="{Binding route2}" Width="*"/>
                 <DataGridTextColumn Header="номера доверен-ностей" Binding="{Binding meaning}" Width="*"/>
                 <DataGridTextColumn Header="ключей от сейфов и металлических печатей, одноразового пломби-рующего материала штук (прописью)"  Width="*"/>
-                <DataGridTextColumn Header="марка броне-жилетов" Width="*"/>
+                <DataGridTextColumn Header="марка броне-жилетов" Binding="{Binding cc_power}" Width="*"/>
                 <DataGridTextColumn Header="модель средства радиосвязи/марка видеоре-гистратора" Width="*"/>
 
                 <DataGridTextColumn Header="№ удосто-верения личности инкасса-тора" Binding="{Binding certificate}" Width="*"/>
@@ -57,7 +57,7 @@
 
                 <DataGridTextColumn Header="номера доверен-ностей" Binding="{Binding meaning}" Width="*"/>
                 <DataGridTextColumn Header="ключей от сейфов и металлических печатей, одноразового пломби-рующего материала штук (прописью)"  Width="*"/>
-                <DataGridTextColumn Header="марка броне-жилетов" Width="*"/>
+                <DataGridTextColumn Header="марка броне-жилетов" Binding="{Binding cc_power}" Width="*"/>
                 <DataGridTextColumn Header="модель средства радиосвязи/марка видеоре-гистратора" Width="*"/>
 
                 <DataGridTextColumn Header="№ удосто-верения личности инкасса-тора" Binding="{Binding certificate}" Width="*"/>

@@ -38,7 +38,7 @@
         <!--<DatePicker x:Name="Date" Margin="508,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25" Grid.Column="1"/>-->
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
-        Margin="0,12,103,0"
+        Margin="0,10,24,0"
         VerticalAlignment="Top"
         Width="104"
         BorderBrush="#FF1E1F1D"
@@ -417,8 +417,10 @@
         </Button>
         <TextBlock x:Name="Date" Grid.Column="1" HorizontalAlignment="Left" Margin="578,8,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="438,9,0,0" TextWrapping="Wrap" Text="Инструктаж на" VerticalAlignment="Top" Width="158" Foreground="#FFEDE0D5" FontSize="18"/>
-        <TextBox x:Name="Name" Margin="0,15,212,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="168"/>
-        <TextBlock Grid.Column="1" Margin="0,-1,231,0" TextWrapping="Wrap" Text="Инструктирующий" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
+        <TextBox x:Name="Name" Margin="0,15,268,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" HorizontalAlignment="Right" Width="112"/>
+        <TextBox x:Name="Name2" Margin="0,15,151,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" HorizontalAlignment="Right" Width="112"/>
+        <TextBlock Grid.Column="1" Margin="0,-1,262,0" TextWrapping="Wrap" Text="Инструктирующий 1" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
+        <TextBlock Grid.Column="1" Margin="0,-1,144,0" TextWrapping="Wrap" Text="Инструктирующий 2" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
 
     </Grid>
 </Window>

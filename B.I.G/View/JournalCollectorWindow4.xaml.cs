@@ -380,16 +380,34 @@ namespace B.I.G
                     var row = worksheet.Row(i + 3);
                     row.Height = 19;
                     worksheet.Cells[i + 3, 1].Value = collectorItem.date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i + 3, 2].Value = collectorItem.dateWork;
                     worksheet.Cells[i + 3, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 3, 5].Value = collectorItem.profession;
-                    worksheet.Cells[i + 3, 7].Value = Name.Text;
+                    // Условие для проверки времени
+                    TimeSpan time;
+                    if (TimeSpan.TryParse(collectorItem.dateWork, out time))
+                    {
+                        if (time < new TimeSpan(8, 30, 0))
+                        {
+                            worksheet.Cells[i + 3, 7].Value = Name.Text;
+                        }
+                        else
+                        {
+                            worksheet.Cells[i + 3, 7].Value = Name2.Text;
+                        }
+                    }
+                    else
+                    {
+                        worksheet.Cells[i + 3, 7].Value = "Некорректное время";
+                    }
+                
 
-                }
+            }
 
 
                 // Добавление 10 пустых строк
                 int rowCount = dGridCollector.Items.Count + 3;
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 33; i++)
                 {
                     var row = worksheet.Row(rowCount + i);
                     row.Height = 19;

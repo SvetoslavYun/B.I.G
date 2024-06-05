@@ -235,7 +235,16 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !=''  ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"
+        SELECT jc.*, 
+               CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image, 
+               cc.power AS cc_power 
+        FROM journalCollectors jc 
+        LEFT JOIN cashCollectors cc ON jc.id2 = cc.id 
+        WHERE jc.date = @Date 
+          AND jc.permission != '.' 
+          AND jc.name != '' 
+        ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -268,6 +277,7 @@ namespace B.I.G.Controller
                 var Route2 = reader.GetString(reader.GetOrdinal("route2"));
                 var Image = (byte[])reader.GetValue(reader.GetOrdinal("image"));
                 var Data = reader.GetString(reader.GetOrdinal("data"));
+                var CCPower = reader.GetString(reader.GetOrdinal("cc_power")); // Новое поле power из cashCollectors
 
                 var JournalCollector = new journalCollector
                 {
@@ -289,9 +299,10 @@ namespace B.I.G.Controller
                     date = Date,
                     dateWork = DateWork,
                     appropriation = Appropriation,
-                    route2 = Route2, // Добавлено новое поле route2
+                    route2 = Route2,
                     image = Image,
-                    data = Data
+                    data = Data,
+                    cc_power = CCPower // Добавлено новое поле cc_power
                 };
 
                 yield return JournalCollector;
@@ -299,6 +310,7 @@ namespace B.I.G.Controller
 
             connection.Close();
         }
+
 
 
 

@@ -22,5 +22,6 @@ namespace B.I.G.Model
         public String fullname { get; set; }
         public String phone { get; set; }
         public byte[] image { get; set; }
+        public string cc_power { get; set; }
     }
 }
