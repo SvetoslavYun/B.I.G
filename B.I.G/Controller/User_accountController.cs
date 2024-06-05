@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
+using System.IO;
+using System.Windows;
 using B.I.G.Model;
 
 namespace B.I.G.Controller
@@ -58,6 +60,49 @@ namespace B.I.G.Controller
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            Insert2(User);
+        }
+
+
+        public void Insert2(user_account User)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "INSERT INTO user_accounts (username, password_hash,access, image) VALUES (@Username, @Password_hash,@Access, @Image)";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+                new SQLiteParameter("Username", User.username),
+                new SQLiteParameter("Password_hash", User.password_hash),
+                new SQLiteParameter("Access", User.access),
+                new SQLiteParameter("Image", User.image),
+            });
+          
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        
         }
 
         public void Update(user_account User)
@@ -74,7 +119,50 @@ namespace B.I.G.Controller
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            Update2(User);
         }
+
+
+        public void Update2(user_account User)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE user_accounts SET username=@Username, password_hash=@Password_hash, access=@Access, image=@Image WHERE id = @Id";
+                        SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+                        updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+                 new SQLiteParameter("Username", User.username),
+                new SQLiteParameter("Password_hash", User.password_hash),
+                new SQLiteParameter("Access", User.access),
+                new SQLiteParameter("Image", User.image),
+                new SQLiteParameter("Id", User.id),
+            });
+                        updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         public void Delete(int id, string username)
         {
@@ -85,7 +173,46 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
+            Delete2(id, username);
         }
+
+
+        public void Delete2(int id, string username)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM user_accounts WHERE(id = @Id) and username !=@Username";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            deleteCommand.Parameters.AddWithValue("Id", id);
+            deleteCommand.Parameters.AddWithValue("@Username", username);
+            deleteCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+
 
         public IEnumerable<user_account> SearchUsername(string name)
         {

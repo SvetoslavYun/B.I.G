@@ -99,6 +99,58 @@ namespace B.I.G.Controller
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            Insert2(CashCollector);
+        }
+
+
+        public void Insert2(cashCollector CashCollector)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("Name", CashCollector.name),
+        new SQLiteParameter("Gun", CashCollector.gun),
+        new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
+        new SQLiteParameter("Automaton", CashCollector.automaton),
+        new SQLiteParameter("Permission", CashCollector.permission),
+        new SQLiteParameter("Meaning", CashCollector.meaning),
+        new SQLiteParameter("Certificate", CashCollector.certificate),
+        new SQLiteParameter("Token", CashCollector.token),
+        new SQLiteParameter("Power", CashCollector.power),
+        new SQLiteParameter("FullName", CashCollector.fullname),
+        new SQLiteParameter("Profession", CashCollector.profession),
+        new SQLiteParameter("Phone", CashCollector.phone),
+        new SQLiteParameter("Image", CashCollector.image),
+    });
+
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 
@@ -127,9 +179,63 @@ namespace B.I.G.Controller
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            Update22(CashCollector);
         }
 
 
+        public void Update22(cashCollector CashCollector)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image WHERE id = @Id";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("Name", CashCollector.name),
+        new SQLiteParameter("Gun", CashCollector.gun),
+        new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
+        new SQLiteParameter("Automaton", CashCollector.automaton),
+        new SQLiteParameter("Permission", CashCollector.permission),
+        new SQLiteParameter("Meaning", CashCollector.meaning),
+        new SQLiteParameter("Certificate", CashCollector.certificate),
+        new SQLiteParameter("Token", CashCollector.token),
+        new SQLiteParameter("Power", CashCollector.power),
+        new SQLiteParameter("FullName", CashCollector.fullname),
+        new SQLiteParameter("Profession", CashCollector.profession),
+        new SQLiteParameter("Phone", CashCollector.phone),
+        new SQLiteParameter("Image", CashCollector.image),
+        new SQLiteParameter("Id", CashCollector.id),
+    });
+
+            updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+    
         public void Update2(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone)
         {
             var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone WHERE name=@Name";
@@ -154,6 +260,57 @@ namespace B.I.G.Controller
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            Update21( name,  gun, automaton_serial,automaton, permission, meaning, certificate, token, power, fullname, profession,  phone);
+        }
+
+
+        public void Update21(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone WHERE name=@Name";
+                        SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+
+                        updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+            new SQLiteParameter("Name", name),
+            new SQLiteParameter("Gun", gun),
+            new SQLiteParameter("AutomatonSerial", automaton_serial),
+            new SQLiteParameter("Automaton", automaton),
+            new SQLiteParameter("Permission", permission),
+            new SQLiteParameter("Meaning", meaning),
+            new SQLiteParameter("Certificate", certificate),
+            new SQLiteParameter("Token", token),
+            new SQLiteParameter("Power", power),
+             new SQLiteParameter("FullName",fullname),
+        new SQLiteParameter("Profession", profession),
+        new SQLiteParameter("Phone", phone),
+
+        });
+                        updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 

@@ -120,7 +120,7 @@ namespace B.I.G
                         var Log = new log()
                         {
                             username = MainWindow.LogS,
-                            process = "Добавил пользователя: " + Name.Text + "",
+                            process = "Добавил сотрудника: " + Name.Text + "",
                             date = Convert.ToDateTime(formattedDate),
                             date2 = Convert.ToDateTime(formattedDate2)
                         };
