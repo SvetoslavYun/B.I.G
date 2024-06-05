@@ -42,21 +42,35 @@ namespace B.I.G.Controller
         public void DeleteAfterSixMonthsLog2()
         {
             string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
-                    var commandString = "DELETE FROM journalCollectors  WHERE date <= date('now', '-14 days')";
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM journalCollectors  WHERE date <= date('now', '-14 days')";
                     SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
-                    connection.Open();
+              
                     deleteCommand.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
                 }
-
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка при удалении данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+
             }
 
         }
@@ -557,7 +571,7 @@ namespace B.I.G.Controller
         public void UpdateResponsibilities(DateTime date)
         {
             var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%Водитель%' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
-            var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%орщик%' AND date = @Date";
+            var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%борщик%' AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 9, 6), route2 = SUBSTRING(Route, 9, 6) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
@@ -573,7 +587,7 @@ namespace B.I.G.Controller
             //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата -  М.' || (SELECT j3.route2 FROM journalCollectors AS j3 WHERE j1.automaton_serial = j3.automaton_serial AND j1.name <> j3.name AND j3.name <> '' LIMIT 1) || ', ' || (SELECT j2.name FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' LIMIT 1) WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '' and j2.date = @Date);";
             //var commandString14 = "UPDATE journalCollectors AS j1 SET dateWork = 'Повтор автомата' WHERE j1.automaton_serial != '' AND j1.name <> '' AND EXISTS (SELECT 1 FROM journalCollectors AS j2 WHERE j1.automaton_serial = j2.automaton_serial AND j1.name <> j2.name AND j2.name <> '');";
             var commandString14 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
-            var commandString16 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND dateWork = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
+            var commandString16 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND data = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             connection.Open();
 
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);

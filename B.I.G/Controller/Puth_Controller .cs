@@ -55,7 +55,7 @@ namespace B.I.G.Controller
 
             if (!File.Exists(dbPath))
             {
-                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+               
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace B.I.G.Controller
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+               
             }
         }
 

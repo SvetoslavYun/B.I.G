@@ -68,7 +68,7 @@ namespace B.I.G
             InitializeComponent();
             LoadPathsIntoTextBox();
             GetUsernames();          
-            log_Controller.DeleteAfterSixMonthsLog();          
+            //log_Controller.DeleteAfterSixMonthsLog();          
             atm_Controller.DeleteAfterSixMonthsLog();
             journalCollectorController.DeleteNUL();
             sourcePathTextBox.Visibility = Visibility.Collapsed;
@@ -115,6 +115,13 @@ namespace B.I.G
                 // Получение пути к директории базы данных из текстового поля
                 string sourceDirectory = sourcePathTextBox.Text;
 
+                // Проверка, пустое ли текстовое поле
+                if (string.IsNullOrWhiteSpace(sourceDirectory))
+                {
+                    MessageBox.Show("Путь к директории базы данных не указан.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 // Добавление имени файла базы данных к указанному пути
                 string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
 
@@ -124,21 +131,21 @@ namespace B.I.G
                 // Проверка наличия файла базы данных в источнике
                 if (!File.Exists(sourcePath))
                 {
-                    MessageBox.Show("Файл базы данных в указанном источнике не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Файл базы данных в указанном источнике не найден, дальнейшие сохранения будут на локальном диске", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 // Копирование файла базы данных с заменой существующего файла
                 File.Copy(sourcePath, destinationPath, true);
+
+                // Обновление пути в базе данных
                 var Puth = new puth()
                 {
-                   
                     adres = sourcePathTextBox.Text,
-                   
                 };
-                puth = sourcePathTextBox.Text;
                 puth_Controller.Update(Puth);
-                puth_Controller.Update2(Puth, sourcePathTextBox.Text);               
+                puth_Controller.Update2(Puth, sourcePathTextBox.Text);
+
                 //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
