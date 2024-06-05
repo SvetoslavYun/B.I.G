@@ -51,25 +51,35 @@ namespace B.I.G.Controller
 
         public void Update2(puth puth, string adres)
         {
-            // Добавление имени файла базы данных к указанному пути
-            string dbPath = Path.Combine(adres, "B.I.G.db");
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
-                    var commandString = "UPDATE puths SET adres = @Adres"; // Предположим, что для обновления записи нужен идентификатор
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE puths SET adres = @Adres"; // Предположим, что для обновления записи нужен идентификатор
                     SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
                     updateCommand.Parameters.AddRange(new SQLiteParameter[]
                     {
                 new SQLiteParameter("@Adres", puth.adres),             
                     });
-
-                    connection.Open();
+                  
                     updateCommand.ExecuteNonQuery();
-                }
+                        transaction.Commit();
+                    }
 
-              
+                    connection.Close(); // Закрытие соединения
+                }
             }
             catch (Exception ex)
             {
