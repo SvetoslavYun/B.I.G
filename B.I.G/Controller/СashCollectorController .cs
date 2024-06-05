@@ -172,27 +172,42 @@ namespace B.I.G.Controller
         public void Delete2(int id, string name)
         {
             string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
-                    string commandString = "DELETE FROM cashCollectors WHERE (id = @Id) AND (name != @Name)";
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        string commandString = "DELETE FROM cashCollectors WHERE (id = @Id) AND (name != @Name)";
                     SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
 
                     deleteCommand.Parameters.AddWithValue("@Id", id);
                     deleteCommand.Parameters.AddWithValue("@Name", name);
-
-                    connection.Open();
                     deleteCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
                 }
-
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка при удалении данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Произошла ошибка Удаление: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
+     
+
 
         public IEnumerable<cashCollector> SearchCollectorName(string name)
         {

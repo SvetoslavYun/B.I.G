@@ -603,6 +603,28 @@ namespace B.I.G
             currentWindow.Close();
         }
 
+
+        private void SetButtonsEnabled(DependencyObject parent, bool isEnabled)
+        {
+            if (parent == null)
+                return;
+
+            // Обходим всех детей в визуальном дереве
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                // Если ребенок - кнопка, то изменяем свойство IsEnabled
+                if (child is Button button)
+                {
+                    button.IsEnabled = isEnabled;
+                }
+
+                // Рекурсивно обходим детей текущего элемента
+                SetButtonsEnabled(child, isEnabled);
+            }
+        }
+
         private void Button_import_to_excel(object sender, RoutedEventArgs e)
         {
             try
@@ -614,9 +636,11 @@ namespace B.I.G
                 // проверка, был ли выбран файл
                 if (openFileDialog.ShowDialog() == true)
                 {
+                    // Заблокировать все кнопки
+                    SetButtonsEnabled(this, false);                 
                     Atms.Clear();
                     DateTime selectedDate = Convert.ToDateTime(Date.Text);
-                    atm_Controller.DeleteToDate(selectedDate);
+                    atm_Controller.DeleteToDateLocal(selectedDate);
                     StartImport(openFileDialog.FileName, selectedDate);
                 }
             }
@@ -684,6 +708,8 @@ namespace B.I.G
                     {
                         MessageBox.Show("Данные не могут быть опубликованы на сервере, так как имеют несоответствие", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
+                    // Разблокировать все кнопки
+                    SetButtonsEnabled(this, true);
                     FillData();
                 }
             };

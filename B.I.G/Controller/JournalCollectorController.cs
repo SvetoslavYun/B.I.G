@@ -1387,37 +1387,39 @@ namespace B.I.G.Controller
                 {
                     sourceConnection.Open();
                     var commandString = "SELECT * FROM journalCollectors WHERE date = @Date";
-                    SQLiteCommand selectCommand = new SQLiteCommand(commandString, sourceConnection);
-                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
-                    using (SQLiteDataReader reader = selectCommand.ExecuteReader())
+                    using (SQLiteCommand selectCommand = new SQLiteCommand(commandString, sourceConnection))
                     {
-                        while (reader.Read())
+                        selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+                        using (SQLiteDataReader reader = selectCommand.ExecuteReader())
                         {
-                            var entry = new journalCollector
+                            while (reader.Read())
                             {
-                                id = reader.GetInt32(0),
-                                name = reader.GetString(1),
-                                gun = reader.GetString(2),
-                                automaton_serial = reader.GetString(3),
-                                automaton = reader.GetString(4),
-                                permission = reader.GetString(5),
-                                meaning = reader.GetString(6),
-                                certificate = reader.GetString(7),
-                                token = reader.GetString(8),
-                                power = reader.GetString(9),
-                                fullname = reader.GetString(10),
-                                profession = reader.GetString(11),
-                                phone = reader.GetString(12),
-                                id2 = reader.GetInt32(13),
-                                route = reader.GetString(14),
-                                date = reader.GetDateTime(15),
-                                dateWork = reader.GetString(16),
-                                appropriation = reader.GetString(17),
-                                route2 = reader.GetString(18),
-                                data = reader.GetString(19),
-                            };
-                            journalEntries.Add(entry);
+                                var entry = new journalCollector
+                                {
+                                    id = reader.GetInt32(0),
+                                    name = reader.GetString(1),
+                                    gun = reader.GetString(2),
+                                    automaton_serial = reader.GetString(3),
+                                    automaton = reader.GetString(4),
+                                    permission = reader.GetString(5),
+                                    meaning = reader.GetString(6),
+                                    certificate = reader.GetString(7),
+                                    token = reader.GetString(8),
+                                    power = reader.GetString(9),
+                                    fullname = reader.GetString(10),
+                                    profession = reader.GetString(11),
+                                    phone = reader.GetString(12),
+                                    id2 = reader.GetInt32(13),
+                                    route = reader.GetString(14),
+                                    date = reader.GetDateTime(15),
+                                    dateWork = reader.GetString(16),
+                                    appropriation = reader.GetString(17),
+                                    route2 = reader.GetString(18),
+                                    data = reader.GetString(19),
+                                };
+                                journalEntries.Add(entry);
+                            }
                         }
                     }
                 }
@@ -1429,51 +1431,62 @@ namespace B.I.G.Controller
 
                     using (var transaction = destinationConnection.BeginTransaction())
                     {
-                        // Удаление существующих данных с той же датой
-                        var deleteCommandString = "DELETE FROM journalCollectors WHERE date = @Date";
-                        SQLiteCommand deleteCommand = new SQLiteCommand(deleteCommandString, destinationConnection);
-                        deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-                        deleteCommand.ExecuteNonQuery();
-
-                        // Вставка новых данных
-                        var insertCommandString = @"
-                INSERT INTO journalCollectors (
-                    id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data
-                ) VALUES (
-                    @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data
-                )";
-
-                        foreach (var entry in journalEntries)
+                        try
                         {
-                            SQLiteCommand insertCommand = new SQLiteCommand(insertCommandString, destinationConnection);
-                            insertCommand.Parameters.AddWithValue("@Id", entry.id);
-                            insertCommand.Parameters.AddWithValue("@Name", entry.name);
-                            insertCommand.Parameters.AddWithValue("@Gun", entry.gun);
-                            insertCommand.Parameters.AddWithValue("@AutomatonSerial", entry.automaton_serial);
-                            insertCommand.Parameters.AddWithValue("@Automaton", entry.automaton);
-                            insertCommand.Parameters.AddWithValue("@Permission", entry.permission);
-                            insertCommand.Parameters.AddWithValue("@Meaning", entry.meaning);
-                            insertCommand.Parameters.AddWithValue("@Certificate", entry.certificate);
-                            insertCommand.Parameters.AddWithValue("@Token", entry.token);
-                            insertCommand.Parameters.AddWithValue("@Power", entry.power);
-                            insertCommand.Parameters.AddWithValue("@FullName", entry.fullname);
-                            insertCommand.Parameters.AddWithValue("@Profession", entry.profession);
-                            insertCommand.Parameters.AddWithValue("@Phone", entry.phone);
-                            insertCommand.Parameters.AddWithValue("@Id2", entry.id2);
-                            insertCommand.Parameters.AddWithValue("@Route", entry.route);                           
-                            insertCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-                            insertCommand.Parameters.AddWithValue("@DateWork", entry.dateWork);
-                            insertCommand.Parameters.AddWithValue("@Appropriation", entry.appropriation);
-                            insertCommand.Parameters.AddWithValue("@Route2", entry.route2);
-                            insertCommand.Parameters.AddWithValue("@Data", entry.data);
-                            insertCommand.ExecuteNonQuery();
-                        }
+                            // Удаление существующих данных с той же датой
+                            var deleteCommandString = "DELETE FROM journalCollectors WHERE date = @Date";
+                            using (SQLiteCommand deleteCommand = new SQLiteCommand(deleteCommandString, destinationConnection))
+                            {
+                                deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                                deleteCommand.ExecuteNonQuery();
+                            }
 
-                        transaction.Commit();
+                            // Вставка новых данных
+                            var insertCommandString = @"
+                    INSERT INTO journalCollectors (
+                        id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data
+                    ) VALUES (
+                        @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data
+                    )";
+
+                            foreach (var entry in journalEntries)
+                            {
+                                using (SQLiteCommand insertCommand = new SQLiteCommand(insertCommandString, destinationConnection))
+                                {
+                                    insertCommand.Parameters.AddWithValue("@Id", entry.id);
+                                    insertCommand.Parameters.AddWithValue("@Name", entry.name);
+                                    insertCommand.Parameters.AddWithValue("@Gun", entry.gun);
+                                    insertCommand.Parameters.AddWithValue("@AutomatonSerial", entry.automaton_serial);
+                                    insertCommand.Parameters.AddWithValue("@Automaton", entry.automaton);
+                                    insertCommand.Parameters.AddWithValue("@Permission", entry.permission);
+                                    insertCommand.Parameters.AddWithValue("@Meaning", entry.meaning);
+                                    insertCommand.Parameters.AddWithValue("@Certificate", entry.certificate);
+                                    insertCommand.Parameters.AddWithValue("@Token", entry.token);
+                                    insertCommand.Parameters.AddWithValue("@Power", entry.power);
+                                    insertCommand.Parameters.AddWithValue("@FullName", entry.fullname);
+                                    insertCommand.Parameters.AddWithValue("@Profession", entry.profession);
+                                    insertCommand.Parameters.AddWithValue("@Phone", entry.phone);
+                                    insertCommand.Parameters.AddWithValue("@Id2", entry.id2);
+                                    insertCommand.Parameters.AddWithValue("@Route", entry.route);
+                                    insertCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                                    insertCommand.Parameters.AddWithValue("@DateWork", entry.dateWork);
+                                    insertCommand.Parameters.AddWithValue("@Appropriation", entry.appropriation);
+                                    insertCommand.Parameters.AddWithValue("@Route2", entry.route2);
+                                    insertCommand.Parameters.AddWithValue("@Data", entry.data);
+                                    insertCommand.ExecuteNonQuery();
+                                }
+                            }
+
+                            transaction.Commit();
+                            MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback(); // Откат транзакции в случае ошибки
+                            throw; // Переброс исключения для обработки ниже
+                        }
                     }
                 }
-
-                MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -1481,6 +1494,6 @@ namespace B.I.G.Controller
             }
         }
 
-    
+
     }
 }

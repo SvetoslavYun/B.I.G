@@ -271,7 +271,7 @@
   HorizontalAlignment="Right"
   Margin="0,12,10,0"
   VerticalAlignment="Top"
-  Width="84"
+  Width="88"
   BorderBrush="#FF1E1F1D"
   FontFamily="High Tower Text"
   Height="28"

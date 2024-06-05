@@ -82,23 +82,32 @@ namespace B.I.G.Controller
             {
                 using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
-                    connection.Open();
+                    connection.Open(); // Открытие соединения с базой данных
 
-                    var commandString = "INSERT INTO logs (username, process, date, date2) VALUES (@Username, @Process, @Date, @Date2)";
-                    using (SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection))
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        insertCommand.Parameters.AddRange(new SQLiteParameter[]
+                        // Определение SQL-команды для вставки данных
+                        var commandString = "INSERT INTO logs (username, process, date, date2) VALUES (@Username, @Process, @Date, @Date2)";
+                        using (SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection, transaction))
                         {
-                    new SQLiteParameter("@Username", Log.username),
-                    new SQLiteParameter("@Process", Log.process),
-                    new SQLiteParameter("@Date", Log.date),
-                    new SQLiteParameter("@Date2", Log.date2)
-                        });
+                            // Добавление параметров к команде
+                            insertCommand.Parameters.AddRange(new SQLiteParameter[]
+                            {
+                        new SQLiteParameter("@Username", Log.username),
+                        new SQLiteParameter("@Process", Log.process),
+                        new SQLiteParameter("@Date", Log.date),
+                        new SQLiteParameter("@Date2", Log.date2)
+                            });
 
-                        insertCommand.ExecuteNonQuery();
+                            // Выполнение команды
+                            insertCommand.ExecuteNonQuery();
+                        }
+
+                        // Фиксация транзакции
+                        transaction.Commit();
                     }
 
-                    connection.Close();
+                    connection.Close(); // Закрытие соединения
                 }
             }
             catch (Exception ex)
@@ -106,10 +115,7 @@ namespace B.I.G.Controller
                 MessageBox.Show("Произошла ошибка Log: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
-
-
+   
 
         public void Delete(int id)
         {
@@ -119,7 +125,47 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
+            Delete2(id);
         }
+
+
+        public void Delete2(int id)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM logs WHERE(id = @Id)";
+                        SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+                        deleteCommand.Parameters.AddWithValue("Id", id);
+
+                        deleteCommand.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка Удаление Log: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
 
         public void DeleteAfterSixMonthsLog()
         {
@@ -128,6 +174,41 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
+        }
+
+
+        public void DeleteAfterSixMonthsLog2()
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM logs WHERE date2 <= date('now', '-6 months')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);          
+            deleteCommand.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка Удаление LogSix: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public IEnumerable<log> SearchUsername(string name)

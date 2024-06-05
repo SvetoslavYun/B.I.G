@@ -636,6 +636,29 @@ namespace B.I.G
         }
 
 
+
+        private void SetButtonsEnabled(DependencyObject parent, bool isEnabled)
+        {
+            if (parent == null)
+                return;
+
+            // Обходим всех детей в визуальном дереве
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                // Если ребенок - кнопка, то изменяем свойство IsEnabled
+                if (child is Button button)
+                {
+                    button.IsEnabled = isEnabled;
+                }
+
+                // Рекурсивно обходим детей текущего элемента
+                SetButtonsEnabled(child, isEnabled);
+            }
+        }
+
+
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -648,6 +671,8 @@ namespace B.I.G
 
                 if (!journalCollectorController.ImportSerchData(date))
                 {
+                    // Заблокировать все кнопки
+                    SetButtonsEnabled(this, false);                 
                     JournalCollectors.Clear();
                     OpenFileDialog openFileDialog = new OpenFileDialog();
                     openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
@@ -675,7 +700,8 @@ namespace B.I.G
                     var result = MessageBox.Show("Наряд с этой датой уже сформирован.\nПереформировать заново?", "", MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
-                    {
+                    {  // Заблокировать все кнопки
+                        SetButtonsEnabled(this, false);
                         OpenFileDialog openFileDialog = new OpenFileDialog();
                         openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
 
@@ -756,7 +782,8 @@ namespace B.I.G
                 journalCollectorController.UpdateResponsibilities(date);
                 journalCollectorController.DeleteRound2(date);               
                 Date.Text = date.ToString("yyyy-MM-dd");
-               
+                // Разблокировать все кнопки
+                SetButtonsEnabled(this, true);
                 FillData();
             };
 

@@ -34,6 +34,7 @@ namespace B.I.G.Controller
             connection.Close();
             DeleteAfterSixMonthsLog2();
         }
+     
 
         public void DeleteAfterSixMonthsLog2()
         {
@@ -49,17 +50,23 @@ namespace B.I.G.Controller
             {
                 using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
-                    var commandString = "DELETE FROM atms  WHERE date <= date('now', '-14 days')";
-            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
-            connection.Open();
-            deleteCommand.ExecuteNonQuery();
-            connection.Close();
-                    connection.Close();
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM atms  WHERE date <= date('now', '-14 days')";
+                        SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+                        deleteCommand.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка SixATM: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Произошла ошибка Удаление LogSix: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -145,12 +152,18 @@ namespace B.I.G.Controller
             {
                 using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
-                    var commandString = "DELETE FROM atms WHERE(id = @Id)";
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM atms WHERE(id = @Id)";
                     SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
-                    deleteCommand.Parameters.AddWithValue("Id", id);
-                    connection.Open();
+                    deleteCommand.Parameters.AddWithValue("Id", id);                    
                     deleteCommand.ExecuteNonQuery();
-                    connection.Close();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
                 }
             }
             catch (Exception ex)
@@ -158,6 +171,22 @@ namespace B.I.G.Controller
                 MessageBox.Show("Произошла ошибка связи с сервером: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
+        public void DeleteToDateLocal(DateTime date)
+        {
+
+            var commandString2 = "DELETE FROM atms WHERE (date = @Date)";
+            SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+            deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            connection.Open();
+            deleteCommand2.ExecuteNonQuery();
+            connection.Close();
+           
+        }
+
         public void DeleteToDate(DateTime date)
         {
 
@@ -169,6 +198,42 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand2.ExecuteNonQuery();
             connection.Close();
+            DeleteToDate2(date);
+        }
+
+        public void DeleteToDate2(DateTime date)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show("Файл базы данных не найден: " + dbPath, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString2 = "DELETE FROM atms WHERE (date = @Date)";
+                        SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+                        deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                        deleteCommand2.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка связи с сервером: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public IEnumerable<atm> SearchAtmName(string name, string route, DateTime date)
@@ -500,35 +565,48 @@ namespace B.I.G.Controller
                 {
                     destinationConnection.Open();
 
-                    using (var transaction = destinationConnection.BeginTransaction())
+                    using (var transaction = destinationConnection.BeginTransaction()) // Начало транзакции
                     {
-                        // Удаление существующих данных с той же датой
-                        var deleteCommandString = "DELETE FROM atms WHERE date = @Date";
-                        SQLiteCommand deleteCommand = new SQLiteCommand(deleteCommandString, destinationConnection);
-                        deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-                        deleteCommand.ExecuteNonQuery();
-
-                        // Вставка новых данных
-                        var insertCommandString = @"INSERT INTO atms (id, route, atmname, name, name2, date, circle) VALUES (@Id, @Route, @AtmName, @Name, @Name2, @Date, @Circle)";
-
-                        foreach (var entry in journalEntries)
+                        try
                         {
-                            SQLiteCommand insertCommand = new SQLiteCommand(insertCommandString, destinationConnection);
-                            insertCommand.Parameters.AddWithValue("@Id", entry.id);
-                            insertCommand.Parameters.AddWithValue("@Route", entry.route);
-                            insertCommand.Parameters.AddWithValue("@AtmName", entry.atmname);
-                            insertCommand.Parameters.AddWithValue("@Name", entry.name);
-                            insertCommand.Parameters.AddWithValue("@Name2", entry.name2);
-                            insertCommand.Parameters.AddWithValue("@Date", entry.date.ToString("yyyy-MM-dd"));
-                            insertCommand.Parameters.AddWithValue("@Circle", entry.circle);
-                            insertCommand.ExecuteNonQuery();
+                            // Удаление существующих данных с той же датой
+                            var deleteCommandString = "DELETE FROM atms WHERE date = @Date";
+                            using (SQLiteCommand deleteCommand = new SQLiteCommand(deleteCommandString, destinationConnection))
+                            {
+                                deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                                deleteCommand.ExecuteNonQuery();
+                            }
+
+                            // Вставка новых данных
+                            var insertCommandString = @"INSERT INTO atms (id, route, atmname, name, name2, date, circle) VALUES (@Id, @Route, @AtmName, @Name, @Name2, @Date, @Circle)";
+
+                            foreach (var entry in journalEntries)
+                            {
+                                using (SQLiteCommand insertCommand = new SQLiteCommand(insertCommandString, destinationConnection))
+                                {
+                                    insertCommand.Parameters.AddWithValue("@Id", entry.id);
+                                    insertCommand.Parameters.AddWithValue("@Route", entry.route);
+                                    insertCommand.Parameters.AddWithValue("@AtmName", entry.atmname);
+                                    insertCommand.Parameters.AddWithValue("@Name", entry.name);
+                                    insertCommand.Parameters.AddWithValue("@Name2", entry.name2);
+                                    insertCommand.Parameters.AddWithValue("@Date", entry.date.ToString("yyyy-MM-dd"));
+                                    insertCommand.Parameters.AddWithValue("@Circle", entry.circle);
+                                    insertCommand.ExecuteNonQuery();
+                                }
+                            }
+
+                            transaction.Commit(); // Фиксация транзакции
+                            MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
-
-                        transaction.Commit();
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback(); // Откат транзакции в случае ошибки
+                            throw; // Переброс исключения для обработки ниже
+                        }
                     }
-                }
 
-                MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    destinationConnection.Close(); // Закрытие соединения
+                }
             }
             catch (Exception ex)
             {
