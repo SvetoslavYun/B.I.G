@@ -47,15 +47,16 @@ namespace B.I.G.Controller
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            Update2(Puth);
         }
 
-        public void Update2(puth puth, string adres)
+        public void Update2(puth Puth)
         {
             string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
 
             if (!File.Exists(dbPath))
             {
-               
+
                 return;
             }
 
@@ -67,14 +68,13 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "UPDATE puths SET adres = @Adres"; // Предположим, что для обновления записи нужен идентификатор
-                    SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
-                    updateCommand.Parameters.AddRange(new SQLiteParameter[]
-                    {
-                new SQLiteParameter("@Adres", puth.adres),             
-                    });
-                  
-                    updateCommand.ExecuteNonQuery();
+                        var commandString = "UPDATE puths SET adres=@Adres";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+                 new SQLiteParameter("@Adres", Puth.adres),
+            });
+
+            updateCommand.ExecuteNonQuery();
                         transaction.Commit();
                     }
 
@@ -83,10 +83,82 @@ namespace B.I.G.Controller
             }
             catch (Exception ex)
             {
-               
+                MessageBox.Show("Произошла ошибка связь с сервером : " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+
+        public void CreateEmptyPuthIfNotExists()
+        {
+            string query = "SELECT COUNT(*) FROM puths";
+
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    int count = Convert.ToInt32(command.ExecuteScalar());
+                    if (count == 0)
+                    {
+                        // Если таблица пуста, вставляем новую строку со значением ''
+                        InsertEmptyPuth(connection);
+                    }
+                }
+            connection.Close();
+
+        }
+
+        public void CreateEmptyPuthIfNotExists2()
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        string query = "SELECT COUNT(*) FROM puths";
+
+       
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
+            {
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                if (count == 0)
+                {
+                    // Если таблица пуста, вставляем новую строку со значением ''
+                    InsertEmptyPuth(connection);
+                }
+            }
+           transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка связь с сервером : " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        private void InsertEmptyPuth(SQLiteConnection connection)
+        {
+            string query = "INSERT INTO puths (adres) VALUES ('')";
+
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+            
+        }
 
     }
 }

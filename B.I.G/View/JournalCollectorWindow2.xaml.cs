@@ -190,7 +190,21 @@ namespace B.I.G
             }
             journalCollectorController.Insert(Convert.ToDateTime(Date.Text));
             Search(sender, e);
+            // прокручиваем к последней строке
+            ScrollToLastRow(dGridCollector);
         }
+
+        private void ScrollToLastRow(DataGrid dataGrid)
+        {
+            if (dataGrid.Items.Count > 0)
+            {
+                object item = dataGrid.Items[dataGrid.Items.Count - 1];
+                dataGrid.ScrollIntoView(item);
+                dataGrid.SelectedItem = item;
+                dataGrid.UpdateLayout();
+            }
+        }
+
 
         private void DoubleClick(object sender, RoutedEventArgs e)
         {
@@ -206,6 +220,7 @@ namespace B.I.G
                 lookCollector.ShowDialog();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                 journalCollectorController.DeleteNUL();
+                journalCollectorController.UpdateResponsibilities(Convert.ToDateTime(Date.Text));
                 Search(sender, e);
                 JournalCollector = null;
             }
@@ -396,7 +411,7 @@ namespace B.I.G
                     worksheet.Cells[1, i].Style.Font.Bold = true;
                 }
 
-
+                int I = 0;
                 // Добавление данных
                 for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {
@@ -409,7 +424,7 @@ namespace B.I.G
                     worksheet.Cells[i + 2, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;
                     worksheet.Cells[i + 2, 8].Value = collectorItem.appropriation;
-
+                    I = i;
 
                     for (int col = 2; col <= 7; col++)
                     {
@@ -436,6 +451,16 @@ namespace B.I.G
                     }
                 }
 
+                I = I + 4;
+
+                worksheet.Cells[I, 1, I, 10].Merge = true;
+                string Spaces = new string(' ', 116);
+                string spaces = new string(' ', 53);
+                worksheet.Cells[I, 3].Value = "\n\n\nНачальник службы инкассации    \n___________________         ___________________________________";
+                worksheet.Cells[I+1, 1, I+1, 10].Merge = true;
+                string Spaces2 = new string(' ', 116);
+                string spaces2 = new string(' ', 53);   
+                worksheet.Cells[I+1, 3].Value = "                                                                                  (подпись)                                   (инициалы, фамилия)";
 
                 worksheet.DeleteColumn(1,2);
                 
@@ -449,7 +474,8 @@ namespace B.I.G
                 worksheet.Column(6).Width = 15;
 
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 НАРЯД НА РАБОТУ на " + formattedDate2;
+                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&08&K000000\nНАРЯД НА РАБОТУ \nна " + formattedDate2;
+                worksheet.HeaderFooter.OddHeader.LeftAlignedText = "&\"Arial\"&07&K000000Служба инкассации  Региональное управление № ";
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 

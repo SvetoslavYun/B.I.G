@@ -66,6 +66,7 @@ namespace B.I.G
             Users = new ObservableCollection<user_account>();
             user_AccountController = new User_accountController();
             InitializeComponent();
+            puth_Controller.CreateEmptyPuthIfNotExists();
             LoadPathsIntoTextBox();
             GetUsernames();          
             //log_Controller.DeleteAfterSixMonthsLog();          
@@ -144,7 +145,7 @@ namespace B.I.G
                     adres = sourcePathTextBox.Text,
                 };
                 puth_Controller.Update(Puth);
-                puth_Controller.Update2(Puth, sourcePathTextBox.Text);
+              
 
                 //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -210,6 +211,7 @@ namespace B.I.G
                         LogS = login.Text;
                         App.nameUserApp = LogS;
                         user_AccountController.MainPhoto(LogS);
+                        puth_Controller.CreateEmptyPuthIfNotExists2();
                         OverwriteDatabase();
                         journalCollectorController.DeleteAfterSixMonthsLog();
                         JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();

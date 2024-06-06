@@ -19,6 +19,7 @@ using DocumentFormat.OpenXml.Drawing;
 using Microsoft.Graph.Models;
 using System.Windows.Input;
 using B.I.G.View;
+using System.Drawing.Printing;
 
 namespace B.I.G
 

@@ -243,7 +243,7 @@ namespace B.I.G.Controller
         LEFT JOIN cashCollectors cc ON jc.id2 = cc.id 
         WHERE jc.date = @Date 
           AND jc.permission != '.' 
-          AND jc.name != '' 
+          AND jc.name != '' AND jc.data != 'Данные отсутствуют' 
         ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
@@ -1203,13 +1203,15 @@ namespace B.I.G.Controller
             connection.Close();
 
             var commandString = @"SELECT route2,
-                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%тарший%' THEN name END), '') AS names_starshego,
-                                 COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika
-                          FROM journalCollectors 
-                          WHERE 
-                              date = @Date and profession LIKE '%тарший%' or profession LIKE '%борщик%'  GROUP BY route2
-                          ORDER BY 
-                               CAST(route2 AS INT);";
+       COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%тарший%' THEN name END), '') AS names_starshego,
+       COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika
+FROM journalCollectors 
+WHERE 
+    date = @Date AND (profession LIKE '%тарший%' OR profession LIKE '%борщик%')
+GROUP BY route2
+ORDER BY 
+    CAST(route2 AS INT)
+;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
