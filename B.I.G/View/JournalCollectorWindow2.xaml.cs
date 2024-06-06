@@ -220,7 +220,6 @@ namespace B.I.G
                 lookCollector.ShowDialog();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                 journalCollectorController.DeleteNUL();
-                journalCollectorController.UpdateResponsibilities(Convert.ToDateTime(Date.Text));
                 Search(sender, e);
                 JournalCollector = null;
             }
