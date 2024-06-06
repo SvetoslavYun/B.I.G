@@ -318,7 +318,25 @@ namespace B.I.G.Controller
         {
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.permission !='.' and jc.name !='' GROUP BY jc.name  ORDER BY jc.name ";
+            var commandString = @"SELECT 
+    jc.*, 
+    CASE 
+        WHEN cc.image IS NULL THEN @DefaultImage 
+        ELSE cc.image 
+    END AS image 
+FROM 
+    journalCollectors jc 
+LEFT JOIN 
+    cashCollectors cc ON jc.id2 = cc.id 
+WHERE 
+    jc.date = @Date 
+    AND jc.permission != '.' 
+    AND jc.name != '' 
+GROUP BY 
+    jc.name 
+ORDER BY 
+    STRFTIME('%H%M', jc.dateWork) ASC;
+ ";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -678,7 +696,7 @@ namespace B.I.G.Controller
         {
             var commandString1 = "UPDATE journalCollectors SET data ='' WHERE date = @Date AND data != 'Данные отсутствуют' and data !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
             var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%одитель%' and data !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
-            var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession != 'инкассатор-сборщик'AND date = @Date";
+            var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%борщик%' AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
             var commandString5 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND data = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";

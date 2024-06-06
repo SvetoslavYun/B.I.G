@@ -513,7 +513,7 @@ namespace B.I.G
                         SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
                     }
 
-                    Search(sender, e);
+                FillData();
                 }
             
             catch (Exception ex)
