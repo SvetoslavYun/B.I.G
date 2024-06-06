@@ -217,7 +217,7 @@
         <TextBox x:Name="Route" Margin="342,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148" Height="22"/>
         <TextBlock HorizontalAlignment="Left" Margin="217,3,0,0" TextWrapping="Wrap" Text="Поиск по Ф.И.О" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
         <TextBlock HorizontalAlignment="Left" Margin="358,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
-        <DatePicker x:Name="Date" Margin="552,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25"/>
+        <DatePicker x:Name="Date" Margin="569,13,0,0" VerticalAlignment="Top" SelectedDateChanged="Date_SelectedDateChanged" HorizontalAlignment="Left" Width="106" PreviewKeyDown="Date_PreviewKeyDown" Height="25"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
         Margin="0,12,103,0"
@@ -317,6 +317,54 @@
         </Button>
 
 
+        <Button Content="Обновить"
+HorizontalAlignment="Left"
+Margin="497,12,0,0"
+VerticalAlignment="Top"
+Width="67"
+BorderBrush="#FF1E1F1D"
+FontFamily="High Tower Text"
+Height="28"
+Click="Button_Up">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" RecognizesAccessKey="True" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFFFA500"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" To="Black" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FF93E842" Offset="1"/>
+                    <GradientStop Color="#FF97A28C" Offset="0.048"/>
+                    <GradientStop Color="#FF4EC7D0" Offset="0.009"/>
+                    <GradientStop Color="#FFB1C7CE" Offset="0.948"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="Black"/>
+            </Button.Foreground>
+        </Button>
 
 
 
@@ -402,7 +450,7 @@
         </Button>
 
 
-        <Button Content="" HorizontalAlignment="Left" Margin="663,14,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="28">
+        <Button Content="" HorizontalAlignment="Left" Margin="675,13,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="28">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">
@@ -783,5 +831,6 @@
 
         <ProgressBar x:Name="ProgressBar" Height="20"  Margin="427,248,353,0" VerticalAlignment="Top" Visibility="Collapsed" />
         <TextBlock x:Name="ProgressText" Margin="427,220,798,0" VerticalAlignment="Top"    Text="Загрузка..." Foreground="#FFFBF9F7" Visibility="Collapsed"/>
+        <TextBlock HorizontalAlignment="Left" Margin="66,296,0,0" TextWrapping="Wrap" Text="Наряды" VerticalAlignment="Top" Width="52" FontSize="14"/>
     </Grid>
 </Window>

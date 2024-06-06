@@ -48,7 +48,7 @@
         <TextBox x:Name="Profession2" Text="{Binding Path=profession}" Grid.Column="2" Grid.ColumnSpan="2" Margin="273,283,111,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="31"/>
         <TextBox x:Name="Appropriation" Text="{Binding Path=appropriation}" Grid.Column="2" Grid.ColumnSpan="2" Margin="273,324,111,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="31"/>
         <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,287,0,0" TextWrapping="Wrap" Text="Изменить обязанности" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
-        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,329,0,0" TextWrapping="Wrap" Text="Изменить примичание" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,329,0,0" TextWrapping="Wrap" Text="Изменить примечание" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
         <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="143,370,0,0" TextWrapping="Wrap" Text="Изменить время" VerticalAlignment="Top" Width="135" Foreground="#FFFDFBF2"/>
         <TextBox x:Name="DateWork"
          Text="{Binding Path=dateWork, UpdateSourceTrigger=PropertyChanged}"
@@ -57,7 +57,7 @@
          Margin="273,366,0,0"
          TextWrapping="Wrap"
          VerticalAlignment="Top"
-         Width="66"
+         Width="42"
          Height="23"
          PreviewTextInput="DateWork_PreviewTextInput"
          TextChanged="DateWork_TextChanged"

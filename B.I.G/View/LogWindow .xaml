@@ -425,6 +425,7 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
+        <TextBlock HorizontalAlignment="Left" Margin="41,600,0,0" TextWrapping="Wrap" Text="Логи и события" VerticalAlignment="Top" Width="102" FontSize="14"/>
 
     </Grid>
 </Window>

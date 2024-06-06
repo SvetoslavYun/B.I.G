@@ -450,5 +450,6 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
+        <TextBlock HorizontalAlignment="Left" Margin="45,640,0,0" TextWrapping="Wrap" Text="Пользователи" VerticalAlignment="Top" Width="94" FontSize="14"/>
     </Grid>
 </Window>

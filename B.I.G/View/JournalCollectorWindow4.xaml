@@ -421,6 +421,7 @@
         <TextBox x:Name="Name2" Margin="0,15,151,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" HorizontalAlignment="Right" Width="112"/>
         <TextBlock Grid.Column="1" Margin="0,-1,262,0" TextWrapping="Wrap" Text="Инструктирующий 1" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
         <TextBlock Grid.Column="1" Margin="0,-1,144,0" TextWrapping="Wrap" Text="Инструктирующий 2" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
+        <TextBlock HorizontalAlignment="Left" Margin="24,343,0,0" TextWrapping="Wrap" Text="Журнал инструктажа" VerticalAlignment="Top" Width="136" FontSize="14" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>

@@ -21,12 +21,14 @@ using System.Windows.Input;
 using B.I.G.View;
 using System.Web.UI.HtmlControls;
 using System.ComponentModel;
+using Path = System.IO.Path;
 
 namespace B.I.G
 
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
     {
+        private Puth_Controller puth_Controller;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
         private JournalCollectorController journalCollectorController;
@@ -47,6 +49,7 @@ namespace B.I.G
         public static bool flagEdit;
         public JournalCollectorWindow2()
         {
+           
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
 
@@ -674,8 +677,7 @@ namespace B.I.G
 
                 if (!journalCollectorController.ImportSerchData(date))
                 {
-                    // Заблокировать все кнопки
-                    SetButtonsEnabled(this, false);                 
+                              
                     JournalCollectors.Clear();
                     OpenFileDialog openFileDialog = new OpenFileDialog();
                     openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
@@ -703,8 +705,7 @@ namespace B.I.G
                     var result = MessageBox.Show("Наряд с этой датой уже сформирован.\nПереформировать заново?", "", MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
-                    {  // Заблокировать все кнопки
-                        SetButtonsEnabled(this, false);
+                    { 
                         OpenFileDialog openFileDialog = new OpenFileDialog();
                         openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
 
@@ -714,8 +715,7 @@ namespace B.I.G
                             if (Calendar2.SelectedDate.HasValue)
                             {
                                 date = Calendar2.SelectedDate.Value;
-                            }
-
+                            }                        
                             journalCollectorController.DeleteToDate(date);
                             StartImport(openFileDialog.FileName, date);
                         }
@@ -737,7 +737,8 @@ namespace B.I.G
         }
 
         private void StartImport(string filePath, DateTime date)
-        {
+        {     // Заблокировать все кнопки
+            SetButtonsEnabled(this, false);
             ProgressBar.Visibility = Visibility.Visible;
             ProgressText.Visibility = Visibility.Visible;
 
@@ -783,7 +784,7 @@ namespace B.I.G
                     MessageBox.Show("Операция успешно завершена.");
                 }
                 journalCollectorController.UpdateResponsibilities(date);
-                journalCollectorController.DeleteRound2(date);               
+                journalCollectorController.DeleteRound2(date);              
                 Date.Text = date.ToString("yyyy-MM-dd");
                 // Разблокировать все кнопки
                 SetButtonsEnabled(this, true);
@@ -923,6 +924,57 @@ namespace B.I.G
                 date = Calendar2.SelectedDate.Value;
             }
             journalCollectorController.UpdateJournalBase2(date);
+        }
+
+        private void Button_Up(object sender, RoutedEventArgs e)
+        {
+            OverwriteDatabase();
+            Search(sender, e);
+        }
+
+        public void OverwriteDatabase()
+        {
+            try
+            {
+                // Получение пути к директории базы данных из текстового поля
+                string sourceDirectory = MainWindow.puth;
+
+                // Проверка, пустое ли текстовое поле
+                if (string.IsNullOrWhiteSpace(sourceDirectory))
+                {
+                    MessageBox.Show("Путь к директории базы данных не указан.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Добавление имени файла базы данных к указанному пути
+                string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
+
+                // Путь к файлу базы данных в целевом расположении (корень программы)
+                string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+                // Проверка наличия файла базы данных в источнике
+                if (!File.Exists(sourcePath))
+                {
+                    MessageBox.Show("Файл базы данных в указанном источнике не найден, дальнейшие сохранения будут на локальном диске", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Копирование файла базы данных с заменой существующего файла
+                File.Copy(sourcePath, destinationPath, true);
+
+                // Обновление пути в базе данных
+                var Puth = new puth()
+                {
+                    adres = MainWindow.puth,
+                };
+              
+
+                //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

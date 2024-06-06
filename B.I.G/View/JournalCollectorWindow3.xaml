@@ -450,6 +450,7 @@
         </Button>
         <TextBlock x:Name="Date" Grid.Column="1" HorizontalAlignment="Left" Margin="578,8,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="383,11,0,0" TextWrapping="Wrap" Text="Выдачи инвентаря на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBlock HorizontalAlignment="Left" Margin="4,385,0,0" TextWrapping="Wrap" Text="Журнал выдачи инвентаря" VerticalAlignment="Top" Width="176" FontSize="14" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>
