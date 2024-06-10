@@ -727,7 +727,7 @@ ORDER BY
 
 
         public void Delete(string route, int id, DateTime date)
-        { if (route == "" || route == "РЕЗЕРВ" || route == "резерв" || route == "Pезерв" || route == "стажер" || route == "стажер")
+        { if (route == "" || route == "РЕЗЕРВ" || route == "резерв" || route == "Резерв" || route == "стажер" || route == "стажер")
             {
                 var commandString = "DELETE FROM journalCollectors WHERE (id = @Id) and date=@Date";
                 SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
@@ -1650,7 +1650,7 @@ ORDER BY
                             }
 
                             transaction.Commit();
-                            MessageBox.Show("Данные успешно опубликованы.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                          
                         }
                         catch (Exception ex)
                         {
@@ -1662,7 +1662,7 @@ ORDER BY
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка при перезаписи данных: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+               
             }
         }
 

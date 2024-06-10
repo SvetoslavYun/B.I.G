@@ -161,7 +161,7 @@ namespace B.I.G.Controller
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка Удаление Log: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+              
             }
         }
 

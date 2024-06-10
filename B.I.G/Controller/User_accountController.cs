@@ -100,7 +100,7 @@ namespace B.I.G.Controller
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+              
             }
         
         }
@@ -159,7 +159,7 @@ namespace B.I.G.Controller
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+               
             }
         }
 
@@ -207,7 +207,7 @@ namespace B.I.G.Controller
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+               
             }
         }
 

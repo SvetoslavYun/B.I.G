@@ -28,6 +28,8 @@ using System;
 using System.IO;
 using System.Windows;
 using Path = System.IO.Path;
+using System.Data;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace B.I.G
 {
@@ -68,9 +70,7 @@ namespace B.I.G
             InitializeComponent();
             puth_Controller.CreateEmptyPuthIfNotExists();
             LoadPathsIntoTextBox();
-            GetUsernames();          
-            //log_Controller.DeleteAfterSixMonthsLog();          
-            atm_Controller.DeleteAfterSixMonthsLog();
+            GetUsernames();                    
             journalCollectorController.DeleteNUL();
             sourcePathTextBox.Visibility = Visibility.Collapsed;
             //Get();
@@ -109,7 +109,86 @@ namespace B.I.G
         }
 
 
-        public void OverwriteDatabase()
+        //нач
+
+    
+
+
+        private async Task<DataTable> GetTableDataAsync(string databasePath, string tableName)
+        {
+            DataTable dataTable = new DataTable();
+            string query = $"SELECT * FROM {tableName}";
+
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (SQLiteDataReader reader = (SQLiteDataReader)await command.ExecuteReaderAsync())
+                    {
+                        dataTable.Load(reader);
+                    }
+                }
+            }
+
+            return dataTable;
+        }
+
+        private async Task ClearTableAsync(string databasePath, string tableName)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand($"DELETE FROM {tableName}", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        private async Task InsertTableDataAsync(string databasePath, string tableName, DataTable tableData)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (DataRow row in tableData.Rows)
+                    {
+                        string query = $"INSERT OR REPLACE INTO {tableName} ({string.Join(", ", tableData.Columns.Cast<DataColumn>().Select(c => c.ColumnName))}) " +
+                                       $"VALUES ({string.Join(", ", tableData.Columns.Cast<DataColumn>().Select(c => "@" + c.ColumnName))})";
+
+                        using (var command = new SQLiteCommand(query, connection))
+                        {
+                            foreach (DataColumn column in tableData.Columns)
+                            {
+                                command.Parameters.AddWithValue("@" + column.ColumnName, row[column.ColumnName]);
+                            }
+
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private async Task CopyDatabaseTablesAsync(string sourcePath, string destinationPath)
+        {
+            string[] tableNames = { "atms", "cashCollectors", "journalCollectors", "logs", "puths", "user_accounts" };
+
+            foreach (string tableName in tableNames)
+            {
+                DataTable tableData = await GetTableDataAsync(sourcePath, tableName);
+                await ClearTableAsync(destinationPath, tableName); // Очистка таблицы перед вставкой новых данных
+                await InsertTableDataAsync(destinationPath, tableName, tableData);
+            }
+
+            // Заполнить данные на экране после обновления базы данных (если необходимо)
+            // Dispatcher.Invoke(FillData);
+        }
+
+        public async Task OverwriteDatabaseAsync()
         {
             try
             {
@@ -136,24 +215,73 @@ namespace B.I.G
                     return;
                 }
 
-                // Копирование файла базы данных с заменой существующего файла
-                File.Copy(sourcePath, destinationPath, true);
+                // Выполнение копирования данных из всех таблиц
+                await CopyDatabaseTablesAsync(sourcePath, destinationPath);
 
-                // Обновление пути в базе данных
+                // Обновление пути в базе данных (если необходимо)
                 var Puth = new puth()
                 {
                     adres = sourcePathTextBox.Text,
                 };
                 puth_Controller.Update(Puth);
-              
-
-                //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Файл базы данных в указанном источнике не найден, дальнейшие сохранения будут на локальном диске", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
+        //кон
+
+
+
+
+        //public void OverwriteDatabase()
+        //{
+        //    try
+        //    {
+        //        // Получение пути к директории базы данных из текстового поля
+        //        string sourceDirectory = sourcePathTextBox.Text;
+
+        //        // Проверка, пустое ли текстовое поле
+        //        if (string.IsNullOrWhiteSpace(sourceDirectory))
+        //        {
+        //            MessageBox.Show("Путь к директории базы данных не указан.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        //            return;
+        //        }
+
+        //        // Добавление имени файла базы данных к указанному пути
+        //        string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
+
+        //        // Путь к файлу базы данных в целевом расположении (корень программы)
+        //        string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+        //        // Проверка наличия файла базы данных в источнике
+        //        if (!File.Exists(sourcePath))
+        //        {
+        //            MessageBox.Show("Файл базы данных в указанном источнике не найден, дальнейшие сохранения будут на локальном диске", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        //            return;
+        //        }
+
+        //        // Копирование файла базы данных с заменой существующего файла
+        //        File.Copy(sourcePath, destinationPath, true);
+
+        //        // Обновление пути в базе данных
+        //        var Puth = new puth()
+        //        {
+        //            adres = sourcePathTextBox.Text,
+        //        };
+        //        puth_Controller.Update(Puth);
+
+
+        //        //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //}
 
 
         public void GetUsernames()//заполнить список
@@ -178,7 +306,7 @@ namespace B.I.G
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void  Button_Click(object sender, RoutedEventArgs e)
         {
             CheckBox.IsChecked = false;
             string Login = login.Text;
@@ -212,7 +340,9 @@ namespace B.I.G
                         App.nameUserApp = LogS;
                         user_AccountController.MainPhoto(LogS);
                         puth_Controller.CreateEmptyPuthIfNotExists2();
-                        OverwriteDatabase();
+                        await OverwriteDatabaseAsync();
+                        log_Controller.DeleteAfterSixMonthsLog();
+                        atm_Controller.DeleteAfterSixMonthsLog();
                         journalCollectorController.DeleteAfterSixMonthsLog();
                         JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
                         journalCollectorWindow.Show();

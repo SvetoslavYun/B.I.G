@@ -22,12 +22,17 @@ using B.I.G.View;
 using System.Web.UI.HtmlControls;
 using System.ComponentModel;
 using Path = System.IO.Path;
+using System.Threading;
+using System.Data.SQLite;
+using System.Threading.Tasks;
 
 namespace B.I.G
 
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
     {
+      
+     
         private Puth_Controller puth_Controller;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -49,7 +54,7 @@ namespace B.I.G
         public static bool flagEdit;
         public JournalCollectorWindow2()
         {
-           
+
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
 
@@ -63,8 +68,9 @@ namespace B.I.G
             user_AccountController = new User_accountController();
 
             InitializeComponent();
+         
             // Загрузка сохраненного значения переменной
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Y)|| !string.IsNullOrEmpty(Properties.Settings.Default.routeOrder) || !string.IsNullOrEmpty(Properties.Settings.Default.dateOrder))
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Y) || !string.IsNullOrEmpty(Properties.Settings.Default.routeOrder) || !string.IsNullOrEmpty(Properties.Settings.Default.dateOrder))
             {
                 Name.Text = Properties.Settings.Default.Y;
                 Route.Text = Properties.Settings.Default.routeOrder;
@@ -75,13 +81,13 @@ namespace B.I.G
             {
                 Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
             }
-            FillData();            
+            FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
             Route.TextChanged += Search;
             SelectedProduct = new journalCollector { image = MainWindow.image_Profil };
             AccesText.Text = MainWindow.acces;
-            NameText.Text = MainWindow.LogS;   
+            NameText.Text = MainWindow.LogS;
             Name.Text = MainWindow.NameJorunal;
             Access();
             Calendar2.Visibility = Visibility.Collapsed;
@@ -89,9 +95,11 @@ namespace B.I.G
             ImportButton.Visibility = Visibility.Collapsed;
             ImportButton.IsEnabled = false;
             X.Visibility = Visibility.Collapsed;
-            X.IsEnabled = false;          
-
+            X.IsEnabled = false;
+       
         }
+
+  
 
         public void Access()
         {
@@ -189,6 +197,7 @@ namespace B.I.G
                 journalCollectorController.Insert2(Convert.ToDateTime(Date.Text));
             }
             journalCollectorController.Insert(Convert.ToDateTime(Date.Text));
+            journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
             Search(sender, e);
             // прокручиваем к последней строке
             ScrollToLastRow(dGridCollector);
@@ -220,6 +229,7 @@ namespace B.I.G
                 lookCollector.ShowDialog();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                 journalCollectorController.DeleteNUL();
+                journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                 Search(sender, e);
                 JournalCollector = null;
             }
@@ -249,6 +259,7 @@ namespace B.I.G
                     }
                     journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                     journalCollectorController.DeleteNUL();
+                    journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                     Search(sender, e);
                     JournalCollector = null;
                 }
@@ -277,6 +288,7 @@ namespace B.I.G
                         journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
                         journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                         journalCollectorController.DeleteNUL();
+                        journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                         Search(sender, e);
                         JournalCollector = null;
                     }
@@ -311,6 +323,7 @@ namespace B.I.G
                                 journalCollectorController.UpdateResponsibilities2(Convert.ToDateTime(Date.Text));
                                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                                 journalCollectorController.DeleteNUL();
+                                journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                                 Search(sender, e);
                             }
                         }
@@ -452,11 +465,11 @@ namespace B.I.G
 
                 I = I + 4;
 
-                worksheet.Cells[I, 1, I, 10].Merge = true;
+                worksheet.Cells[I, 1, I, 8].Merge = true;
                 string Spaces = new string(' ', 116);
                 string spaces = new string(' ', 53);
                 worksheet.Cells[I, 3].Value = "\n\n\nНачальник службы инкассации    \n___________________         ___________________________________";
-                worksheet.Cells[I+1, 1, I+1, 10].Merge = true;
+                worksheet.Cells[I+1, 1, I+1, 8].Merge = true;
                 string Spaces2 = new string(' ', 116);
                 string spaces2 = new string(' ', 53);   
                 worksheet.Cells[I+1, 3].Value = "                                                                                  (подпись)                                   (инициалы, фамилия)";
@@ -527,13 +540,131 @@ namespace B.I.G
             }
         }
 
-        private void Button_cleaning(object sender, RoutedEventArgs e)
+        private async Task<DataTable> GetTableDataAsync(string databasePath, string tableName)
+        {
+            DataTable dataTable = new DataTable();
+            string query = $"SELECT * FROM {tableName}";
+
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (SQLiteDataReader reader = (SQLiteDataReader)await command.ExecuteReaderAsync())
+                    {
+                        dataTable.Load(reader);
+                    }
+                }
+            }
+
+            return dataTable;
+        }
+
+        private async Task ClearTableAsync(string databasePath, string tableName)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand($"DELETE FROM {tableName}", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        private async Task InsertTableDataAsync(string databasePath, string tableName, DataTable tableData)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (DataRow row in tableData.Rows)
+                    {
+                        string query = $"INSERT OR REPLACE INTO {tableName} ({string.Join(", ", tableData.Columns.Cast<DataColumn>().Select(c => c.ColumnName))}) " +
+                                       $"VALUES ({string.Join(", ", tableData.Columns.Cast<DataColumn>().Select(c => "@" + c.ColumnName))})";
+
+                        using (var command = new SQLiteCommand(query, connection))
+                        {
+                            foreach (DataColumn column in tableData.Columns)
+                            {
+                                command.Parameters.AddWithValue("@" + column.ColumnName, row[column.ColumnName]);
+                            }
+
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private async Task CopyDatabaseTablesAsync(string sourcePath, string destinationPath)
+        {
+            string[] tableNames = { "atms", "cashCollectors", "journalCollectors", "logs", "puths", "user_accounts" };
+
+            foreach (string tableName in tableNames)
+            {
+                DataTable tableData = await GetTableDataAsync(sourcePath, tableName);
+                await ClearTableAsync(destinationPath, tableName); // Очистка таблицы перед вставкой новых данных
+                await InsertTableDataAsync(destinationPath, tableName, tableData);
+            }
+
+            // Заполнить данные на экране после обновления базы данных (если необходимо)
+            // Dispatcher.Invoke(FillData);
+        }
+
+        public async Task OverwriteDatabaseAsync()
+        {
+            try
+            {
+                // Получение пути к директории базы данных из текстового поля
+                string sourceDirectory = MainWindow.puth;
+
+                // Проверка, пустое ли текстовое поле
+                if (string.IsNullOrWhiteSpace(sourceDirectory))
+                {
+                    MessageBox.Show("Путь к директории базы данных не указан.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Добавление имени файла базы данных к указанному пути
+                string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
+
+                // Путь к файлу базы данных в целевом расположении (корень программы)
+                string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+                // Проверка наличия файла базы данных в источнике
+                if (!File.Exists(sourcePath))
+                {
+                    MessageBox.Show("Файл базы данных в указанном источнике не найден, дальнейшие сохранения будут на локальном диске", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Выполнение копирования данных из всех таблиц
+                await CopyDatabaseTablesAsync(sourcePath, destinationPath);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        private async void Button_cleaning(object sender, RoutedEventArgs e)
         {
             flag2 = false;
             Name.Text = string.Empty;
             Route.Text = string.Empty;
+
+                await OverwriteDatabaseAsync();
+
+
             FillData();
         }
+
+
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
@@ -809,7 +940,8 @@ namespace B.I.G
                     MessageBox.Show("Операция успешно завершена.");
                 }
                 journalCollectorController.UpdateResponsibilities(date);
-                journalCollectorController.DeleteRound2(date);              
+                journalCollectorController.DeleteRound2(date);
+                journalCollectorController.UpdateJournalBase2(date);
                 Date.Text = date.ToString("yyyy-MM-dd");
                 // Разблокировать все кнопки
                 SetButtonsEnabled(this, true);
@@ -894,6 +1026,7 @@ namespace B.I.G
                 if (result == MessageBoxResult.Yes)
                 {
                     journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text));
+                    journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                     Search(sender, e);
                 }
             }
@@ -951,11 +1084,7 @@ namespace B.I.G
             journalCollectorController.UpdateJournalBase2(date);
         }
 
-        private void Button_Up(object sender, RoutedEventArgs e)
-        {
-            OverwriteDatabase();
-            Search(sender, e);
-        }
+     
 
         public void OverwriteDatabase()
         {
@@ -992,7 +1121,6 @@ namespace B.I.G
                 {
                     adres = MainWindow.puth,
                 };
-              
 
                 //MessageBox.Show("База данных успешно обновлена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }

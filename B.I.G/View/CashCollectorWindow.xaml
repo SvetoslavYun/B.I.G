@@ -66,7 +66,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <TextBox x:Name="Name" Margin="311,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="174" Height="22"/>
-        <TextBlock HorizontalAlignment="Left" Margin="204,13,0,0" TextWrapping="Wrap" Text="Поиск по имени" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="92"/>
+        <TextBlock HorizontalAlignment="Left" Margin="234,13,0,0" TextWrapping="Wrap" Text="Поиск Ф.И.О" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="72"/>
 
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
