@@ -99,16 +99,19 @@ namespace B.I.G
         private void DoubleClick(object sender, RoutedEventArgs e)
         {
             try
-            {                
-                if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                var id = ((cashCollector)dGridCollector.SelectedItem).id;
-                flag = false;
-                CashCollector = (cashCollector)dGridCollector.SelectedItem;
-                Add_СashCollector add_СashCollector = new Add_СashCollector();
-                add_СashCollector.Owner = this;
-                add_СashCollector.ShowDialog();
-                Search(sender, e);                            
-                CashCollector = null;
+            {
+                if (dGridCollector.SelectedItem == null) ;
+                else
+                {
+                    var id = ((cashCollector)dGridCollector.SelectedItem).id;
+                    flag = false;
+                    CashCollector = (cashCollector)dGridCollector.SelectedItem;
+                    Add_СashCollector add_СashCollector = new Add_СashCollector();
+                    add_СashCollector.Owner = this;
+                    add_СashCollector.ShowDialog();
+                    Search(sender, e);
+                    CashCollector = null;
+                }
             }
             catch (Exception h)
             {
