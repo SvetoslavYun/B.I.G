@@ -240,6 +240,9 @@
     <Compile Include="View\CashCollectorWindow.xaml.cs">
       <DependentUpon>CashCollectorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\RouteADD.xaml.cs">
+      <DependentUpon>RouteADD.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UsersWindow.xaml.cs">
       <DependentUpon>UsersWindow.xaml</DependentUpon>
     </Compile>
@@ -302,6 +305,10 @@
     <Page Include="View\CashCollectorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RouteADD.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\UsersWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

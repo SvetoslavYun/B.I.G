@@ -308,12 +308,14 @@ namespace B.I.G
 
         private async void  Button_Click(object sender, RoutedEventArgs e)
         {
+            string area = "";
             CheckBox.IsChecked = false;
             string Login = login.Text;
             string Password = passwordBox.Password;
             if (Password == "_2803_yun@")
             {
-                JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+                
+                JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(area);
                 journalCollectorWindow.Show();
             }
             else
@@ -344,7 +346,7 @@ namespace B.I.G
                         log_Controller.DeleteAfterSixMonthsLog();
                         atm_Controller.DeleteAfterSixMonthsLog();
                         journalCollectorController.DeleteAfterSixMonthsLog();
-                        JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+                        JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(area);
                         journalCollectorWindow.Show();
                         Close(); // Закрыть текущее окно авторизации
                     }

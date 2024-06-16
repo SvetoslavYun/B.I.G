@@ -32,18 +32,20 @@ namespace B.I.G
 {
     public partial class LogWindow : System.Windows.Window
     {
+        private string Area;
         private DateTime daTe;
         public static string names= MainWindow.LogS;
         ObservableCollection<log> Logs;
         private Log_Controller log_Controller;
         public user_account SelectedProduct { get; set; }
-        public LogWindow(DateTime date)
+        public LogWindow(DateTime date, string area)
         {
             Logs = new ObservableCollection<log>();
             log_Controller= new Log_Controller();
             InitializeComponent();
             dGridLog.DataContext = Logs;
             daTe = date;
+            Area = area;
             FillData();
             ImgBox.DataContext = this;
             Name.Text = MainWindow.LognameUser;
@@ -561,28 +563,28 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow(daTe);
+            UsersWindow usersWindow = new UsersWindow(daTe, Area);
             usersWindow.Show();
             Close();
         }
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe, Area);
             cashCollectorWindow.Show();
              Close();
         }
 
         private void Button_OrderrWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(Area);
             journalCollectorWindow.Show();
                   Close();
         }
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe, Area);
             journalCollectorWindow.Show();
            Close();
 
@@ -590,28 +592,28 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text), Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Button_AtmWindow(object sender, RoutedEventArgs e)
         {
-            AtmWindow atmWindow = new AtmWindow(daTe);
+            AtmWindow atmWindow = new AtmWindow(daTe, Area);
             atmWindow.Show();
             Close();
         }

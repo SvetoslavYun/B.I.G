@@ -25,6 +25,7 @@ namespace B.I.G
 {
     public partial class JournalCollectorWindow5 : System.Windows.Window
     {
+        private string Area;
         private DateTime daTe;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -43,7 +44,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow5(DateTime date)
+        public JournalCollectorWindow5(DateTime date, string area)
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
@@ -69,6 +70,8 @@ namespace B.I.G
                Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
 
             daTe = date;
+            Area=area;
+            Are.Text=Area;
 
             Search();
             
@@ -280,7 +283,7 @@ namespace B.I.G
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
            
-                var searchResults = journalCollectorController.SearchCollectorName5(Convert.ToDateTime(Date.Text));
+                var searchResults = journalCollectorController.SearchCollectorName5(Convert.ToDateTime(Date.Text), Are.Text);
 
                 JournalCollectors.Clear();
                 foreach (var result in searchResults)
@@ -494,7 +497,7 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow(daTe);
+            LogWindow logWindow = new LogWindow(daTe, Area);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -504,7 +507,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow(daTe);
+            UsersWindow usersWindow = new UsersWindow(daTe, Area);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -519,7 +522,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe, Area);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -529,7 +532,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe, Area);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -539,28 +542,28 @@ namespace B.I.G
 
         private void Button_OrderrWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text), Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Button_AtmWindow(object sender, RoutedEventArgs e)
         {
-            AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text));
+            AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text), Area);
             atmWindow.Show();
             Close();
         }

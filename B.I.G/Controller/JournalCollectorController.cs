@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using B.I.G.Model;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.Graph.Models.TermStore;
+using Microsoft.Office.Interop.Excel;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -93,16 +94,19 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public IEnumerable<journalCollector> GetAllCashCollectors0(DateTime date)
+        public IEnumerable<journalCollector> GetAllCashCollectors0(DateTime date, string area)
         {
+            string area2="";
+            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%'  ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND (jc.area = @Area or jc.area = @Area2)  ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
 
             var reader = getAllCommand.ExecuteReader();
@@ -230,8 +234,10 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public IEnumerable<journalCollector> GetAllCashCollectors3(DateTime date)
+        public IEnumerable<journalCollector> GetAllCashCollectors3(DateTime date, string area)
         {
+            string area2 = "";
+            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"
@@ -242,13 +248,14 @@ namespace B.I.G.Controller
         LEFT JOIN cashCollectors cc ON jc.id2 = cc.id 
         WHERE jc.date = @Date 
           AND jc.permission != '.' 
-          AND jc.name != '' AND jc.data != 'Данные отсутствуют' 
+          AND jc.name != '' AND jc.data != 'Данные отсутствуют' AND (jc.area = @Area or jc.area = @Area2)
         ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
 
             var reader = getAllCommand.ExecuteReader();
@@ -313,8 +320,10 @@ namespace B.I.G.Controller
 
 
 
-        public IEnumerable<journalCollector> GetAllCashCollectors4(DateTime date)
+        public IEnumerable<journalCollector> GetAllCashCollectors4(DateTime date, string area)
         {
+            string area2 = "";
+            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT 
@@ -330,17 +339,16 @@ LEFT JOIN
 WHERE 
     jc.date = @Date 
     AND jc.permission != '.' 
-    AND jc.name != '' 
+    AND jc.name != '' AND (jc.area = @Area or jc.area = @Area2)
 GROUP BY 
-    jc.name 
-ORDER BY 
-    STRFTIME('%H%M', jc.dateWork) ASC;
+    jc.name ;
  ";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
 
             var reader = getAllCommand.ExecuteReader();
@@ -486,6 +494,88 @@ ORDER BY
              new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
               new SQLiteParameter("@Area", area)
             });
+            connection.Open();
+            insertCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
+        public void InsertRoute(DateTime date, string area, string route, string circle)
+        {
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', @Route || '/' || @Circle, @Date, 'Маршрут ' || @Route || '/' || @Circle, '.',@Route2, '', @Area )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+             new SQLiteParameter("@Route", route),
+             new SQLiteParameter("@Route2", route),
+             new SQLiteParameter("@Circle", circle),
+              new SQLiteParameter("@Area", area)
+            });
+            connection.Open();
+            insertCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public void InsertRoute2(DateTime date, string area, string route, string circle, string dateWorkt)
+        {
+
+
+            // Вставляем новую запись
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('Старший бригады (инкассатор/водитель/контролер)', '', '', '', '', '', '', '', '', '', '', '', '0', @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route2, 'Данные отсутствуют', @Area )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Route", route),
+         new SQLiteParameter("@Route2", route),
+          new SQLiteParameter("@Circle", circle),
+           new SQLiteParameter("@DateWorkt", dateWorkt),
+         new SQLiteParameter("@Area", area)
+    });
+            connection.Open();
+            insertCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public void InsertRoute3(DateTime date, string area, string route, string circle, string dateWorkt)
+        {
+
+
+            // Вставляем новую запись
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('Инкассатор - сборщик/оператор', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Route", route),
+         new SQLiteParameter("@Route2", route),
+          new SQLiteParameter("@Circle", circle),
+          new SQLiteParameter("@DateWorkt", dateWorkt),
+         new SQLiteParameter("@Area", area)
+    });
+            connection.Open();
+            insertCommand.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
+        public void InsertRoute4(DateTime date, string area, string route, string circle, string dateWorkt)
+        {
+
+
+            // Вставляем новую запись
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('Водитель', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Route", route),
+         new SQLiteParameter("@Route2", route),
+          new SQLiteParameter("@Circle", circle),
+          new SQLiteParameter("@DateWorkt", dateWorkt),
+         new SQLiteParameter("@Area", area)
+    });
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
@@ -800,15 +890,18 @@ ORDER BY
         }
 
 
-        public void DeleteToDate(DateTime date)
+        public void DeleteToDate(DateTime date, string area)
         {
-          
-                var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date)";
+            string area2="";
+            if (area == "Все" || area == "") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date) and (area = @Area or area = @Area2)";
                 SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
                 deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+               deleteCommand2.Parameters.AddWithValue("@Area", area);
+            deleteCommand2.Parameters.AddWithValue("@Area2", area2);
 
-                connection.Open();
+            connection.Open();
                 deleteCommand2.ExecuteNonQuery();
                 connection.Close();          
         }
@@ -903,7 +996,6 @@ ORDER BY
         }
 
 
-
         public IEnumerable<journalCollector> SearchCollectorName(string name, DateTime date, string route, string area)
         {
             connection.Open();
@@ -927,7 +1019,7 @@ ORDER BY
 
 
             connection.Close();
-            string area2="";
+            string area2 = "";
             if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
@@ -997,7 +1089,8 @@ ORDER BY
             connection.Close();
         }
 
-        public IEnumerable<journalCollector> SearchCollectorName0(string name, DateTime date, string route)
+
+        public IEnumerable<journalCollector> SearchCollectorName0(string name, DateTime date, string route, string area)
         {
             connection.Open();
             if (!string.IsNullOrEmpty(name))
@@ -1021,16 +1114,18 @@ ORDER BY
 
             connection.Close();
 
-
+            string area2 = "";
+            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route AND (jc.area = @Area or jc.area = @Area2) ORDER BY CAST(jc.route2 AS INT)";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
             getAllCommand.Parameters.AddWithValue("@Route", "" + route + "%");
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
 
@@ -1234,23 +1329,25 @@ ORDER BY
         }
 
 
-        public IEnumerable<journalCollector> SearchCollectorName5(DateTime date)
+        public IEnumerable<journalCollector> SearchCollectorName5(DateTime date, string area)
         {
             connection.Close();
-
+            string area2 = "";
+            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var commandString = @"SELECT route2,
        COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%тарший%' THEN name END), '') AS names_starshego,
        COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika
 FROM journalCollectors 
 WHERE 
-    date = @Date AND (profession LIKE '%тарший%' OR profession LIKE '%борщик%')
+    date = @Date AND (profession LIKE '%тарший%' OR profession LIKE '%борщик%') AND (area = @Area or area = @Area2)
 GROUP BY route2
 ORDER BY 
     CAST(route2 AS INT)
 ;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
 

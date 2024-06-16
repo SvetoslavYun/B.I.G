@@ -25,6 +25,7 @@ namespace B.I.G
 {
     public partial class JournalCollectorWindow4 : System.Windows.Window
     {
+        private string Area;
         private DateTime daTe;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -43,7 +44,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow4(DateTime date)
+        public JournalCollectorWindow4(DateTime date,string area)
         {
             JournalCollectors = new ObservableCollection<journalCollector>();
             journalCollectorController = new JournalCollectorController();
@@ -70,6 +71,8 @@ namespace B.I.G
 
 
             daTe = date;
+            Area=area;
+            Are.Text = Area;
             FillData();            
             ImgBox.DataContext = this;
            
@@ -145,7 +148,7 @@ namespace B.I.G
 
             {
                 JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors4(Convert.ToDateTime(Date.Text)))
+                foreach (var item in journalCollectorController.GetAllCashCollectors4(Convert.ToDateTime(Date.Text), Are.Text))
                 {
                     JournalCollectors.Add(item);
                 }
@@ -384,22 +387,9 @@ namespace B.I.G
                     worksheet.Cells[i + 3, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 3, 5].Value = collectorItem.profession;
                     // Условие для проверки времени
-                    TimeSpan time;
-                    if (TimeSpan.TryParse(collectorItem.dateWork, out time))
-                    {
-                        if (time < new TimeSpan(8, 30, 0))
-                        {
+                 
                             worksheet.Cells[i + 3, 7].Value = Name.Text;
-                        }
-                        else
-                        {
-                            worksheet.Cells[i + 3, 7].Value = Name2.Text;
-                        }
-                    }
-                    else
-                    {
-                        worksheet.Cells[i + 3, 7].Value = "Некорректное время";
-                    }
+                     
                 
 
             }
@@ -560,7 +550,7 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow(daTe);
+            LogWindow logWindow = new LogWindow(daTe, Area);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -570,7 +560,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow(daTe);
+            UsersWindow usersWindow = new UsersWindow(daTe, Area);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -585,7 +575,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe, Area);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -595,7 +585,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe);
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(daTe, Area);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -605,28 +595,28 @@ namespace B.I.G
 
         private void Button_OrderrWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Button_AtmWindow(object sender, RoutedEventArgs e)
         {
-            AtmWindow atmWindow = new AtmWindow(daTe);
+            AtmWindow atmWindow = new AtmWindow(daTe, Area);
             atmWindow.Show();
             Close();
         }

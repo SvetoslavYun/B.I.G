@@ -26,6 +26,7 @@ namespace B.I.G
 {
     public partial class AtmWindow : System.Windows.Window
     {
+        private string Area;
         private DateTime daTe;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -48,7 +49,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;
-        public AtmWindow(DateTime date)
+        public AtmWindow(DateTime date, string area)
         {
             Atms = new ObservableCollection<atm>();
             atm_Controller = new Atm_Controller();
@@ -75,6 +76,7 @@ namespace B.I.G
             }
             dGridCollector.DataContext = Atms;
             Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+            Area=area;
             daTe = date;
             FillData();
             ImgBox.DataContext = this;
@@ -532,14 +534,14 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow(daTe);
+            LogWindow logWindow = new LogWindow(daTe, Area);
             logWindow.Show();
             Close();
         }
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow(daTe);
+            UsersWindow usersWindow = new UsersWindow(daTe, Area);
             usersWindow.Show();
             Close();
         }
@@ -548,7 +550,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe);
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(daTe, Area);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -559,7 +561,7 @@ namespace B.I.G
 
         private void Button_OrderrWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow2 journalCollectorWindow2 = new JournalCollectorWindow2();
+            JournalCollectorWindow2 journalCollectorWindow2 = new JournalCollectorWindow2(Area);
             journalCollectorWindow2.Show();
             // Получить экземпляр текущего окна
             var currentWindow = Window.GetWindow(this);
@@ -572,14 +574,14 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe);
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(daTe, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text), Area);
             journalCollectorWindow.Show();
             Close();
 
@@ -587,7 +589,7 @@ namespace B.I.G
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe);
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(daTe, Area);
             journalCollectorWindow.Show();
             Close();
 
@@ -595,7 +597,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text), Area);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 

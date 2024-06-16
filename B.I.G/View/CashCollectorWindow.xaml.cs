@@ -20,7 +20,9 @@ namespace B.I.G
 
 {
     public partial class CashCollectorWindow : System.Windows.Window
-    {   private DateTime Date;
+    {
+        private string Area;
+        private DateTime Date;
         public static cashCollector CashCollector;
         ObservableCollection<cashCollector> CashCollectors;
         private СashCollectorController сashCollectorController;
@@ -34,7 +36,7 @@ namespace B.I.G
         ObservableCollection<log> Logs;
         public static bool flag;
         public static bool flagEdit;         
-        public CashCollectorWindow(DateTime date)
+        public CashCollectorWindow(DateTime date, string area)
         {
             CashCollectors = new ObservableCollection<cashCollector>();
             сashCollectorController = new СashCollectorController();
@@ -48,6 +50,7 @@ namespace B.I.G
             InitializeComponent();
             dGridCollector.DataContext = CashCollectors;
             Date = date;
+            Area = area;
             FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
@@ -460,7 +463,7 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow(Date);
+            LogWindow logWindow = new LogWindow(Date, Area);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -470,7 +473,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow(Date);
+            UsersWindow usersWindow = new UsersWindow(Date, Area);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -506,7 +509,7 @@ namespace B.I.G
 
         private void Button_OrderrWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2();
+            JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(Area);
             journalCollectorWindow.Show();
 
             var currentWindow = Window.GetWindow(this);
@@ -517,7 +520,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Date);
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Date, Area);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -527,28 +530,28 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(Date);
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(Date, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Date);
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Date, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(Date);
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(Date, Area);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Button_AtmWindow(object sender, RoutedEventArgs e)
         {
-            AtmWindow atmWindow = new AtmWindow(Date);
+            AtmWindow atmWindow = new AtmWindow(Date, Area);
             atmWindow.Show();
             Close();
         }

@@ -415,12 +415,11 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
-        <TextBlock x:Name="Date" Grid.Column="1" HorizontalAlignment="Left" Margin="578,8,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="438,9,0,0" TextWrapping="Wrap" Text="Инструктаж на" VerticalAlignment="Top" Width="158" Foreground="#FFEDE0D5" FontSize="18"/>
-        <TextBox x:Name="Name" Margin="0,15,268,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" HorizontalAlignment="Right" Width="112"/>
-        <TextBox x:Name="Name2" Margin="0,15,151,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" HorizontalAlignment="Right" Width="112"/>
-        <TextBlock Grid.Column="1" Margin="0,-1,262,0" TextWrapping="Wrap" Text="Инструктирующий 1" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
-        <TextBlock Grid.Column="1" Margin="0,-1,144,0" TextWrapping="Wrap" Text="Инструктирующий 2" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
+        <TextBlock x:Name="Are" Grid.Column="1" HorizontalAlignment="Left" Margin="744,8,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="229" Height="25" FontSize="20"/>
+        <TextBlock x:Name="Date" Grid.Column="1" HorizontalAlignment="Left" Margin="490,8,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="267" Height="25" FontSize="20"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="350,9,0,0" TextWrapping="Wrap" Text="Инструктаж на" VerticalAlignment="Top" Width="158" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBox x:Name="Name" Margin="0,15,151,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="22" Grid.Column="1" HorizontalAlignment="Right" Width="112"/>
+        <TextBlock Grid.Column="1" Margin="0,-1,144,0" TextWrapping="Wrap" Text="Инструктирующий" VerticalAlignment="Top" Foreground="#FFFBF8F5" HorizontalAlignment="Right" Width="118"/>
         <TextBlock HorizontalAlignment="Left" Margin="24,343,0,0" TextWrapping="Wrap" Text="Журнал инструктажа" VerticalAlignment="Top" Width="136" FontSize="14" Grid.ColumnSpan="2"/>
 
     </Grid>

@@ -25,14 +25,13 @@ using Path = System.IO.Path;
 using System.Threading;
 using System.Data.SQLite;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace B.I.G
 
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
-    {
-      
-     
+    {    
         private Puth_Controller puth_Controller;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -52,7 +51,7 @@ namespace B.I.G
         private bool flag2;
         public static bool flag;
         public static bool flagEdit;
-        public JournalCollectorWindow2()
+        public JournalCollectorWindow2(string area)
         {
 
             JournalCollectors = new ObservableCollection<journalCollector>();
@@ -81,6 +80,7 @@ namespace B.I.G
             {
                 Date.Text = DateTime.Now.ToString("yyyy-MM-dd");
             }
+            Area.Text = area;
             FillData();
             ImgBox.DataContext = this;
             Name.TextChanged += Search;
@@ -96,11 +96,31 @@ namespace B.I.G
             ImportButton.IsEnabled = false;
             X.Visibility = Visibility.Collapsed;
             X.IsEnabled = false;
-            Area.Items.Add("Дзержинского");
-            Area.Items.Add("Фабрициуса");
+            Area.Items.Add("пр.Дзержинского, 69");
+            Area.Items.Add("ул.Фабрициуса, 8б");
             Area.Items.Add("Все");
+            RouteButton.Visibility = Visibility.Collapsed;
+            RouteButton.IsEnabled = false;
+            ReserveButton.Visibility = Visibility.Collapsed;
+            ReserveButton.IsEnabled = false;
         }
 
+        // Event handler for preventing text input
+        private void Area_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = true; // This will prevent any text input
+        }
+
+        // Event handler for preventing certain key presses
+        private void Area_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Back || e.Key == Key.Delete || e.Key == Key.Space)
+            {
+                e.Handled = true; // This will prevent Backspace, Delete, and Space keys
+            }
+        }
+
+     
 
 
         private void Area_Loaded(object sender, RoutedEventArgs e)
@@ -146,7 +166,10 @@ namespace B.I.G
                 BriefingButton.IsEnabled = false;
                 InventoryButton.Visibility = Visibility.Collapsed;
                 InventoryButton.IsEnabled = false;
-
+                RouteButton.Visibility = Visibility.Collapsed;
+                RouteButton.IsEnabled = false;
+                ReserveButton.Visibility = Visibility.Collapsed;
+                ReserveButton.IsEnabled = false;
             }
         }
 
@@ -205,19 +228,28 @@ namespace B.I.G
 
         private void Button_Add(object sender, RoutedEventArgs e)
         {
-            if (Area.Text == "" || Area.Text == "Все") { MessageBox.Show("Выберите площадку"); return; }
-            int empty = journalCollectorController.EmptyRouteCount(Convert.ToDateTime(Date.Text)); // Вызов метода и присвоение результата переменной empty
-
-            if (empty == 0)
+            if (Area.Text == "" || Area.Text == "Все")
             {
-                journalCollectorController.Insert2(Convert.ToDateTime(Date.Text), Area.Text);
+                MessageBox.Show("Выберите площадку");
+                return;
             }
-            journalCollectorController.Insert(Convert.ToDateTime(Date.Text), Area.Text);
-            journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
-            Search(sender, e);
-            // прокручиваем к последней строке
-            ScrollToLastRow(dGridCollector);
+
+            if (ReserveButton.Visibility == Visibility.Visible && ReserveButton.IsEnabled)
+            {
+                ReserveButton.Visibility = Visibility.Collapsed;
+                ReserveButton.IsEnabled = false;
+                RouteButton.Visibility = Visibility.Collapsed;
+                RouteButton.IsEnabled = false;
+            }
+            else
+            {
+                ReserveButton.Visibility = Visibility.Visible;
+                ReserveButton.IsEnabled = true;
+                RouteButton.Visibility = Visibility.Visible;
+                RouteButton.IsEnabled = true;
+            }
         }
+
 
         private void ScrollToLastRow(DataGrid dataGrid)
         {
@@ -500,10 +532,10 @@ namespace B.I.G
                 worksheet.Column(4).Width = 11;
                 worksheet.Column(5).Width = 15;
                 worksheet.Column(6).Width = 15;
-
+                if (Area.Text == "Все" || Area.Text == "") Area.Text = "Минск";
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&08&K000000\nНАРЯД НА РАБОТУ \nна " + formattedDate2;
-                worksheet.HeaderFooter.OddHeader.LeftAlignedText = "&\"Arial\"&07&K000000Служба инкассации  Региональное управление № ";
+                worksheet.HeaderFooter.OddHeader.LeftAlignedText = "&\"Arial\"&07&K000000Служба инкассации  Региональное управление №1 " + Area.Text;
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
@@ -518,7 +550,7 @@ namespace B.I.G
                 {
                     SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
                 }
-
+                if (Area.Text == "Минск" || Area.Text == "") Area.Text = "Все";
                 Search(sender, e);
             }
             catch (Exception ex)
@@ -684,7 +716,7 @@ namespace B.I.G
 
         private void Button_LogWindow(object sender, RoutedEventArgs e)
         {
-            LogWindow logWindow = new LogWindow(Convert.ToDateTime(Date.Text));
+            LogWindow logWindow = new LogWindow(Convert.ToDateTime(Date.Text), Area.Text);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -694,7 +726,7 @@ namespace B.I.G
 
         private void Button_UsersWindow(object sender, RoutedEventArgs e)
         {
-            UsersWindow usersWindow = new UsersWindow(Convert.ToDateTime(Date.Text));
+            UsersWindow usersWindow = new UsersWindow(Convert.ToDateTime(Date.Text), Area.Text);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -783,7 +815,7 @@ namespace B.I.G
                             {
                                 ; date = Calendar2.SelectedDate.Value;
                             }
-                            journalCollectorController.DeleteToDate(date);
+                            journalCollectorController.DeleteToDate(date,area);
                             journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date,area, sender as BackgroundWorker, (progressPercentage) =>
                             {
                                 (sender as BackgroundWorker).ReportProgress(progressPercentage);
@@ -995,7 +1027,7 @@ namespace B.I.G
 
         private void Button_CollectorWindow(object sender, RoutedEventArgs e)
         {
-            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(Convert.ToDateTime(Date.Text));
+            CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(Convert.ToDateTime(Date.Text), Area.Text);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -1005,7 +1037,7 @@ namespace B.I.G
 
         private void LookCollectoButton_LogWindow(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
 
@@ -1015,21 +1047,21 @@ namespace B.I.G
 
         private void Inventory_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Briefing_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
             Close();
         }
 
         private void Appearances_Button(object sender, RoutedEventArgs e)
         {
-            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(Convert.ToDateTime(Date.Text));
+            JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
             Close();
 
@@ -1042,7 +1074,7 @@ namespace B.I.G
                 var result = MessageBox.Show("Вы уверены?", "Удалить наряд на " + Date.Text, MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
-                    journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text));
+                    journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text),Area.Text);
                     journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                     Search(sender, e);
                 }
@@ -1086,7 +1118,7 @@ namespace B.I.G
 
         private void Button_AtmWindow(object sender, RoutedEventArgs e)
         {
-            AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text));
+            AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text), Area.Text);
             atmWindow.Show();
             Close();
         }
@@ -1145,6 +1177,36 @@ namespace B.I.G
             {
                 MessageBox.Show("Произошла ошибка подключения к серверу: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Route_Button(object sender, RoutedEventArgs e)
+        {
+            RouteButton.Visibility = Visibility.Collapsed;
+            RouteButton.IsEnabled = false;
+            ReserveButton.Visibility = Visibility.Collapsed;
+            ReserveButton.IsEnabled = false;
+            RouteADD routeADD = new RouteADD(Convert.ToDateTime(Date.Text), Area.Text);           
+            routeADD.ShowDialog();
+            journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
+            Search(sender, e);
+        }
+
+        private void Reserve_Button(object sender, RoutedEventArgs e)
+        {
+            RouteButton.Visibility = Visibility.Collapsed;
+            RouteButton.IsEnabled = false;
+            ReserveButton.Visibility = Visibility.Collapsed;
+            ReserveButton.IsEnabled = false;
+            int empty = journalCollectorController.EmptyRouteCount(Convert.ToDateTime(Date.Text)); // Вызов метода и присвоение результата переменной empty
+            if (empty == 0)
+            {
+                journalCollectorController.Insert2(Convert.ToDateTime(Date.Text), Area.Text);
+            }
+            journalCollectorController.Insert(Convert.ToDateTime(Date.Text), Area.Text);
+            journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
+            Search(sender, e);
+            // прокручиваем к последней строке
+            ScrollToLastRow(dGridCollector);
         }
     }
 }

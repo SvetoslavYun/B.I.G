@@ -215,7 +215,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="358,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
-        Margin="0,12,103,0"
+        Margin="0,14,10,0"
         VerticalAlignment="Top"
         Width="104"
         BorderBrush="#FF1E1F1D"
@@ -589,8 +589,9 @@
             </Button.Foreground>
         </Button>
 
-        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="764,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="304" Height="25" FontSize="20"/>
-        <TextBlock HorizontalAlignment="Left" Margin="595,10,0,0" TextWrapping="Wrap" Text="Журнал оружия на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="700,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="250" Height="25" FontSize="20"/>
+        <TextBlock x:Name="Area" HorizontalAlignment="Left" Margin="940,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="204" Height="25" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Margin="510,10,0,0" TextWrapping="Wrap" Text="Журнал оружия на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
         <TextBlock HorizontalAlignment="Left" Margin="39,471,0,0" TextWrapping="Wrap" Text="Журнал оружия" VerticalAlignment="Top" Width="106" FontSize="14"/>
 
 
