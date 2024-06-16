@@ -96,10 +96,25 @@ namespace B.I.G
             ImportButton.IsEnabled = false;
             X.Visibility = Visibility.Collapsed;
             X.IsEnabled = false;
-       
+            Area.Items.Add("Дзержинского");
+            Area.Items.Add("Фабрициуса");
+            Area.Items.Add("Все");
         }
 
-  
+
+
+        private void Area_Loaded(object sender, RoutedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            if (comboBox != null && comboBox.IsEditable)
+            {
+                var textBox = comboBox.Template.FindName("PART_EditableTextBox", comboBox) as TextBox;
+                if (textBox != null)
+                {
+                    textBox.TextChanged += Search;
+                }
+            }
+        }
 
         public void Access()
         {
@@ -190,13 +205,14 @@ namespace B.I.G
 
         private void Button_Add(object sender, RoutedEventArgs e)
         {
+            if (Area.Text == "" || Area.Text == "Все") { MessageBox.Show("Выберите площадку"); return; }
             int empty = journalCollectorController.EmptyRouteCount(Convert.ToDateTime(Date.Text)); // Вызов метода и присвоение результата переменной empty
 
             if (empty == 0)
             {
-                journalCollectorController.Insert2(Convert.ToDateTime(Date.Text));
+                journalCollectorController.Insert2(Convert.ToDateTime(Date.Text), Area.Text);
             }
-            journalCollectorController.Insert(Convert.ToDateTime(Date.Text));
+            journalCollectorController.Insert(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
             Search(sender, e);
             // прокручиваем к последней строке
@@ -363,7 +379,7 @@ namespace B.I.G
                     AccesText.Text = MainWindow.acces;
                     NameText.Text = MainWindow.LogS;
                     MainWindow.NameJorunal = Name.Text;
-                    var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text);
+                    var searchResults = journalCollectorController.SearchCollectorName(Name.Text, Convert.ToDateTime(Date.Text), Route.Text, Area.Text);
 
                     JournalCollectors.Clear();
                     foreach (var result in searchResults)
@@ -690,8 +706,8 @@ namespace B.I.G
         {
             try
             {
-              
-                    Calendar2.Visibility = Visibility.Visible;
+                if (Area.Text == "" || Area.Text == "Все") { MessageBox.Show("Выберите площадку"); return; }
+                Calendar2.Visibility = Visibility.Visible;
                     Calendar2.IsEnabled = true;
                     ImportButton.Visibility = Visibility.Visible;
                     ImportButton.IsEnabled = true;
@@ -710,14 +726,14 @@ namespace B.I.G
         {
             try
             {
-
-
+                string area=Area.Text;
+                
                 DateTime date = DateTime.Now;
                 if (Calendar2.SelectedDate.HasValue)
                 {
                     ; date = Calendar2.SelectedDate.Value;
                 }
-                if (!journalCollectorController.ImportSerchData(date))
+                if (!journalCollectorController.ImportSerchData(date, Area.Text))
                 {
                     // создание диалогового окна для выбора файла Excel
                     OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -731,11 +747,11 @@ namespace B.I.G
                         {
                             ; date = Calendar2.SelectedDate.Value;
                         }
-                        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date, sender as BackgroundWorker, (progressPercentage) =>
+                        journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date, area, sender as BackgroundWorker, (progressPercentage) =>
                         {
                             (sender as BackgroundWorker).ReportProgress(progressPercentage);
                         });
-                        journalCollectorController.UpdateResponsibilities(date);
+                        journalCollectorController.UpdateResponsibilities(date,area);
                         journalCollectorController.DeleteRound2(date);
                         journalCollectorController.UpdateJournalBase2(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
@@ -768,11 +784,11 @@ namespace B.I.G
                                 ; date = Calendar2.SelectedDate.Value;
                             }
                             journalCollectorController.DeleteToDate(date);
-                            journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date, sender as BackgroundWorker, (progressPercentage) =>
+                            journalCollectorController.ImportExcelToDatabase(openFileDialog.FileName, date,area, sender as BackgroundWorker, (progressPercentage) =>
                             {
                                 (sender as BackgroundWorker).ReportProgress(progressPercentage);
                             });
-                            journalCollectorController.UpdateResponsibilities(date);
+                            journalCollectorController.UpdateResponsibilities(date, area);
                             journalCollectorController.DeleteRound2(date);
                             journalCollectorController.UpdateJournalBase2(date);
                             Date.Text = date.ToString("yyyy-MM-dd");
@@ -831,7 +847,7 @@ namespace B.I.G
                     date = Calendar2.SelectedDate.Value;
                 }
 
-                if (!journalCollectorController.ImportSerchData(date))
+                if (!journalCollectorController.ImportSerchData(date, Area.Text))
                 {
                               
                     JournalCollectors.Clear();
@@ -858,7 +874,7 @@ namespace B.I.G
                 }
                 else
                 {
-                    var result = MessageBox.Show("Наряд с этой датой уже сформирован.\nПереформировать заново?", "", MessageBoxButton.YesNo);
+                    var result = MessageBox.Show("Наряд с этой датой и площадкой уже сформирован.\nПереформировать заново?", "", MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
                     { 
@@ -872,7 +888,7 @@ namespace B.I.G
                             {
                                 date = Calendar2.SelectedDate.Value;
                             }                        
-                            journalCollectorController.DeleteToDate(date);
+                            journalCollectorController.DeleteToDate2(date,Area.Text);
                             StartImport(openFileDialog.FileName, date);
                         }
 
@@ -897,7 +913,7 @@ namespace B.I.G
             SetButtonsEnabled(this, false);
             ProgressBar.Visibility = Visibility.Visible;
             ProgressText.Visibility = Visibility.Visible;
-
+            string area = Area.Text;
             BackgroundWorker backgroundWorker = new BackgroundWorker();
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.DoWork += (sender, e) =>
@@ -906,7 +922,7 @@ namespace B.I.G
 
                 try
                 {
-                    journalCollectorController.ImportExcelToDatabase(filePath, date, sender as BackgroundWorker, (progressPercentage) =>
+                    journalCollectorController.ImportExcelToDatabase(filePath, date,area, sender as BackgroundWorker, (progressPercentage) =>
                     {
                         (sender as BackgroundWorker).ReportProgress(progressPercentage);
                     });
@@ -939,12 +955,13 @@ namespace B.I.G
                 {
                     MessageBox.Show("Операция успешно завершена.");
                 }
-                journalCollectorController.UpdateResponsibilities(date);
+                journalCollectorController.UpdateResponsibilities(date,area);
                 journalCollectorController.DeleteRound2(date);
                 journalCollectorController.UpdateJournalBase2(date);
                 Date.Text = date.ToString("yyyy-MM-dd");
                 // Разблокировать все кнопки
                 SetButtonsEnabled(this, true);
+                Area.Text = "Все";
                 FillData();
             };
 

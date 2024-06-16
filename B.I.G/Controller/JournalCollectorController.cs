@@ -171,7 +171,6 @@ namespace B.I.G.Controller
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
             connection.Open();
 
             var reader = getAllCommand.ExecuteReader();
@@ -428,7 +427,7 @@ ORDER BY
             return emptyRoute;
         }
 
-        public void Insert(DateTime date)
+        public void Insert(DateTime date, string area)
         {
             // Получаем максимальное значение из столбца route2
             int maxRoute2 = GetMaxRoute2();
@@ -437,11 +436,12 @@ ORDER BY
             int newRoute2 = maxRoute2 + 1;
 
             // Вставляем новую запись
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '00:00', '','" + newRoute2 + "', 'Данные отсутствуют' )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '00:00', '','" + newRoute2 + "', 'Данные отсутствуют', @Area )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
-        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd"))
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Area", area)
     });
             connection.Open();
             insertCommand.ExecuteNonQuery();
@@ -477,13 +477,14 @@ ORDER BY
         }
 
 
-        public void Insert2(DateTime date)
+        public void Insert2(DateTime date, string area)
         {
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', '', @Date, 'Резерв', '.','998', '' )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', '', @Date, 'Резерв', '.','998', '', @Area )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
-             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd"))
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+              new SQLiteParameter("@Area", area)
             });
             connection.Open();
             insertCommand.ExecuteNonQuery();
@@ -613,11 +614,11 @@ ORDER BY
         }
 
 
-        public void UpdateResponsibilities(DateTime date)
+        public void UpdateResponsibilities(DateTime date,string area)
         {
             var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%Водитель%' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%борщик%' AND date = @Date";
-            var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date";
+            var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date AND area = @Area";
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 9, 6), route2 = SUBSTRING(Route, 9, 6) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
             var commandString5 = "UPDATE journalCollectors SET route = SUBSTR(route, 2), route = SUBSTR(route, 2), route2 = SUBSTR(route2, 2), route2 = SUBSTR(route2, 2) WHERE route LIKE ' %' AND date = @Date";
             var commandString6 = "UPDATE journalCollectors SET dateWork=profession, profession='' WHERE SUBSTRING(profession, 1, 7) = 'Маршрут' and date = @Date";
@@ -655,6 +656,7 @@ ORDER BY
             updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand3.Parameters.AddWithValue("@Area", area);
             updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand6.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -812,6 +814,21 @@ ORDER BY
         }
 
 
+        public void DeleteToDate2(DateTime date, string area)
+        {
+
+            var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date) and area = @Area";
+            SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+            deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            deleteCommand2.Parameters.AddWithValue("@Area", area);
+
+            connection.Open();
+            deleteCommand2.ExecuteNonQuery();
+            connection.Close();
+        }
+
+
         public IEnumerable<journalCollector> SearchEmpty(DateTime date)
         {
            
@@ -887,7 +904,7 @@ ORDER BY
 
 
 
-        public IEnumerable<journalCollector> SearchCollectorName(string name, DateTime date, string route)
+        public IEnumerable<journalCollector> SearchCollectorName(string name, DateTime date, string route, string area)
         {
             connection.Open();
             if (!string.IsNullOrEmpty(name))
@@ -910,17 +927,18 @@ ORDER BY
 
 
             connection.Close();
-
-
+            string area2="";
+            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route ORDER BY CAST(jc.route2 AS INT);";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route and (jc.area = @Area or jc.area = @Area2) ORDER BY CAST(jc.route2 AS INT);";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
             getAllCommand.Parameters.AddWithValue("@Route", "" + route + "%");
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
 
@@ -1308,29 +1326,29 @@ ORDER BY
             connection.Close();
         }
 
-    
 
 
-        public bool ImportSerchData(DateTime date)
+        public bool ImportSerchData(DateTime date, string area)
         {
             connection.Open();
 
-               string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE date = @Date";
-                using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
-                {
-                    selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            string selectQuery = "SELECT COUNT(*) FROM journalCollectors WHERE date = @Date AND area = @Area";
+            using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+            {
+                selectCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                selectCommand.Parameters.AddWithValue("@Area", area);
                 int count = Convert.ToInt32(selectCommand.ExecuteScalar());
 
                 connection.Close();
 
                 return count > 0;
             }
-        
+
         }
 
         public delegate void ProgressUpdateDelegate(int progressPercentage);
 
-        public void ImportExcelToDatabase(string filePath, DateTime date, BackgroundWorker worker, ProgressUpdateDelegate progressCallback)
+        public void ImportExcelToDatabase(string filePath, DateTime date, string area, BackgroundWorker worker, ProgressUpdateDelegate progressCallback)
         {
             string raute = string.Empty;
             Excel.Application excel = null;
@@ -1430,7 +1448,7 @@ ORDER BY
 
 
                         // Создание SQL-запроса для вставки данных в таблицу journalCollectors
-                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data )";
+                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data, @Area )";
 
                         // Привязка SQL-запроса к объекту команды
                         command.CommandText = query;
@@ -1471,6 +1489,7 @@ ORDER BY
                         command.Parameters.Add(new SQLiteParameter("@Appropriation", DbType.String) { Value = appropriation });
                         command.Parameters.Add(new SQLiteParameter("@Route2", DbType.String) { Value = raute });
                         command.Parameters.Add(new SQLiteParameter("@Data", DbType.String) { Value = data });
+                        command.Parameters.Add(new SQLiteParameter("@Area", DbType.String) { Value = area });
 
                         // Выполнение SQL-запроса
                         command.ExecuteNonQuery();
@@ -1589,6 +1608,7 @@ ORDER BY
                                     appropriation = reader.GetString(17),
                                     route2 = reader.GetString(18),
                                     data = reader.GetString(19),
+                                    area = reader.GetString(20),
                                 };
                                 journalEntries.Add(entry);
                             }
@@ -1616,9 +1636,9 @@ ORDER BY
                             // Вставка новых данных
                             var insertCommandString = @"
                     INSERT INTO journalCollectors (
-                        id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data
+                        id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data, area
                     ) VALUES (
-                        @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data
+                        @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data, @Area
                     )";
 
                             foreach (var entry in journalEntries)
@@ -1645,6 +1665,7 @@ ORDER BY
                                     insertCommand.Parameters.AddWithValue("@Appropriation", entry.appropriation);
                                     insertCommand.Parameters.AddWithValue("@Route2", entry.route2);
                                     insertCommand.Parameters.AddWithValue("@Data", entry.data);
+                                    insertCommand.Parameters.AddWithValue("@Area", entry.area);
                                     insertCommand.ExecuteNonQuery();
                                 }
                             }
@@ -1662,7 +1683,7 @@ ORDER BY
             }
             catch (Exception ex)
             {
-               
+                MessageBox.Show("Произошла ошибка при обновлении данных из cashCollectors: " + ex.Message);
             }
         }
 
