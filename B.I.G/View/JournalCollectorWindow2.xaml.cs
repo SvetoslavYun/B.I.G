@@ -214,7 +214,7 @@ namespace B.I.G
 
             {
                 JournalCollectors.Clear();
-                foreach (var item in journalCollectorController.GetAllCashCollectors(Convert.ToDateTime(Date.Text)))
+                foreach (var item in journalCollectorController.GetAllCashCollectors(Convert.ToDateTime(Date.Text), Area.Text))
                 {
                     JournalCollectors.Add(item);
                 }

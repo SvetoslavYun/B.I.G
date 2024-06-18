@@ -97,7 +97,7 @@ namespace B.I.G.Controller
         public IEnumerable<journalCollector> GetAllCashCollectors0(DateTime date, string area)
         {
             string area2="";
-            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND (jc.area = @Area or jc.area = @Area2)  ORDER BY CAST(jc.route2 AS INT)";
@@ -166,15 +166,19 @@ namespace B.I.G.Controller
             connection.Close();
         }
 
-        public IEnumerable<journalCollector> GetAllCashCollectors(DateTime date)
+        public IEnumerable<journalCollector> GetAllCashCollectors(DateTime date, string area)
         {
+         
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
-
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date ORDER BY CAST(jc.route2 AS INT)";
+            string area2 = "";
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date AND (jc.area = @Area or jc.area = @Area2) ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@DefaultImage", File.ReadAllBytes(defaultImagePath));
+            getAllCommand.Parameters.AddWithValue("@Area", area);
+            getAllCommand.Parameters.AddWithValue("@Area2", area2);
             connection.Open();
 
             var reader = getAllCommand.ExecuteReader();
@@ -237,7 +241,7 @@ namespace B.I.G.Controller
         public IEnumerable<journalCollector> GetAllCashCollectors3(DateTime date, string area)
         {
             string area2 = "";
-            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"
@@ -323,7 +327,7 @@ namespace B.I.G.Controller
         public IEnumerable<journalCollector> GetAllCashCollectors4(DateTime date, string area)
         {
             string area2 = "";
-            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT 
@@ -893,7 +897,7 @@ GROUP BY
         public void DeleteToDate(DateTime date, string area)
         {
             string area2="";
-            if (area == "Все" || area == "") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date) and (area = @Area or area = @Area2)";
                 SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
@@ -1020,7 +1024,7 @@ GROUP BY
 
             connection.Close();
             string area2 = "";
-            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route and (jc.area = @Area or jc.area = @Area2) ORDER BY CAST(jc.route2 AS INT);";
@@ -1115,7 +1119,7 @@ GROUP BY
             connection.Close();
 
             string area2 = "";
-            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route AND (jc.area = @Area or jc.area = @Area2) ORDER BY CAST(jc.route2 AS INT)";
@@ -1333,7 +1337,7 @@ GROUP BY
         {
             connection.Close();
             string area2 = "";
-            if (area == "Все") { area = "Дзержинского"; area2 = "Фабрициуса"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var commandString = @"SELECT route2,
        COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%тарший%' THEN name END), '') AS names_starshego,
        COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika

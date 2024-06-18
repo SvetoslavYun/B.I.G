@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Журнал устройств самообслуживания 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
+        Title="Журнал устройств самообслуживания 'B.I.G'" Height="720" Width="1350" WindowStartupLocation="CenterScreen" Foreground="#FFD88947" Closing="Window_Closing">
     <Window.Icon>
         <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
@@ -54,7 +54,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="205,3,0,0" TextWrapping="Wrap" Text="Поиск по маршруту" VerticalAlignment="Top" Foreground="#FFEFEBEB" Width="116"/>
         <Button Content="Экспорт в Excel"
         HorizontalAlignment="Right"
-        Margin="0,12,103,0"
+        Margin="0,14,10,0"
         VerticalAlignment="Top"
         Width="104"
         BorderBrush="#FF1E1F1D"
@@ -427,7 +427,7 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
-        <Button x:Name="BatenOrder"  Content="Загрузить У.С." Margin="945,12,0,0" VerticalAlignment="Top" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel" HorizontalAlignment="Left" Width="104">
+        <Button x:Name="BatenOrder"  Content="Загрузить У.С." Margin="0,14,122,0" VerticalAlignment="Top" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel" HorizontalAlignment="Right" Width="109">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -486,9 +486,9 @@
         </Button>
 
 
-
-        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="730,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="200" Height="25" FontSize="20"/>
-        <TextBlock HorizontalAlignment="Left" Margin="595,10,0,0" TextWrapping="Wrap" Text="Журнал У.С. на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBlock x:Name="Are" HorizontalAlignment="Left" Margin="898,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="228" Height="25" FontSize="20"/>
+        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="710,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="200" Height="25" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Margin="575,10,0,0" TextWrapping="Wrap" Text="Журнал У.С. на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
         <TextBlock HorizontalAlignment="Left" Margin="499,-1,0,0" TextWrapping="Wrap" Text="Удалить У.С." VerticalAlignment="Top" Foreground="#FFF9F6F3"/>
 
         <ProgressBar x:Name="ProgressBar" Height="20"  Margin="427,248,353,0" VerticalAlignment="Top" Visibility="Collapsed" />

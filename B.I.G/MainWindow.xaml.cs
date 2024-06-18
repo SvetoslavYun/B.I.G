@@ -308,7 +308,7 @@ namespace B.I.G
 
         private async void  Button_Click(object sender, RoutedEventArgs e)
         {
-            string area = "";
+            string area = "Все";
             CheckBox.IsChecked = false;
             string Login = login.Text;
             string Password = passwordBox.Password;

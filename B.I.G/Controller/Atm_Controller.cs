@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using B.I.G.Model;
+using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace B.I.G.Controller
@@ -71,11 +72,12 @@ namespace B.I.G.Controller
         }
 
 
-        public IEnumerable<atm> GetAllAtm(DateTime date)
+        public IEnumerable<atm> GetAllAtm(DateTime date, string area)
         {
-            var commandString = "SELECT * FROM atms WHERE date = @Date ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
+            var commandString = "SELECT * FROM atms WHERE date = @Date AND area = @Area ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            getAllCommand.Parameters.AddWithValue("@Area", area);
             connection.Open();
             var reader = getAllCommand.ExecuteReader();
             while (reader.Read())
@@ -87,6 +89,7 @@ namespace B.I.G.Controller
                 var Name2 = reader.GetString(4);
                 var Date = reader.GetDateTime(5);
                 var Circle = reader.GetString(6);
+                var Area = reader.GetString(7);
                 var Atm = new atm
                 {
                     id = Id,
@@ -95,32 +98,19 @@ namespace B.I.G.Controller
                     name = Name,
                     name2 = Name2,
                     date = Date,
-                    circle = Circle
+                    circle = Circle,
+                    area = Area
                 };
                 yield return Atm;
             }
             connection.Close();
         }
 
-        public void Insert(user_account User)
-        {
-            var commandString = "INSERT INTO user_accounts (username, password_hash,access, image) VALUES (@Username, @Password_hash,@Access, @Image)";
-            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);            
-            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
-                new SQLiteParameter("Username", User.username),
-                new SQLiteParameter("Password_hash", User.password_hash),
-                new SQLiteParameter("Access", User.access),
-                new SQLiteParameter("Image", User.image),
-            });
-
-            connection.Open();
-            insertCommand.ExecuteNonQuery();
-            connection.Close();
-        }
+     
 
         public void UpdateNull()
         {
-            var commandString = "UPDATE atms SET route = CASE WHEN route IS NULL THEN '' ELSE route END, atmname = CASE WHEN atmname IS NULL THEN '' ELSE atmname END, name = CASE WHEN name IS NULL THEN '' ELSE name END, name2 = CASE WHEN name2 IS NULL THEN '' ELSE name2 END, circle = CASE WHEN circle IS NULL THEN '' ELSE circle END;";
+            var commandString = "UPDATE atms SET route = CASE WHEN route IS NULL THEN '' ELSE route END, atmname = CASE WHEN atmname IS NULL THEN '' ELSE atmname END, name = CASE WHEN name IS NULL THEN '' ELSE name END, name2 = CASE WHEN name2 IS NULL THEN '' ELSE name2 END, circle = CASE WHEN circle IS NULL THEN '' ELSE circle END , area = CASE WHEN area IS NULL THEN '' ELSE area END;";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             connection.Open();
             updateCommand.ExecuteNonQuery();
@@ -173,35 +163,35 @@ namespace B.I.G.Controller
         }
 
 
-        public void DeleteToDateLocal(DateTime date)
+        public void DeleteToDateLocal(DateTime date, string area)
         {
 
-            var commandString2 = "DELETE FROM atms WHERE (date = @Date)";
+            var commandString2 = "DELETE FROM atms WHERE (date = @Date) and area = @Area";
             SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
             deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
+            deleteCommand2.Parameters.AddWithValue("@Area", area);
             connection.Open();
             deleteCommand2.ExecuteNonQuery();
             connection.Close();
            
         }
 
-        public void DeleteToDate(DateTime date)
+        public void DeleteToDate(DateTime date, string area)
         {
 
-            var commandString2 = "DELETE FROM atms WHERE (date = @Date)";
+            var commandString2 = "DELETE FROM atms WHERE (date = @Date) and area =@Area";
             SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
             deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
+            deleteCommand2.Parameters.AddWithValue("@Area", area);
             connection.Open();
             deleteCommand2.ExecuteNonQuery();
             connection.Close();
-            DeleteToDate2(date);
+            DeleteToDate2(date, area);
         }
 
-        public void DeleteToDate2(DateTime date)
+        public void DeleteToDate2(DateTime date, string area)
         {
             string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
 
@@ -219,7 +209,7 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString2 = "DELETE FROM atms WHERE (date = @Date)";
+                        var commandString2 = "DELETE FROM atms WHERE (date = @Date) and area =@Area";
                         SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
                         deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -236,16 +226,16 @@ namespace B.I.G.Controller
             }
         }
 
-        public IEnumerable<atm> SearchAtmName(string name, string route, DateTime date)
+        public IEnumerable<atm> SearchAtmName(string name, string route, DateTime date,string area)
         {
             connection.Open();
-            var commandString = "SELECT id, route, atmname, name, name2, date, circle FROM atms WHERE atmname LIKE @Name And route LIKE @Route AND date = @Date ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
+            var commandString = "SELECT id, route, atmname, name, name2, date, circle FROM atms WHERE atmname LIKE @Name And route LIKE @Route AND date = @Date and area = @Area ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
             getAllCommand.Parameters.AddWithValue("@Route", "%" + route + "%");
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-
+            getAllCommand.Parameters.AddWithValue("@Area", area);
             var reader = getAllCommand.ExecuteReader();
             while (reader.Read())
             {
@@ -256,6 +246,7 @@ namespace B.I.G.Controller
                 var Name2 = reader.GetString(4);
                 var Date = reader.GetDateTime(5);
                 var Circle = reader.GetString(6);
+                var Area = reader.GetString(7);
                 var Atm = new atm
                 {
                     id = Id,
@@ -264,7 +255,8 @@ namespace B.I.G.Controller
                     name = Name,
                     name2 = Name2,
                     date = Date,
-                    circle = Circle
+                    circle = Circle,
+                    area = Area
                 };
                 yield return Atm;
             }
@@ -272,111 +264,9 @@ namespace B.I.G.Controller
         }
 
 
-        public IEnumerable<user_account> Authorization(string login, string password)
-        {
-            connection.Close();
+      
 
-            var commandString = "SELECT * FROM user_accounts WHERE username = @login AND password_hash = @password ;";
-
-            using (SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection))
-            {
-                getAllCommand.Parameters.AddWithValue("@login", login );
-                getAllCommand.Parameters.AddWithValue("@password", password );
-
-                connection.Open();
-
-                using (var reader = getAllCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var Id = reader.GetInt32(0);
-                        var Username = reader.GetString(1);
-                        var Password_hash = reader.GetString(2);
-                        var User = new user_account
-                        {
-                            id = Id,
-                            username = Username,
-                            password_hash = Password_hash
-                        };
-                        connection.Close();
-                        yield return User;
-                    }
-                   
-                }
-            }
-           
-        }
-
-        public bool IsUsernameExists(string username, int? userId = null)
-        {
-
-            {
-                connection.Open();
-
-                string commandText;
-                SQLiteCommand command;
-
-                if (userId.HasValue)
-                {
-                    commandText = "SELECT COUNT(*) FROM user_accounts WHERE username = @Username AND id <> @UserId";
-                    command = new SQLiteCommand(commandText, connection);
-                    command.Parameters.AddWithValue("@UserId", userId.Value);
-                }
-                else
-                {
-                    commandText = "SELECT COUNT(*) FROM user_accounts WHERE username = @Username";
-                    command = new SQLiteCommand(commandText, connection);
-                }
-
-                command.Parameters.AddWithValue("@Username", username);
-
-                int count = Convert.ToInt32(command.ExecuteScalar());
-
-                connection.Close();
-
-                return count > 0;
-            }
-        }
-
-        public void SearchFoto(int id)
-        {
-            connection.Open();
-            var commandString = "SELECT image FROM user_accounts WHERE id = @id;";
-
-            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
-            getAllCommand.Parameters.AddWithValue("@id", id);
-            using (SQLiteDataReader reader = getAllCommand.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    Add_User.image_bytes = (byte[])reader.GetValue(0); // Значение Id_Stocks (первый столбец)
-                }
-            }
-
-            connection.Close();
-        }
-
-        public void MainPhoto(string name)
-        {
-            connection.Open();
-            var commandString = "SELECT image, access FROM user_accounts WHERE username = @Username;";
-
-            SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
-            getAllCommand.Parameters.AddWithValue("@Username", name);
-            using (SQLiteDataReader reader = getAllCommand.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    MainWindow.image_Profil = (byte[])reader.GetValue(0); // Значение image (первый столбец)
-                    MainWindow.acces = reader.GetString(1); // Значение access (второй столбец)
-                }
-            }
-
-            connection.Close();
-        }
-
-
-        public void ImportExcelToDatabase(string filePath, DateTime date, BackgroundWorker worker, Action<int> reportProgress)
+        public void ImportExcelToDatabase(string filePath, DateTime date, string area, BackgroundWorker worker, Action<int> reportProgress)
         {
             Excel.Application excel = null;
             Excel.Workbook workbook = null;
@@ -413,8 +303,8 @@ namespace B.I.G.Controller
                     int columnCount = range.Columns.Count;
 
                     // Создание SQL-запроса для вставки данных в таблицу atms
-                    string query = "INSERT INTO atms (route, atmname, name, name2, date, circle) " +
-                                   "VALUES (@Route, @AtmName, @Name, @Name2, @Date, @Circle)";
+                    string query = "INSERT INTO atms (route, atmname, name, name2, date, circle, area) " +
+                                   "VALUES (@Route, @AtmName, @Name, @Name2, @Date, @Circle, @Area)";
 
                     // Привязка SQL-запроса к объекту команды
                     command.CommandText = query;
@@ -426,6 +316,7 @@ namespace B.I.G.Controller
                     command.Parameters.Add(new SQLiteParameter("@Name2", DbType.String));
                     command.Parameters.Add(new SQLiteParameter("@Date", DbType.String));
                     command.Parameters.Add(new SQLiteParameter("@Circle", DbType.String));
+                    command.Parameters.Add(new SQLiteParameter("@Area", DbType.String));
 
                     // Определение общего количества строк для подсчета прогресса
                     int totalRows = range.Rows.Count;
@@ -458,6 +349,7 @@ namespace B.I.G.Controller
                             command.Parameters["@Name2"].Value = "";
                             command.Parameters["@Date"].Value = date.ToString("yyyy-MM-dd");
                             command.Parameters["@Circle"].Value = rowValues[2]?.ToString();
+                            command.Parameters["@Area"].Value = area;
 
                             // Выполнение SQL-запроса
                             command.ExecuteNonQuery();
@@ -553,7 +445,8 @@ namespace B.I.G.Controller
                                 name = reader.GetString(3),
                                 name2 = reader.GetString(4),
                                 date = reader.GetDateTime(5),
-                                circle = reader.GetString(6)
+                                circle = reader.GetString(6),
+                                area=reader.GetString(7),
                             };
                             journalEntries.Add(entry);
                         }
@@ -578,7 +471,7 @@ namespace B.I.G.Controller
                             }
 
                             // Вставка новых данных
-                            var insertCommandString = @"INSERT INTO atms (id, route, atmname, name, name2, date, circle) VALUES (@Id, @Route, @AtmName, @Name, @Name2, @Date, @Circle)";
+                            var insertCommandString = @"INSERT INTO atms (id, route, atmname, name, name2, date, circle, area) VALUES (@Id, @Route, @AtmName, @Name, @Name2, @Date, @Circle, @Area)";
 
                             foreach (var entry in journalEntries)
                             {
@@ -591,6 +484,7 @@ namespace B.I.G.Controller
                                     insertCommand.Parameters.AddWithValue("@Name2", entry.name2);
                                     insertCommand.Parameters.AddWithValue("@Date", entry.date.ToString("yyyy-MM-dd"));
                                     insertCommand.Parameters.AddWithValue("@Circle", entry.circle);
+                                    insertCommand.Parameters.AddWithValue("@Area", entry.area);
                                     insertCommand.ExecuteNonQuery();
                                 }
                             }

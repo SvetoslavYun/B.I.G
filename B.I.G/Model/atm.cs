@@ -15,5 +15,6 @@ namespace B.I.G.Model
         public String route { get; set; }
         public String circle { get; set; }
         public DateTime date { get; set; }
+        public String area { get; set; }
     }
 }

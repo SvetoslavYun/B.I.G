@@ -77,6 +77,7 @@ namespace B.I.G
             dGridCollector.DataContext = Atms;
             Date.Text = date.ToString("dd.MM.yyyy") + " " + date.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
             Area=area;
+            Are.Text = area;
             daTe = date;
             FillData();
             ImgBox.DataContext = this;
@@ -140,9 +141,9 @@ namespace B.I.G
         {
             try
 
-            {
+            {                
                 Atms.Clear();
-                foreach (var item in atm_Controller.GetAllAtm(Convert.ToDateTime(Date.Text)))
+                foreach (var item in atm_Controller.GetAllAtm(Convert.ToDateTime(Date.Text), Are.Text))
                 {
                     Atms.Add(item);
                 }
@@ -292,7 +293,7 @@ namespace B.I.G
                 AccesText.Text = MainWindow.acces;
                 NameText.Text = MainWindow.LogS;
                 MainWindow.NameJorunal = Name.Text;
-                var searchResults = atm_Controller.SearchAtmName(Name.Text, Route.Text, Convert.ToDateTime(Date.Text));
+                var searchResults = atm_Controller.SearchAtmName(Name.Text, Route.Text, Convert.ToDateTime(Date.Text), Are.Text);
 
                 Atms.Clear();
                 foreach (var result in searchResults)
@@ -630,7 +631,8 @@ namespace B.I.G
         private void Button_import_to_excel(object sender, RoutedEventArgs e)
         {
             try
-            {
+            { string area = Are.Text;
+                if (Are.Text == "" || Are.Text == "Все") { MessageBox.Show("Выберите площадку в разделе 'Наряды'"); return; }
                 // создание диалогового окна для выбора файла Excel
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
@@ -642,7 +644,7 @@ namespace B.I.G
                     SetButtonsEnabled(this, false);                 
                     Atms.Clear();
                     DateTime selectedDate = Convert.ToDateTime(Date.Text);
-                    atm_Controller.DeleteToDateLocal(selectedDate);
+                    atm_Controller.DeleteToDateLocal(selectedDate, area);
                     StartImport(openFileDialog.FileName, selectedDate);
                 }
             }
@@ -655,6 +657,7 @@ namespace B.I.G
 
         private void StartImport(string filePath, DateTime date)
         {
+            string area = Are.Text;
             ProgressBar.Visibility = Visibility.Visible;
             ProgressText.Visibility = Visibility.Visible;
 
@@ -666,7 +669,7 @@ namespace B.I.G
 
                 try
                 {
-                    atm_Controller.ImportExcelToDatabase(filePath, date, sender as BackgroundWorker, (progressPercentage) =>
+                    atm_Controller.ImportExcelToDatabase(filePath, date,area, sender as BackgroundWorker, (progressPercentage) =>
                     {
                         (sender as BackgroundWorker).ReportProgress(progressPercentage);
                     });
@@ -727,7 +730,7 @@ namespace B.I.G
             var result = MessageBox.Show("Вы уверены?", "Удалить наряд на " + Date.Text, MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                atm_Controller.DeleteToDate(Convert.ToDateTime(Date.Text));
+                atm_Controller.DeleteToDate(Convert.ToDateTime(Date.Text), Are.Text);
                 Search(sender, e);
             }
         }
