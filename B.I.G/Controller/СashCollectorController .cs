@@ -47,6 +47,7 @@ namespace B.I.G.Controller
                 var Profession = reader.GetString(11);
                 var Phone = reader.GetString(12);
                 var Image = (byte[])reader.GetValue(13);
+                var Area = reader.GetString(14);
 
                 var CashCollector = new cashCollector
                 {
@@ -63,7 +64,8 @@ namespace B.I.G.Controller
                     fullname = FullName,
                     profession = Profession,
                     phone = Phone,
-                    image = Image
+                    image = Image,
+                    area = Area
                 };
 
                 yield return CashCollector;
@@ -77,7 +79,7 @@ namespace B.I.G.Controller
 
         public void Insert(cashCollector CashCollector)
         {
-            var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
+            var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image, area) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image, @Area)";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -94,6 +96,7 @@ namespace B.I.G.Controller
         new SQLiteParameter("Profession", CashCollector.profession),
         new SQLiteParameter("Phone", CashCollector.phone),
         new SQLiteParameter("Image", CashCollector.image),
+        new SQLiteParameter("Area", CashCollector.area),
     });
 
             connection.Open();
@@ -121,7 +124,7 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image)";
+                        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image, area) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image, @Area)";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -138,6 +141,7 @@ namespace B.I.G.Controller
         new SQLiteParameter("Profession", CashCollector.profession),
         new SQLiteParameter("Phone", CashCollector.phone),
         new SQLiteParameter("Image", CashCollector.image),
+         new SQLiteParameter("Area", CashCollector.area),
     });
 
             insertCommand.ExecuteNonQuery();
@@ -156,7 +160,7 @@ namespace B.I.G.Controller
 
         public void Update(cashCollector CashCollector)
         {
-            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image WHERE id = @Id";
+            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image, area=@Area WHERE id = @Id";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -174,6 +178,7 @@ namespace B.I.G.Controller
         new SQLiteParameter("Phone", CashCollector.phone),
         new SQLiteParameter("Image", CashCollector.image),
         new SQLiteParameter("Id", CashCollector.id),
+        new SQLiteParameter("Area", CashCollector.area),
     });
 
             connection.Open();
@@ -201,10 +206,10 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image WHERE id = @Id";
-            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image, area=@Area WHERE id = @Id";
+                        SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
-            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+                        updateCommand.Parameters.AddRange(new SQLiteParameter[] {
         new SQLiteParameter("Name", CashCollector.name),
         new SQLiteParameter("Gun", CashCollector.gun),
         new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
@@ -219,6 +224,7 @@ namespace B.I.G.Controller
         new SQLiteParameter("Phone", CashCollector.phone),
         new SQLiteParameter("Image", CashCollector.image),
         new SQLiteParameter("Id", CashCollector.id),
+        new SQLiteParameter("Area", CashCollector.area),
     });
 
             updateCommand.ExecuteNonQuery();
@@ -236,9 +242,9 @@ namespace B.I.G.Controller
 
 
     
-        public void Update2(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone)
+        public void Update2(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone, string area)
         {
-            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone WHERE name=@Name";
+            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, area=@Area WHERE name=@Name";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -254,17 +260,18 @@ namespace B.I.G.Controller
              new SQLiteParameter("FullName",fullname),
         new SQLiteParameter("Profession", profession),
         new SQLiteParameter("Phone", phone),
+         new SQLiteParameter("Area", area),
 
         });
 
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
-            Update21( name,  gun, automaton_serial,automaton, permission, meaning, certificate, token, power, fullname, profession,  phone);
+            Update21( name,  gun, automaton_serial,automaton, permission, meaning, certificate, token, power, fullname, profession,  phone, area);
         }
 
 
-        public void Update21(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone)
+        public void Update21(string name, string gun, string automaton_serial, string automaton, string permission, string meaning, string certificate, string token, string power, string fullname, string profession, string phone, string area)
         {
             string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
 
@@ -282,7 +289,7 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone WHERE name=@Name";
+                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, area=@Area WHERE name=@Name";
                         SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
                         updateCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -298,6 +305,7 @@ namespace B.I.G.Controller
              new SQLiteParameter("FullName",fullname),
         new SQLiteParameter("Profession", profession),
         new SQLiteParameter("Phone", phone),
+        new SQLiteParameter("Area", area),
 
         });
                         updateCommand.ExecuteNonQuery();
@@ -409,6 +417,7 @@ namespace B.I.G.Controller
                 var Profession = reader.GetString(11);
                 var Phone = reader.GetString(12);
                 var Image = (byte[])reader.GetValue(13);
+                var Area = reader.GetString(14);
 
                 var CashCollector = new cashCollector
                 {
@@ -425,7 +434,8 @@ namespace B.I.G.Controller
                     fullname = Fullname,
                     profession = Profession,
                     phone = Phone,
-                    image = Image
+                    image = Image,
+                    area = Area,
                 };
 
                 yield return CashCollector;
@@ -574,7 +584,7 @@ namespace B.I.G.Controller
                             if (existingRecords > 0)
                             {
                                 
-                               Update2(rowValues[0].ToString(), rowValues[1].ToString(), rowValues[2].ToString(), rowValues[3].ToString(), rowValues[4].ToString(), rowValues[5].ToString(), rowValues[6].ToString(), rowValues[7].ToString(), rowValues[8].ToString(), rowValues[9].ToString(), rowValues[10].ToString(), rowValues[11].ToString());
+                               Update2(rowValues[0].ToString(), rowValues[1].ToString(), rowValues[2].ToString(), rowValues[3].ToString(), rowValues[4].ToString(), rowValues[5].ToString(), rowValues[6].ToString(), rowValues[7].ToString(), rowValues[8].ToString(), rowValues[9].ToString(), rowValues[10].ToString(), rowValues[11].ToString(), rowValues[11].ToString());
 
                                 continue;
                             }

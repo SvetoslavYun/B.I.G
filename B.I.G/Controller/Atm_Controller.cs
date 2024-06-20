@@ -213,6 +213,7 @@ namespace B.I.G.Controller
                         SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
 
                         deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                        deleteCommand2.Parameters.AddWithValue("@Area", area);
                         deleteCommand2.ExecuteNonQuery();
                         transaction.Commit();
                     }

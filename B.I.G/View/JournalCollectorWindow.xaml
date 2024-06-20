@@ -72,6 +72,21 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Маршрут" Binding="{Binding route}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding permission}" Value=".">
+                                    <Setter Property="Background" Value="Black"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+
                 <!--<DataGridTextColumn Header="Маршрут" Binding="{Binding route}" Width="*"/>-->
                 <DataGridTextColumn Header="Должность" Binding="{Binding profession}" Width="*">
                     <DataGridTextColumn.CellStyle>

@@ -62,6 +62,8 @@ namespace B.I.G
         {
             Profession.Items.Add("Инкассатор");
             Profession.Items.Add("Водитель");
+            Area.Items.Add("пр.Дзержинского, 69");
+            Area.Items.Add("ул.Фабрициуса, 8б");
         }
         private void Button_Save(object sender, RoutedEventArgs e)
         {
@@ -69,14 +71,21 @@ namespace B.I.G
             if (Fullname.Text == ".") { Fullname.Text = ""; }
             if (string.IsNullOrWhiteSpace(Name.Text))
             {
-                MessageBox.Show("Заполните все обязательные поля.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Заполните Ф.И.О.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 Name.BorderBrush = Brushes.Red;
                 if (string.IsNullOrWhiteSpace(Name.Text)) { Name.BorderBrush = Brushes.Red; } else { Name.BorderBrush = Brushes.Black; }
-
                 return;
             }
 
-                if (CashCollectorWindow.flag)
+            if ( Area.Text == "")
+            {
+                MessageBox.Show("Выберите площадку.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Area.BorderBrush = Brushes.Red;
+                if (string.IsNullOrWhiteSpace(Area.Text)) { Name.BorderBrush = Brushes.Red; } else { Area.BorderBrush = Brushes.Black; }
+                return;
+            }
+
+            if (CashCollectorWindow.flag)
                 {
                     if (image_bytes == null)
                     {
@@ -107,7 +116,8 @@ namespace B.I.G
                         certificate = Certificate.Text,
                         token = Token.Text,
                         power = Power.Text,
-                        image = image_bytes
+                        image = image_bytes,
+                        area = Area.Text,
                     };
 
                     if (!cashCollectorController.IsCashCollectorExists(CashCollector.name))

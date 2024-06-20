@@ -51,6 +51,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Площадка" Binding="{Binding area}" Width="*"/>
                 <DataGridTextColumn Header="Ф.И.О" Binding="{Binding name}" Width="*"/>
                 <DataGridTextColumn Header="Полное Ф.И.О" Binding="{Binding fullname}" Width="*"/>
                 <DataGridTextColumn Header="Телефон" Binding="{Binding phone}" Width="*"/>
@@ -116,7 +117,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="Импорт из Excel" HorizontalAlignment="Right" Margin="0,9,218,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_import_to_excel">
+        <!--<Button Content="Импорт из Excel" HorizontalAlignment="Right" Margin="0,9,218,0" VerticalAlignment="Top" Width="104" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="24" Click="Button_import_to_excel">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -155,7 +156,7 @@
             <Button.Foreground>
                 <SolidColorBrush Color="Black"/>
             </Button.Foreground>
-        </Button>
+        </Button>-->
 
 
         <Button Content="" HorizontalAlignment="Left" Margin="497,8,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="27">

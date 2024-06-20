@@ -17,5 +17,6 @@ namespace B.I.G.Model
         public String appropriation { get; set; }
         public String data { get; set; }
         public String area { get; set; }
+        public String area2 { get; set; }
     }
 }

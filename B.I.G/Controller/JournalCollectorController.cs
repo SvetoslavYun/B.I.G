@@ -100,7 +100,7 @@ namespace B.I.G.Controller
             if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND (jc.area = @Area or jc.area = @Area2)  ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and jc.area2 = @Area  ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -252,7 +252,7 @@ namespace B.I.G.Controller
         LEFT JOIN cashCollectors cc ON jc.id2 = cc.id 
         WHERE jc.date = @Date 
           AND jc.permission != '.' 
-          AND jc.name != '' AND jc.data != 'Данные отсутствуют' AND (jc.area = @Area or jc.area = @Area2)
+          AND jc.name != '' AND jc.data != 'Данные отсутствуют' AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and jc.area2 = @Area
         ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
@@ -343,7 +343,7 @@ LEFT JOIN
 WHERE 
     jc.date = @Date 
     AND jc.permission != '.' 
-    AND jc.name != '' AND (jc.area = @Area or jc.area = @Area2)
+    AND jc.name != ''  AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and jc.area2 = @Area
 GROUP BY 
     jc.name ;
  ";
@@ -1122,7 +1122,7 @@ GROUP BY
             if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route AND (jc.area = @Area or jc.area = @Area2) ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route  AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and jc.area2 = @Area ORDER BY CAST(jc.route2 AS INT)";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");
@@ -1549,7 +1549,7 @@ ORDER BY
 
 
                         // Создание SQL-запроса для вставки данных в таблицу journalCollectors
-                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data, @Area )";
+                        string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data, @Area, @Area2 )";
 
                         // Привязка SQL-запроса к объекту команды
                         command.CommandText = query;
@@ -1591,6 +1591,7 @@ ORDER BY
                         command.Parameters.Add(new SQLiteParameter("@Route2", DbType.String) { Value = raute });
                         command.Parameters.Add(new SQLiteParameter("@Data", DbType.String) { Value = data });
                         command.Parameters.Add(new SQLiteParameter("@Area", DbType.String) { Value = area });
+                        command.Parameters.Add(new SQLiteParameter("@Area2", DbType.String) { Value = area });
 
                         // Выполнение SQL-запроса
                         command.ExecuteNonQuery();
@@ -1644,7 +1645,8 @@ ORDER BY
                     power = c.power,
                     fullname = c.fullname,
                     phone = c.phone,
-                    id2 = c.id
+                    id2 = c.id,
+                    area2 = c.area
                 FROM cashCollectors c
                 WHERE
                     REPLACE(REPLACE(REPLACE(c.name, ' ', ''), '.', ','), ',', '.') = REPLACE(REPLACE(REPLACE(@Name, ' ', ''), '.', ','), ',', '.') 
@@ -1710,6 +1712,7 @@ ORDER BY
                                     route2 = reader.GetString(18),
                                     data = reader.GetString(19),
                                     area = reader.GetString(20),
+                                    area2= reader.GetString(21),    
                                 };
                                 journalEntries.Add(entry);
                             }
@@ -1737,9 +1740,9 @@ ORDER BY
                             // Вставка новых данных
                             var insertCommandString = @"
                     INSERT INTO journalCollectors (
-                        id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data, area
+                        id, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, profession, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2
                     ) VALUES (
-                        @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data, @Area
+                        @Id, @Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation, @Route2, @Data, @Area, @Area2
                     )";
 
                             foreach (var entry in journalEntries)
@@ -1767,6 +1770,7 @@ ORDER BY
                                     insertCommand.Parameters.AddWithValue("@Route2", entry.route2);
                                     insertCommand.Parameters.AddWithValue("@Data", entry.data);
                                     insertCommand.Parameters.AddWithValue("@Area", entry.area);
+                                    insertCommand.Parameters.AddWithValue("@Area2", entry.area2);
                                     insertCommand.ExecuteNonQuery();
                                 }
                             }

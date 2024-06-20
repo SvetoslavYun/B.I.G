@@ -23,5 +23,6 @@ namespace B.I.G.Model
         public String phone { get; set; }
         public byte[] image { get; set; }
         public string cc_power { get; set; }
+        public String area { get; set; }
     }
 }
