@@ -99,6 +99,7 @@ namespace B.I.G
             Area.Items.Add("пр.Дзержинского, 69");
             Area.Items.Add("ул.Фабрициуса, 8б");
             Area.Items.Add("Все");
+            Area.Items.Add("Загрузить наряд");
             RouteButton.Visibility = Visibility.Collapsed;
             RouteButton.IsEnabled = false;
             ReserveButton.Visibility = Visibility.Collapsed;
@@ -954,10 +955,20 @@ namespace B.I.G
 
                 try
                 {
-                    journalCollectorController.ImportExcelToDatabase(filePath, date,area, sender as BackgroundWorker, (progressPercentage) =>
+                    if (area == "Загрузить наряд")
                     {
-                        (sender as BackgroundWorker).ReportProgress(progressPercentage);
-                    });
+                        journalCollectorController.ImportExcelToDatabase2(filePath, date, area, sender as BackgroundWorker, (progressPercentage) =>
+                        {
+                            (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                        });
+                    }
+                    else
+                    {
+                        journalCollectorController.ImportExcelToDatabase(filePath, date, area, sender as BackgroundWorker, (progressPercentage) =>
+                        {
+                            (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                        });
+                    }
 
                 }
                 catch (Exception ex)
@@ -986,6 +997,12 @@ namespace B.I.G
                 else
                 {
                     MessageBox.Show("Операция успешно завершена.");
+                }
+                if (area == "Загрузить наряд")
+                {                   
+                    journalCollectorController.UpdateResponsibilities22(date, area);
+                    journalCollectorController.UpdateRoute2(date);
+                    journalCollectorController.DeleteRound22(date);
                 }
                 journalCollectorController.UpdateResponsibilities(date,area);
                 journalCollectorController.DeleteRound2(date);
