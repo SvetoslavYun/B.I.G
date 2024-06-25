@@ -1027,7 +1027,7 @@ GROUP BY
         public void DeleteNUL()
         {
          
-                var commandString = "DELETE FROM journalCollectors WHERE name IS NULL OR  gun IS NULL OR automaton_serial IS NULL OR automaton IS NULL OR permission IS NULL OR meaning  IS NULL OR certificate  IS NULL OR token IS NULL OR power  IS NULL OR fullname IS NULL OR profession IS NULL OR phone IS NULL OR id2 IS NULL OR route  IS NULL OR date  IS NULL OR dateWork  IS NULL OR appropriation  IS NULL OR   route2 IS NULL;";
+                var commandString = "DELETE FROM journalCollectors WHERE name IS NULL OR  gun IS NULL OR automaton_serial IS NULL OR automaton IS NULL OR permission IS NULL OR meaning  IS NULL OR certificate  IS NULL OR token IS NULL OR power  IS NULL OR fullname IS NULL OR profession IS NULL OR phone IS NULL OR id2 IS NULL OR route  IS NULL OR date  IS NULL OR dateWork  IS NULL OR appropriation  IS NULL OR   route2 IS NULL OR   area IS NULL OR area2 IS NULL;";
                 SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
                 connection.Open();
                 deleteCommand.ExecuteNonQuery();
@@ -1058,7 +1058,7 @@ GROUP BY
                                     dateWork = COALESCE(dateWork, 'Данные отсутствуют'),
                                     appropriation = COALESCE(appropriation, 'Данные отсутствуют'),
                                     route2 = COALESCE(route2, 'Данные отсутствуют'),
-                                    data = COALESCE(data, '');";
+                                    data = COALESCE(data, ''), area = COALESCE(area, '') , area2 = COALESCE(area2, '');";
           
             SQLiteCommand updateCommand = new SQLiteCommand(updateCommandString, connection);
             updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -1942,7 +1942,7 @@ ORDER BY
                         command.Parameters.Add(new SQLiteParameter("@Fullname", DbType.String) { Value = "" });
                         command.Parameters.Add(new SQLiteParameter("@Phone", DbType.String) { Value = "" });
                         command.Parameters.Add(new SQLiteParameter("@Id2", DbType.Int32) { Value = 0 }); // Предполагая, что это int, иначе укажите правильный тип данных
-                        if (!profession.Contains("тарший") && !profession.Contains("орщик") && !profession.Contains("одитель")) { raute = profession; }
+                        if (!profession.Contains("тарший") && !profession.Contains("орщик") && !profession.Contains("одитель") && !profession.Contains("Деж")) { raute = profession; }
                         command.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = raute });
                         command.Parameters.Add(new SQLiteParameter("@Date", DbType.String) { Value = date.ToString("yyyy-MM-dd") });
                         command.Parameters.Add(new SQLiteParameter("@DateWork", DbType.String) { Value = dateWork });

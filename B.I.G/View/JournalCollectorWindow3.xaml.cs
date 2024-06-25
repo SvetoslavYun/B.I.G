@@ -460,7 +460,7 @@ namespace B.I.G
                     if (worksheet.Cells[i + 4, 29].Value?.ToString().Contains("борщик") == true)
                     {
 
-                        worksheet.Cells[i + 4, 4].Value = "";
+                        worksheet.Cells[i + 4, 5].Value = "";
                         worksheet.Cells[i + 4, 10].Value = "DP2400";
                         worksheet.Cells[i + 4, 21].Value = "DP2400";
 
