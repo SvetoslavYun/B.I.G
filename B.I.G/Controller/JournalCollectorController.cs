@@ -471,7 +471,7 @@ GROUP BY
             int newRoute2 = maxRoute2 + 1;
 
             // Вставляем новую запись
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '00:00', '','" + newRoute2 + "', 'Данные отсутствуют', @Area )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '00:00', '','" + newRoute2 + "', 'Данные отсутствуют', @Area, @Area )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -514,7 +514,7 @@ GROUP BY
 
         public void Insert2(DateTime date, string area)
         {
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', '', @Date, 'Резерв', '.','998', '', @Area )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', '', @Date, 'Резерв', '.','998', '', @Area, @Area )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -529,7 +529,7 @@ GROUP BY
 
         public void InsertRoute(DateTime date, string area, string route, string circle)
         {
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', @Route || '/' || @Circle, @Date, 'Маршрут ' || @Route || '/' || @Circle, '.',@Route2, '', @Area )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', @Route || '/' || @Circle, @Date, 'Маршрут ' || @Route || '/' || @Circle, '.',@Route2, '', @Area, @Area  )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -549,7 +549,7 @@ GROUP BY
 
 
             // Вставляем новую запись
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('Старший бригады (инкассатор/водитель/контролер)', '', '', '', '', '', '', '', '', '', '', '', '0', @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route2, 'Данные отсутствуют', @Area )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('Старший бригады (инкассатор/водитель/контролер)', '', '', '', '', '', '', '', '', '', '', '', '0', @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route2, 'Данные отсутствуют', @Area , @Area)";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -570,7 +570,7 @@ GROUP BY
 
 
             // Вставляем новую запись
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('Инкассатор - сборщик/оператор', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('Инкассатор - сборщик/оператор', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area, @Area  )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -592,7 +592,7 @@ GROUP BY
 
 
             // Вставляем новую запись
-            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area ) VALUES ('Водитель', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area )";
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('Водитель', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area, @Area  )";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -646,7 +646,7 @@ GROUP BY
                 " automaton_serial = cashCollectors.automaton_serial,  automaton = cashCollectors.automaton, " +
                 " permission = cashCollectors.permission,data ='',  meaning = cashCollectors.meaning," +
                 " certificate = cashCollectors.certificate, token = cashCollectors.token, power = cashCollectors.power," +
-                " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id " +
+                " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id, area2 = (SELECT area FROM cashCollectors WHERE  id=@IdColl) " +
                 " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn  ;";
             var commandString2 = "UPDATE journalCollectors SET data =''," +
                 " name = (SELECT name FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
@@ -660,7 +660,7 @@ GROUP BY
                 " power = (SELECT power FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
                 " fullname = (SELECT fullname FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
                 " phone = (SELECT phone FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
-                " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date) " +
+                " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), area2 = (SELECT area FROM cashCollectors WHERE  id=@IdColl) " +
                 " WHERE route2 = @Route AND profession = @Profession and date = @Date and route !='' AND route2 != 'РЕЗЕРВ' AND route2 != 'стажер' AND route2 != 'Стажер';";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
@@ -676,6 +676,7 @@ GROUP BY
     new SQLiteParameter("@IdJourn", idJourn),
     new SQLiteParameter("@Route", route),
     new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+     new SQLiteParameter("@IdColl", idColl),
     new SQLiteParameter("@Profession", profession)
 });
 
@@ -1630,6 +1631,180 @@ ORDER BY
 
         public delegate void ProgressUpdateDelegate(int progressPercentage);
 
+        //public void ImportExcelToDatabase(string filePath, DateTime date, string area, BackgroundWorker worker, ProgressUpdateDelegate progressCallback)
+        //{
+        //    string raute = string.Empty;
+        //    Excel.Application excel = null;
+        //    Excel.Workbook workbook = null;
+
+        //    try
+        //    {
+        //        // Создание объекта подключения SQLite
+        //        using (SQLiteConnection connection = new SQLiteConnection("Data Source=B.I.G.db"))
+        //        {
+        //            // Открытие подключения
+        //            connection.Open();
+
+        //            // Создание объекта команды SQLite
+        //            SQLiteCommand command = new SQLiteCommand();
+
+        //            // Привязка команды к объекту подключения
+        //            command.Connection = connection;
+
+        //            // Создание объекта Excel
+        //            excel = new Excel.Application();
+
+        //            // Открытие книги Excel по пути к файлу
+        //            workbook = excel.Workbooks.Open(filePath);
+
+        //            // Выбор листа Excel для чтения данных
+        //            Excel._Worksheet worksheet = workbook.Sheets[1];
+
+        //            // Получение диапазона ячеек для чтения данных
+        //            Excel.Range range = worksheet.UsedRange;
+
+        //            // Определение количества строк в таблице Excel
+        //            int rowCount = range.Rows.Count;
+        //            string data="";
+        //            // Проход по строкам диапазона
+        //            for (int row = 10; row <= rowCount; row++)
+        //            {
+        //                data = "";
+        //                // Получение значений из колонок B и C
+        //                string profession = (range.Cells[row, 2].Value2 ?? "").ToString();
+        //                string name = (range.Cells[row, 3].Value2 ?? "").ToString();                      
+                       
+
+        //                string dateWork = string.Empty;
+        //                object cellValue = range.Cells[row, 4].Value2;
+
+        //                if (cellValue != null)
+        //                {
+        //                    if (double.TryParse(cellValue.ToString(), out double oaDate))
+        //                    {
+        //                        // Преобразование числа в DateTime и форматирование в строку времени
+        //                        dateWork = DateTime.FromOADate(oaDate).ToString("HH:mm");
+        //                    }
+        //                    else
+        //                    {
+        //                        dateWork = cellValue.ToString();
+        //                    }
+        //                }
+
+
+        //                string appropriation = string.Empty;
+        //                Excel.Range cell = range.Cells[row, 7];
+
+        //                if (cell.Value2 != null)
+        //                {
+        //                    if (cell.HasFormula)
+        //                    {
+        //                        appropriation = string.Empty;
+        //                    }
+        //                    else
+        //                    {
+        //                        string cellValueString = cell.Value2.ToString();
+
+        //                        // Проверяем длину строки
+        //                        if (cellValueString.Length == 4)
+        //                        {
+        //                            // Если строка состоит из четырех символов, оставляем её как есть
+        //                            appropriation = cellValueString;
+        //                        }
+        //                        else if (double.TryParse(cellValueString, out double oaDate))
+        //                        {
+        //                            // Преобразование числа в DateTime и форматирование в строку времени
+        //                            appropriation = DateTime.FromOADate(oaDate).ToString("HH:mm");
+        //                        }
+        //                        else if (DateTime.TryParse(cellValueString, out DateTime parsedDate))
+        //                        {
+        //                            // Преобразование строки, которая является временем, в строку времени
+        //                            appropriation = parsedDate.ToString("HH:mm");
+        //                        }
+        //                        else
+        //                        {
+        //                            // Оставляем строку как есть, если это не число и не время
+        //                            appropriation = cellValueString;
+        //                        }
+        //                    }
+        //                }
+
+
+        //                // Создание SQL-запроса для вставки данных в таблицу journalCollectors
+        //                string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data, @Area, @Area2 )";
+
+        //                // Привязка SQL-запроса к объекту команды
+        //                command.CommandText = query;
+
+        //                // Создание параметров для SQL-запроса
+        //                command.Parameters.Clear(); // Очистка параметров
+        //                if (name != "")
+        //                {
+        //                    string selectQuery = "SELECT COUNT(*) FROM cashCollectors WHERE REPLACE(REPLACE(REPLACE(name, ' ', ''), '.', ','), ',', '.') = REPLACE(REPLACE(REPLACE(@Name, ' ', ''), '.', ','), ',', '.')";
+        //                    using (SQLiteCommand selectCommand = new SQLiteCommand(selectQuery, connection))
+        //                    {
+        //                        selectCommand.Parameters.AddWithValue("@Name", name);
+        //                        long existingRecords = (long)selectCommand.ExecuteScalar();
+        //                        if (existingRecords == 0)
+        //                        {
+        //                          data = "Данные отсутствуют";
+        //                        }
+        //                    }
+        //                }
+
+        //                command.Parameters.Add(new SQLiteParameter("@Profession", DbType.String) { Value = profession });
+        //                command.Parameters.Add(new SQLiteParameter("@Name", DbType.String) { Value = name });
+        //                command.Parameters.Add(new SQLiteParameter("@Gun", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Automaton_serial", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Automaton", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Permission", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Meaning", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Certificate", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Token", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Power", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Fullname", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Phone", DbType.String) { Value = "" });
+        //                command.Parameters.Add(new SQLiteParameter("@Id2", DbType.Int32) { Value = 0 }); // Предполагая, что это int, иначе укажите правильный тип данных
+        //                if (!profession.Contains("тарший") && !profession.Contains("орщик") && !profession.Contains("одитель")) { raute = profession; }
+        //                command.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = raute });
+        //                command.Parameters.Add(new SQLiteParameter("@Date", DbType.String) { Value = date.ToString("yyyy-MM-dd") });
+        //                command.Parameters.Add(new SQLiteParameter("@DateWork", DbType.String) { Value = dateWork });
+        //                command.Parameters.Add(new SQLiteParameter("@Appropriation", DbType.String) { Value = appropriation });
+        //                command.Parameters.Add(new SQLiteParameter("@Route2", DbType.String) { Value = raute });
+        //                command.Parameters.Add(new SQLiteParameter("@Data", DbType.String) { Value = data });
+        //                command.Parameters.Add(new SQLiteParameter("@Area", DbType.String) { Value = area });
+        //                command.Parameters.Add(new SQLiteParameter("@Area2", DbType.String) { Value = area });
+
+        //                // Выполнение SQL-запроса
+        //                command.ExecuteNonQuery();
+        //                UpdateJournalCollectorsFromCashCollectors(name);
+        //                // Сообщение о прогрессе через делегат
+        //                int progressPercentage = (int)((row - 5) / (float)(rowCount - 5) * 100);
+        //                progressCallback(progressPercentage);
+        //            }
+
+        //            // Закрытие подключения SQLite
+        //            connection.Close();
+
+        //            // Закрытие книги Excel
+        //            workbook.Close(false);
+        //        }
+
+        //        // Закрытие приложения Excel
+        //        if (excel != null)
+        //        {
+        //            excel.Quit();
+        //            Marshal.ReleaseComObject(excel);
+        //        }
+
+              
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Произошла ошибка при загрузке данных из Excel: " + ex.Message);
+        //    }
+        //}
+
         public void ImportExcelToDatabase(string filePath, DateTime date, string area, BackgroundWorker worker, ProgressUpdateDelegate progressCallback)
         {
             string raute = string.Empty;
@@ -1664,15 +1839,15 @@ ORDER BY
 
                     // Определение количества строк в таблице Excel
                     int rowCount = range.Rows.Count;
-                    string data="";
+                    string data = "";
+
                     // Проход по строкам диапазона
                     for (int row = 10; row <= rowCount; row++)
                     {
                         data = "";
                         // Получение значений из колонок B и C
                         string profession = (range.Cells[row, 2].Value2 ?? "").ToString();
-                        string name = (range.Cells[row, 3].Value2 ?? "").ToString();                      
-                       
+                        string name = (range.Cells[row, 3].Value2 ?? "").ToString();
 
                         string dateWork = string.Empty;
                         object cellValue = range.Cells[row, 4].Value2;
@@ -1689,7 +1864,6 @@ ORDER BY
                                 dateWork = cellValue.ToString();
                             }
                         }
-
 
                         string appropriation = string.Empty;
                         Excel.Range cell = range.Cells[row, 7];
@@ -1728,7 +1902,6 @@ ORDER BY
                             }
                         }
 
-
                         // Создание SQL-запроса для вставки данных в таблицу journalCollectors
                         string query = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES (@Profession, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data, @Area, @Area2 )";
 
@@ -1746,7 +1919,7 @@ ORDER BY
                                 long existingRecords = (long)selectCommand.ExecuteScalar();
                                 if (existingRecords == 0)
                                 {
-                                  data = "Данные отсутствуют";
+                                    data = "Данные отсутствуют";
                                 }
                             }
                         }
@@ -1776,7 +1949,41 @@ ORDER BY
 
                         // Выполнение SQL-запроса
                         command.ExecuteNonQuery();
+
+                        // Вставка дополнительной строки, если profession содержит "орщик"
+                        if (profession.Contains("орщик"))
+                        {
+                            string queryDriver = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES (@ProfessionDriver, @Name, @Gun, @Automaton_serial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @Fullname, @Phone, @Id2, @Route, @Date, @DateWork, @Appropriation,@Route2, @Data, @Area, @Area2 )";
+
+                            SQLiteCommand commandDriver = new SQLiteCommand(queryDriver, connection);
+
+                            commandDriver.Parameters.Add(new SQLiteParameter("@ProfessionDriver", DbType.String) { Value = "Водитель" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Name", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Gun", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Automaton_serial", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Automaton", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Permission", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Meaning", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Certificate", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Token", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Power", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Fullname", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Phone", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Id2", DbType.Int32) { Value = 0 });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Route", DbType.String) { Value = raute });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Date", DbType.String) { Value = date.ToString("yyyy-MM-dd") });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@DateWork", DbType.String) { Value = dateWork });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Appropriation", DbType.String) { Value = appropriation });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Route2", DbType.String) { Value = raute });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Data", DbType.String) { Value = "" });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Area", DbType.String) { Value = area });
+                            commandDriver.Parameters.Add(new SQLiteParameter("@Area2", DbType.String) { Value = area });
+
+                            commandDriver.ExecuteNonQuery();
+                        }
+
                         UpdateJournalCollectorsFromCashCollectors(name);
+
                         // Сообщение о прогрессе через делегат
                         int progressPercentage = (int)((row - 5) / (float)(rowCount - 5) * 100);
                         progressCallback(progressPercentage);
@@ -1795,15 +2002,12 @@ ORDER BY
                     excel.Quit();
                     Marshal.ReleaseComObject(excel);
                 }
-
-              
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Произошла ошибка при загрузке данных из Excel: " + ex.Message);
             }
         }
-
 
 
         public void ImportExcelToDatabase2(string filePath, DateTime date, string area, BackgroundWorker worker, ProgressUpdateDelegate progressCallback)
@@ -2153,5 +2357,7 @@ ORDER BY
         }
 
 
+
+       
     }
 }

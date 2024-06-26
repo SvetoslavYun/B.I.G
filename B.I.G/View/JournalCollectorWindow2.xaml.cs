@@ -319,6 +319,8 @@ namespace B.I.G
             }
         }
 
+     
+
         private void EditAutomate(object sender, RoutedEventArgs e)
         {
             try
@@ -1002,11 +1004,11 @@ namespace B.I.G
                 {                   
                     journalCollectorController.UpdateResponsibilities22(date, area);
                     journalCollectorController.UpdateRoute2(date);
-                    journalCollectorController.DeleteRound22(date);
+                    journalCollectorController.DeleteRound22(date);                   
                 }
                 journalCollectorController.UpdateResponsibilities(date,area);
-                journalCollectorController.DeleteRound2(date);
-                journalCollectorController.UpdateJournalBase2(date);
+                journalCollectorController.DeleteRound2(date);             
+                journalCollectorController.UpdateJournalBase2(date);              
                 Date.Text = date.ToString("yyyy-MM-dd");
                 // Разблокировать все кнопки
                 SetButtonsEnabled(this, true);

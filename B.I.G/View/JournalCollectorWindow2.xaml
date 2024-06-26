@@ -44,6 +44,7 @@
                             <Image Source="/image/Ak47.png" Width="16" Height="16"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                  
                 </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.RowStyle>
