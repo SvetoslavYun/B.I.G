@@ -452,8 +452,9 @@ namespace B.I.G
                     {
 
                         worksheet.Cells[i + 4, 4].Value = "";
-                        worksheet.Cells[i + 4, 10].Value = "T2";
-                        worksheet.Cells[i + 4, 21].Value = "T2";
+                        worksheet.Cells[i + 4, 10].Value = "DP2400";
+                        worksheet.Cells[i + 4, 21].Value = "DP2400";
+                      
 
                     }
 
@@ -461,8 +462,8 @@ namespace B.I.G
                     {
 
                         worksheet.Cells[i + 4, 5].Value = "";
-                        worksheet.Cells[i + 4, 10].Value = "DP2400";
-                        worksheet.Cells[i + 4, 21].Value = "DP2400";
+                        worksheet.Cells[i + 4, 10].Value = "T2";
+                        worksheet.Cells[i + 4, 21].Value = "T2";
 
                     }
                     if (worksheet.Cells[i + 4, 29].Value?.ToString().Contains("арший") == true && worksheet.Cells[i + 4, 7].Value?.ToString() == "")

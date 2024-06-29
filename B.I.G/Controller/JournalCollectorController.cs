@@ -812,7 +812,7 @@ GROUP BY
 
         public void UpdateResponsibilities22(DateTime date, string area)
         {
-            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%Водитель%' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE profession NOT LIKE '%одитель%' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString2 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%борщик%' AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET route = '', route2 = '' WHERE Route != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and SUBSTRING(Route, 1, 7) != 'Маршрут' and date = @Date AND area = @Area";
             var commandString4 = "UPDATE journalCollectors SET route = SUBSTRING(Route, 10, 6), route2 = SUBSTRING(Route, 10, 6) WHERE SUBSTRING(Route, 1, 7) = 'Маршрут' AND date = @Date";
@@ -1299,7 +1299,7 @@ GROUP BY
             if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
-            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route  AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area or jc.dateWork LIKE '%РЕЗЕРВ%') and jc.area2 = @Area ORDER BY CAST(jc.route2 AS INT)";
+            var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route  AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and (jc.area2 = @Area or jc.dateWork LIKE '%аршрут%' or jc.dateWork LIKE '%РЕЗЕРВ%') ORDER BY CAST(jc.route2 AS INT)";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             getAllCommand.Parameters.AddWithValue("@Name", "" + name + "%");

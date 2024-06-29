@@ -25,7 +25,7 @@
             <TextBlock HorizontalAlignment="Center" Margin="-100,76,0,0" TextWrapping="Wrap" Text="Имя пользователя" VerticalAlignment="Top" Foreground="#FFFDFAFA" Width="102"/>
             <TextBlock HorizontalAlignment="Center" Margin="-109,132,0,0" TextWrapping="Wrap" Text="Пароль" VerticalAlignment="Top" Foreground="#FFFDF9F9" Width="94"/>
             <TextBlock Margin="0,0,2,0" TextWrapping="Wrap" Text="sviatoslavyun@gmail.com" VerticalAlignment="Top" FontSize="10" HorizontalAlignment="Right" Width="121"/>
-            <TextBlock Margin="10,0,526,22" Grid.Row="1" TextWrapping="Wrap" Text="v. 0.1.99" VerticalAlignment="Bottom"/>
+            <TextBlock Margin="10,0,526,22" Grid.Row="1" TextWrapping="Wrap" Text="v. 0.2.0" VerticalAlignment="Bottom"/>
         </Grid>
 
         <ComboBox  HorizontalAlignment="Center" x:Name="login" VerticalAlignment="Top" Width="206" Margin="0,101,0,0"/>
