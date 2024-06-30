@@ -397,7 +397,7 @@ namespace B.I.G
 
         private async Task CopyDatabaseTablesAsync(string sourcePath, string destinationPath)
         {
-            string[] tableNames = { "atms", "cashCollectors", "journalCollectors", "logs", "puths", "user_accounts" };
+            string[] tableNames = {"cashCollectors"};
 
             foreach (string tableName in tableNames)
             {

@@ -652,7 +652,7 @@ namespace B.I.G
 
         private async Task CopyDatabaseTablesAsync(string sourcePath, string destinationPath)
         {
-            string[] tableNames = { "atms", "cashCollectors", "journalCollectors", "logs", "puths", "user_accounts" };
+            string[] tableNames = { "journalCollectors" };
 
             foreach (string tableName in tableNames)
             {
@@ -1001,14 +1001,18 @@ namespace B.I.G
                     MessageBox.Show("Операция успешно завершена.");
                 }
                 if (area == "Загрузить наряд")
-                {                   
+                {
                     journalCollectorController.UpdateResponsibilities22(date, area);
                     journalCollectorController.UpdateRoute2(date);
-                    journalCollectorController.DeleteRound22(date);                   
+                    journalCollectorController.DeleteRound22(date);
                 }
-                journalCollectorController.UpdateResponsibilities(date,area);
-                journalCollectorController.DeleteRound2(date);             
-                journalCollectorController.UpdateJournalBase2(date);              
+                else
+                {
+                    journalCollectorController.UpdateResponsibilities(date, area);
+                    journalCollectorController.DeleteRound2(date);
+                }
+                    journalCollectorController.UpdateJournalBase2(date);
+                           
                 Date.Text = date.ToString("yyyy-MM-dd");
                 // Разблокировать все кнопки
                 SetButtonsEnabled(this, true);

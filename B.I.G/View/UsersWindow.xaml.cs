@@ -15,6 +15,10 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Media.Media3D;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using System.Data.SQLite;
+using System.Data;
+using System.Threading.Tasks;
+using DataTable = System.Data.DataTable;
 
 namespace B.I.G
 
@@ -325,10 +329,124 @@ namespace B.I.G
             }
         }
 
-        private void Button_cleaning(object sender, RoutedEventArgs e)
+
+
+        private async Task<DataTable> GetTableDataAsync(string databasePath, string tableName)
+        {
+            DataTable dataTable = new DataTable();
+            string query = $"SELECT * FROM {tableName}";
+
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (SQLiteDataReader reader = (SQLiteDataReader)await command.ExecuteReaderAsync())
+                    {
+                        dataTable.Load(reader);
+                    }
+                }
+            }
+
+            return dataTable;
+        }
+
+
+        private async Task ClearTableAsync(string databasePath, string tableName)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand($"DELETE FROM {tableName}", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        private async Task InsertTableDataAsync(string databasePath, string tableName, DataTable tableData)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={databasePath};Version=3;"))
+            {
+                await connection.OpenAsync();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (DataRow row in tableData.Rows)
+                    {
+                        string query = $"INSERT OR REPLACE INTO {tableName} ({string.Join(", ", tableData.Columns.Cast<DataColumn>().Select(c => c.ColumnName))}) " +
+                                       $"VALUES ({string.Join(", ", tableData.Columns.Cast<DataColumn>().Select(c => "@" + c.ColumnName))})";
+
+                        using (var command = new SQLiteCommand(query, connection))
+                        {
+                            foreach (DataColumn column in tableData.Columns)
+                            {
+                                command.Parameters.AddWithValue("@" + column.ColumnName, row[column.ColumnName]);
+                            }
+
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private async Task CopyDatabaseTablesAsync(string sourcePath, string destinationPath)
+        {
+            string[] tableNames = { "user_accounts" };
+
+            foreach (string tableName in tableNames)
+            {
+                DataTable tableData = await GetTableDataAsync(sourcePath, tableName);
+                await ClearTableAsync(destinationPath, tableName); // Очистка таблицы перед вставкой новых данных
+                await InsertTableDataAsync(destinationPath, tableName, tableData);
+            }
+
+            // Заполнить данные на экране после обновления базы данных (если необходимо)
+            // Dispatcher.Invoke(FillData);
+        }
+
+        public async Task OverwriteDatabaseAsync()
+        {
+            try
+            {
+                // Получение пути к директории базы данных из текстового поля
+                string sourceDirectory = MainWindow.puth;
+
+                // Проверка, пустое ли текстовое поле
+                if (string.IsNullOrWhiteSpace(sourceDirectory))
+                {
+                    MessageBox.Show("Путь к директории базы данных не указан.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Добавление имени файла базы данных к указанному пути
+                string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
+
+                // Путь к файлу базы данных в целевом расположении (корень программы)
+                string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+                // Проверка наличия файла базы данных в источнике
+                if (!File.Exists(sourcePath))
+                {
+                    MessageBox.Show("Файл базы данных в указанном источнике не найден, дальнейшие сохранения будут на локальном диске", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Выполнение копирования данных из всех таблиц
+                await CopyDatabaseTablesAsync(sourcePath, destinationPath);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private async void Button_cleaning(object sender, RoutedEventArgs e)
         {
             Name.Text = string.Empty;
-           
+            await OverwriteDatabaseAsync();
             FillData();
         }
 

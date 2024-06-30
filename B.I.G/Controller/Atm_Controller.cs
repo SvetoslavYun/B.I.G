@@ -230,7 +230,7 @@ namespace B.I.G.Controller
         public IEnumerable<atm> SearchAtmName(string name, string route, DateTime date,string area)
         {
             connection.Open();
-            var commandString = "SELECT id, route, atmname, name, name2, date, circle FROM atms WHERE atmname LIKE @Name And route LIKE @Route AND date = @Date and area = @Area ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
+            var commandString = "SELECT id, route, atmname, name, name2, date, circle, area FROM atms WHERE atmname LIKE @Name And route LIKE @Route AND date = @Date and area = @Area ORDER BY SUBSTR(Route, 1, INSTR(Route, '/') - 1) ASC, CAST(SUBSTR(Route, INSTR(Route, '/') + 1) AS INTEGER) ASC;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
