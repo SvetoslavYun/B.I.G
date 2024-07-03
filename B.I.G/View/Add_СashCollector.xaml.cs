@@ -190,10 +190,10 @@ namespace B.I.G
 
 
             }
-        
 
 
-      
+
+
 
         private void Button_Foto(object sender, RoutedEventArgs e)
         {
@@ -202,6 +202,10 @@ namespace B.I.G
             {
                 try
                 {
+                    // Очищаем предыдущее изображение
+                    imgBox.Source = null;
+                    image_bytes = null;
+
                     using (var originalImage = System.Drawing.Image.FromFile(openFileDialog.FileName))
                     {
                         int targetSize = 800; // Желаемый размер (ширина и высота одинаковые)

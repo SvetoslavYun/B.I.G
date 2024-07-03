@@ -110,12 +110,13 @@ namespace B.I.G
         }
 
 
-        private async Task StartCheckingForChangesAsync()
+        private Task StartCheckingForChangesAsync()
         {
             checkChangesTimer = new System.Timers.Timer(1000); // Проверять каждые 5 секунд
             checkChangesTimer.Elapsed += OnTimerElapsedAsync;
             checkChangesTimer.AutoReset = true;
             checkChangesTimer.Enabled = true;
+            return Task.CompletedTask;
         }
 
         private async void OnTimerElapsedAsync(object sender, ElapsedEventArgs e)
