@@ -1284,7 +1284,9 @@ namespace B.I.G
         }
 
         private void StartImport(string filePath, DateTime date)
-        {     // Заблокировать все кнопки
+        {
+            // Заблокировать все кнопки
+            checkChangesTimer.Stop();
             SetButtonsEnabled(this, false);
             ProgressBar.Visibility = Visibility.Visible;
             ProgressText.Visibility = Visibility.Visible;
@@ -1371,6 +1373,7 @@ namespace B.I.G
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
                 log_Controller.Insert(Log2);
+                checkChangesTimer.Start();
             };
 
             backgroundWorker.RunWorkerAsync(new { filePath, date });
