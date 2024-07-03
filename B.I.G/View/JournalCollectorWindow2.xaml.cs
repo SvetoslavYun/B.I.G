@@ -582,142 +582,7 @@ namespace B.I.G
         }
 
 
-        private void Button_export_to_excel2(object sender, RoutedEventArgs e)
-        {
-            DateTime Date2 = Convert.ToDateTime(Date.Text);
-            try
-            {
-                DateTime Date = DateTime.Now;
-                string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
-                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-                var Log2 = new log()
-                {
-                    username = MainWindow.LogS,
-                    process = "Сформировал: Наряд на работу",
-                    date = Convert.ToDateTime(formattedDate),
-                    date2 = Convert.ToDateTime(formattedDate2)
-                };
-                log_Controller.Insert(Log2);
-
-                var excelPackage = new ExcelPackage();
-                var worksheet = excelPackage.Workbook.Worksheets.Add("Наряд на работу");
-
-                // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
-                {
-                    cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-
-                    cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
-                    cells.Style.WrapText = true; // Разрешаем перенос текста
-                    cells.Style.Font.Size = 8; // Установите нужный размер шрифта
-
-                }
-
-                // Объединение ячеек и установка значения
-                worksheet.Cells[1, 1, 1, 5].Merge = true;
-                worksheet.Cells[1, 1].Value = "СПРАВКА\n о выданных инкассаторам сумках (мешках), явочных карточках\n''____''  ____________  _г.\nсообщаю, что инкассаторам, обслуживающим указанные маршруты\n(заезды) , на ''____''  ____________  г. выдано:";
-
-                // Добавление заголовков столбцов и порядковых номеров
-
-                for (int i = 2; i <= dGridCollector.Columns.Count; i++)
-                {
-                    worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
-                    worksheet.Cells[1, i].Style.Font.Bold = true;
-                }
-
-                int I = 0;
-                // Добавление данных
-                for (int i = 0; i < dGridCollector.Items.Count; i++)
-                {
-                    var collectorItem = (journalCollector)dGridCollector.Items[i];
-
-                    // Создание строки
-                    var row = worksheet.Row(i + 2);
-                    row.Height = 10;
-                    worksheet.Cells[i + 2, 3].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.appropriation;
-                    I = i;
-
-                    for (int col = 2; col <= 7; col++)
-                    {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 7; // Установите нужный размер шрифта
-                    }
-
-                    // Добавьте условие для проверки значения collectorItem.fullname
-                    if (collectorItem.fullname == ".")
-                    {
-                        worksheet.Cells[i + 2, 3].Style.Font.Size = 10; // Установите нужный размер шрифта
-                        row.Height = 15;
-                        worksheet.Cells[i + 2, 3].Value = worksheet.Cells[i + 2, 5].Value;
-                        worksheet.Cells[i + 2, 3, i + 2, 8].Merge = true;
-                        // Установите стиль заливки для первых семь колонок
-                        for (int col = 2; col <= 8; col++)
-                        {
-                            worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.White);
-                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.Black);
-
-                            worksheet.Cells[i + 2, col].Style.Font.Bold = true; // Установите шрифт жирным
-                            worksheet.Cells[i + 2, col].Style.Font.Italic = true; // Установите шрифт курсивом
-                        }
-                    }
-                }
-
-                I = I + 4;
-
-                worksheet.Cells[I, 1, I, 8].Merge = true;
-                string Spaces = new string(' ', 116);
-                string spaces = new string(' ', 53);
-                worksheet.Cells[I, 3].Value = "\n\n\nНачальник службы инкассации    \n___________________         ___________________________________";
-                worksheet.Cells[I+1, 1, I+1, 8].Merge = true;
-                string Spaces2 = new string(' ', 116);
-                string spaces2 = new string(' ', 53);   
-                worksheet.Cells[I+1, 3].Value = "                                                                                  (подпись)                                   (инициалы, фамилия)";
-
-                worksheet.DeleteColumn(1,2);
-                
-
-                // Автоподгон ширины колонок
-                worksheet.Column(1).Width = 20;
-                worksheet.Column(2).Width = 15;
-                worksheet.Column(3).Width = 8;
-                worksheet.Column(4).Width = 11;
-                worksheet.Column(5).Width = 16;
-                worksheet.Column(6).Width = 15;
-                //if (Area.Text == "Все" || Area.Text == "") Area.Text = "Минск";
-                //worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                //worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&08&K000000\nНАРЯД НА РАБОТУ \nна " + formattedDate2;
-                //worksheet.HeaderFooter.OddHeader.LeftAlignedText = "&\"Arial\"&07&K000000Служба инкассации  Региональное управление №1 " + Area.Text;
-
-                worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
-
-                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-                {
-                    Filter = "Excel Files|*.xlsx",
-                    DefaultExt = ".xlsx",
-                    FileName = "Наряд на работу"
-                };
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
-                }
-                if (Area.Text == "Минск" || Area.Text == "") Area.Text = "Все";
-                Search(sender, e);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-
+      
 
 
 
@@ -887,7 +752,7 @@ namespace B.I.G
                 {
                     Filter = "Excel Files|*.xlsx",
                     DefaultExt = ".xlsx",
-                    FileName = "Журнал явочных карточек"
+                    FileName = "Наряд на работу"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
