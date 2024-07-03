@@ -26,12 +26,14 @@ using System.Threading;
 using System.Data.SQLite;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using System.Timers;
 
 namespace B.I.G
 
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
-    {    
+    {
+        private static System.Timers.Timer checkChangesTimer;
         private Puth_Controller puth_Controller;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -104,7 +106,103 @@ namespace B.I.G
             RouteButton.IsEnabled = false;
             ReserveButton.Visibility = Visibility.Collapsed;
             ReserveButton.IsEnabled = false;
+            StartCheckingForChangesAsync();
         }
+
+
+        private async Task StartCheckingForChangesAsync()
+        {
+            checkChangesTimer = new System.Timers.Timer(1000); // Проверять каждые 5 секунд
+            checkChangesTimer.Elapsed += OnTimerElapsedAsync;
+            checkChangesTimer.AutoReset = true;
+            checkChangesTimer.Enabled = true;
+        }
+
+        private async void OnTimerElapsedAsync(object sender, ElapsedEventArgs e)
+        {
+            await CheckAndOverwriteDatabaseAsync();
+        }
+
+        private async Task CheckAndOverwriteDatabaseAsync()
+        {
+            string sourceDirectory = MainWindow.puth;
+            string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
+            string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
+
+            using (var sourceConnection = new SQLiteConnection($"Data Source={sourcePath};Version=3;"))
+            using (var destinationConnection = new SQLiteConnection($"Data Source={destinationPath};Version=3;"))
+            {
+                await sourceConnection.OpenAsync();
+                await destinationConnection.OpenAsync();
+
+                // Запрос для source и destination баз данных
+                string query = "SELECT MAX(date) as maxDate FROM logs WHERE process = 'Работал с нарядом'";
+
+                var sourceMaxDate = await GetMaxDateAsync(sourceConnection, query);
+                var destinationMaxDate = await GetMaxDateAsync(destinationConnection, query);
+
+                // Сравниваем максимальные даты
+                if (sourceMaxDate != destinationMaxDate)
+                {
+                    await CheckAndOverwriteDatabaseAsync2(sourceConnection, destinationConnection);
+
+                    // Переключение на поток UI перед вызовом OverwriteDatabaseAsync
+                    App.Current.Dispatcher.Invoke(async () => await OverwriteDatabaseAsync());
+                }
+            }
+        }
+
+        private async Task CheckAndOverwriteDatabaseAsync2(SQLiteConnection sourceConnection, SQLiteConnection destinationConnection)
+        {
+            // Запрос для source базы данных
+            string query = "SELECT * FROM logs WHERE process = 'Работал с нарядом'";
+
+            SQLiteCommand selectCommand = new SQLiteCommand(query, sourceConnection);
+
+            SQLiteDataReader reader = (SQLiteDataReader)await selectCommand.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                string username = reader.GetString(reader.GetOrdinal("username"));
+                string process = reader.GetString(reader.GetOrdinal("process"));
+                string date = reader.GetString(reader.GetOrdinal("date"));
+                string date2 = reader.GetString(reader.GetOrdinal("date2"));
+
+                // Вставляем строку в destination базу данных
+                string insertQuery = "INSERT INTO logs (username, process, date, date2) VALUES (@username, @process, @date, @date2)";
+                SQLiteCommand insertCommand = new SQLiteCommand(insertQuery, destinationConnection);
+
+                insertCommand.Parameters.AddWithValue("@username", username);
+                insertCommand.Parameters.AddWithValue("@process", process);
+                insertCommand.Parameters.AddWithValue("@date", date);
+                insertCommand.Parameters.AddWithValue("@date2", date2);
+
+                await insertCommand.ExecuteNonQueryAsync();
+            }
+
+            reader.Close();
+        }
+
+
+
+
+
+        private async Task<DateTime?> GetMaxDateAsync(SQLiteConnection connection, string query)
+        {
+            using (var command = new SQLiteCommand(query, connection))
+            {
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return reader.IsDBNull(0) ? (DateTime?)null : reader.GetDateTime(0);
+                    }
+                }
+            }
+            return null;
+        }
+
+
 
         // Event handler for preventing text input
         private void Area_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -209,7 +307,7 @@ namespace B.I.G
         }
 
 
-        public void FillData()
+        public async void FillData()
         {
             try
 
@@ -281,6 +379,19 @@ namespace B.I.G
                 journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                 Search(sender, e);
                 JournalCollector = null;
+
+                DateTime Date2 = Convert.ToDateTime(Date.Text);
+                DateTime Data = DateTime.Now;
+                string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                var Log2 = new log()
+                {
+                    username = MainWindow.LogS,
+                    process = "Работал с нарядом",
+                    date = Convert.ToDateTime(formattedDate),
+                    date2 = Convert.ToDateTime(formattedDate2)
+                };
+                log_Controller.Insert(Log2);
             }
             catch (Exception ex)
             {
@@ -311,6 +422,19 @@ namespace B.I.G
                     journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                     Search(sender, e);
                     JournalCollector = null;
+
+                    DateTime Date2 = Convert.ToDateTime(Date.Text);
+                    DateTime Data = DateTime.Now;
+                    string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+                    string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                    var Log2 = new log()
+                    {
+                        username = MainWindow.LogS,
+                        process = "Работал с нарядом",
+                        date = Convert.ToDateTime(formattedDate),
+                        date2 = Convert.ToDateTime(formattedDate2)
+                    };
+                    log_Controller.Insert(Log2);
                 }
             }
             catch (Exception h)
@@ -342,6 +466,19 @@ namespace B.I.G
                         journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                         Search(sender, e);
                         JournalCollector = null;
+
+                        DateTime Date2 = Convert.ToDateTime(Date.Text);
+                        DateTime Data = DateTime.Now;
+                        string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+                        string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                        var Log2 = new log()
+                        {
+                            username = MainWindow.LogS,
+                            process = "Работал с нарядом",
+                            date = Convert.ToDateTime(formattedDate),
+                            date2 = Convert.ToDateTime(formattedDate2)
+                        };
+                        log_Controller.Insert(Log2);
                     }
                     else { MessageBox.Show("Данные по сотруднику отсутствуют"); }
                 }
@@ -375,6 +512,19 @@ namespace B.I.G
                                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                                 journalCollectorController.DeleteNUL();
                                 journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
+
+                                DateTime Date2 = Convert.ToDateTime(Date.Text);
+                                DateTime Data = DateTime.Now;
+                                string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+                                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                                var Log2 = new log()
+                                {
+                                    username = MainWindow.LogS,
+                                    process = "Работал с нарядом",
+                                    date = Convert.ToDateTime(formattedDate),
+                                    date2 = Convert.ToDateTime(formattedDate2)
+                                };
+                                log_Controller.Insert(Log2);
                                 Search(sender, e);
                             }
                         }
@@ -431,7 +581,7 @@ namespace B.I.G
         }
 
 
-        private void Button_export_to_excel(object sender, RoutedEventArgs e)
+        private void Button_export_to_excel2(object sender, RoutedEventArgs e)
         {
             DateTime Date2 = Convert.ToDateTime(Date.Text);
             try
@@ -466,9 +616,13 @@ namespace B.I.G
 
                 }
 
+                // Объединение ячеек и установка значения
+                worksheet.Cells[1, 1, 1, 5].Merge = true;
+                worksheet.Cells[1, 1].Value = "СПРАВКА\n о выданных инкассаторам сумках (мешках), явочных карточках\n''____''  ____________  _г.\nсообщаю, что инкассаторам, обслуживающим указанные маршруты\n(заезды) , на ''____''  ____________  г. выдано:";
+
                 // Добавление заголовков столбцов и порядковых номеров
 
-                for (int i = 1; i <= dGridCollector.Columns.Count; i++)
+                for (int i = 2; i <= dGridCollector.Columns.Count; i++)
                 {
                     worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
                     worksheet.Cells[1, i].Style.Font.Bold = true;
@@ -482,7 +636,7 @@ namespace B.I.G
 
                     // Создание строки
                     var row = worksheet.Row(i + 2);
-                    row.Height = 20;
+                    row.Height = 10;
                     worksheet.Cells[i + 2, 3].Value = collectorItem.profession;
                     worksheet.Cells[i + 2, 4].Value = collectorItem.name;
                     worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;
@@ -535,10 +689,10 @@ namespace B.I.G
                 worksheet.Column(4).Width = 11;
                 worksheet.Column(5).Width = 16;
                 worksheet.Column(6).Width = 15;
-                if (Area.Text == "Все" || Area.Text == "") Area.Text = "Минск";
-                worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
-                worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&08&K000000\nНАРЯД НА РАБОТУ \nна " + formattedDate2;
-                worksheet.HeaderFooter.OddHeader.LeftAlignedText = "&\"Arial\"&07&K000000Служба инкассации  Региональное управление №1 " + Area.Text;
+                //if (Area.Text == "Все" || Area.Text == "") Area.Text = "Минск";
+                //worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
+                //worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&08&K000000\nНАРЯД НА РАБОТУ \nна " + formattedDate2;
+                //worksheet.HeaderFooter.OddHeader.LeftAlignedText = "&\"Arial\"&07&K000000Служба инкассации  Региональное управление №1 " + Area.Text;
 
                 worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
 
@@ -556,6 +710,193 @@ namespace B.I.G
                 if (Area.Text == "Минск" || Area.Text == "") Area.Text = "Все";
                 Search(sender, e);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+
+
+
+
+
+        private void Button_export_to_excel(object sender, RoutedEventArgs e)
+        {
+            DateTime Date2 = Convert.ToDateTime(Date.Text);
+            try
+            {
+                DateTime Date = DateTime.Now;
+                string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                string formattedDate3 = Date2.ToString("yyyy");
+                var Log2 = new log()
+                {
+                    username = MainWindow.LogS,
+                    process = "Сформировал: Наряд на работу",
+                    date = Convert.ToDateTime(formattedDate),
+                    date2 = Convert.ToDateTime(formattedDate2)
+                };
+                log_Controller.Insert(Log2);
+
+                var excelPackage = new ExcelPackage();
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Наряд на работу");
+
+                // Установка стилей для линий ячеек, ширины колонок и выравнивания
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
+                {
+                    cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                    cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                    cells.Style.WrapText = true; // Разрешаем перенос текста
+                    cells.Style.Font.Size = 8;
+                }
+
+
+                // Удаление колонтитулов
+                worksheet.HeaderFooter.FirstHeader.LeftAlignedText = "";
+                worksheet.HeaderFooter.FirstHeader.CenteredText = "";
+                worksheet.HeaderFooter.FirstHeader.RightAlignedText = "";
+                worksheet.HeaderFooter.OddHeader.LeftAlignedText = "";
+                worksheet.HeaderFooter.OddHeader.CenteredText = "";
+                worksheet.HeaderFooter.OddHeader.RightAlignedText = "";
+                worksheet.HeaderFooter.EvenHeader.LeftAlignedText = "";
+                worksheet.HeaderFooter.EvenHeader.CenteredText = "";
+                worksheet.HeaderFooter.EvenHeader.RightAlignedText = "";
+                worksheet.HeaderFooter.FirstFooter.LeftAlignedText = "";
+                worksheet.HeaderFooter.FirstFooter.CenteredText = "";
+                worksheet.HeaderFooter.FirstFooter.RightAlignedText = "";
+                worksheet.HeaderFooter.OddFooter.LeftAlignedText = "";
+                worksheet.HeaderFooter.OddFooter.CenteredText = "";
+                worksheet.HeaderFooter.OddFooter.RightAlignedText = "";
+                worksheet.HeaderFooter.EvenFooter.LeftAlignedText = "";
+                worksheet.HeaderFooter.EvenFooter.CenteredText = "";
+                worksheet.HeaderFooter.EvenFooter.RightAlignedText = "";
+
+
+             
+
+                // Объединение ячеек и установка значения
+                worksheet.Cells[1, 3, 1, 8].Merge = true;
+
+                if (Area.Text == "Все")
+                {
+                    worksheet.Cells[1, 3].Value = "Служба инкассации\n Регионального управления № 1 г.Минска ОАО \"НКФО \"Белинкасгрупп\"\n НАРЯД НА РАБОТУ на " + formattedDate2;
+                }
+                else
+                {
+                    worksheet.Cells[1, 3].Value = "Служба инкассации\n Регионального управления № 1 г.Минска, " + Area.Text + "  ОАО \"НКФО \"Белинкасгрупп\"" + "\n НАРЯД НА РАБОТУ на " + formattedDate2;
+                }
+
+                // Установка высоты строки
+                worksheet.Row(1).Height = 30;
+                worksheet.Cells[1, 3].Style.Font.Size = 8;
+                // Установка стиля границы на отсутствие для всех ячеек
+                worksheet.Cells[1, 3, 1, 8].Style.Border.Top.Style = ExcelBorderStyle.None;
+                worksheet.Cells[1, 3, 1, 8].Style.Border.Bottom.Style = ExcelBorderStyle.None;
+                worksheet.Cells[1, 3, 1, 8].Style.Border.Left.Style = ExcelBorderStyle.None;
+                worksheet.Cells[1, 3, 1, 8].Style.Border.Right.Style = ExcelBorderStyle.None;
+
+
+
+                // Добавление заголовков столбцов и порядковых номеров
+
+                for (int i = 1; i <= dGridCollector.Columns.Count; i++)
+                {
+                    worksheet.Cells[2, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[2, i].Style.Font.Bold = true;
+                }
+
+                int I = 0;
+                // Добавление данных
+                for (int i = 1; i < dGridCollector.Items.Count; i++)
+                {
+                    var collectorItem = (journalCollector)dGridCollector.Items[i];
+
+                    // Создание строки
+                    var row = worksheet.Row(i + 3);
+                    row.Height = 12;
+                    worksheet.Cells[i + 2, 3].Value = collectorItem.profession;
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.name;
+                    worksheet.Cells[i + 2, 4].Style.Font.Size = 10;
+                    worksheet.Cells[i + 2, 4].Style.Font.Name = "Times New Roman";
+                    worksheet.Cells[i + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    worksheet.Cells[i + 2, 4].Style.Font.Bold = true;
+                    worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;
+                    worksheet.Cells[i + 2, 8].Value = collectorItem.appropriation;
+                    I = i;
+
+                    for (int col = 2; col <= 7; col++)
+                    {
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 7; // Установите нужный размер шрифта
+                    }
+
+                    // Добавьте условие для проверки значения collectorItem.fullname
+                    if (collectorItem.fullname == ".")
+                    {
+                        worksheet.Cells[i + 2, 3].Style.Font.Size = 8; // Установите нужный размер шрифта
+                        row.Height = 13;
+                        worksheet.Cells[i + 2, 3].Value = worksheet.Cells[i + 2, 5].Value;
+                        worksheet.Cells[i + 2, 3, i + 2, 8].Merge = true;
+                        // Установите стиль заливки для первых семь колонок
+                        for (int col = 2; col <= 8; col++)
+                        {
+                            worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.White);
+                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.Black);
+
+                            worksheet.Cells[i + 2, col].Style.Font.Bold = true; // Установите шрифт жирным
+                            worksheet.Cells[i + 2, col].Style.Font.Italic = true; // Установите шрифт курсивом
+                        }
+                    }
+                }
+
+
+
+                I = I + 4;
+
+                worksheet.Cells[I, 1, I, 8].Merge = true;
+                string Spaces = new string(' ', 116);
+                string spaces = new string(' ', 53);
+                worksheet.Cells[I, 3].Value = "\n\n\nНачальник службы инкассации    \n___________________         ___________________________________";
+                worksheet.Cells[I+1, 1, I+1, 8].Merge = true;
+                string Spaces2 = new string(' ', 116);
+                string spaces2 = new string(' ', 53);   
+                worksheet.Cells[I+1, 3].Value = "                                                                                  (подпись)                                   (инициалы, фамилия)";
+
+                worksheet.DeleteColumn(1,2);
+                
+
+                // Автоподгон ширины колонок
+                worksheet.Column(1).Width = 20;
+                worksheet.Column(2).Width = 15;
+                worksheet.Column(3).Width = 8;
+                worksheet.Column(4).Width = 11;
+                worksheet.Column(5).Width = 16;
+                worksheet.Column(6).Width = 15;
+
+           
+
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Excel Files|*.xlsx",
+                    DefaultExt = ".xlsx",
+                    FileName = "Журнал явочных карточек"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
+                }
+
+                Search(sender, e);
+            }
+
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка при экспорте в Excel: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -652,7 +993,7 @@ namespace B.I.G
 
         private async Task CopyDatabaseTablesAsync(string sourcePath, string destinationPath)
         {
-            string[] tableNames = { "journalCollectors" };
+            string[] tableNames = { "journalCollectors"};
 
             foreach (string tableName in tableNames)
             {
@@ -694,6 +1035,7 @@ namespace B.I.G
 
                 // Выполнение копирования данных из всех таблиц
                 await CopyDatabaseTablesAsync(sourcePath, destinationPath);
+                FillData();
 
             }
             catch (Exception ex)
@@ -708,11 +1050,8 @@ namespace B.I.G
             flag2 = false;
             Name.Text = string.Empty;
             Route.Text = string.Empty;
-
-                await OverwriteDatabaseAsync();
-
-
-            FillData();
+            await OverwriteDatabaseAsync();
+          
         }
 
 
@@ -1018,6 +1357,19 @@ namespace B.I.G
                 SetButtonsEnabled(this, true);
                 Area.Text = "Все";
                 FillData();
+
+                DateTime Date2 = Convert.ToDateTime(Date.Text);
+                DateTime Data = DateTime.Now;
+                string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+                string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                var Log2 = new log()
+                {
+                    username = MainWindow.LogS,
+                    process = "Работал с нарядом",
+                    date = Convert.ToDateTime(formattedDate),
+                    date2 = Convert.ToDateTime(formattedDate2)
+                };
+                log_Controller.Insert(Log2);
             };
 
             backgroundWorker.RunWorkerAsync(new { filePath, date });
@@ -1100,6 +1452,18 @@ namespace B.I.G
                     journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text),Area.Text);
                     journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
                     Search(sender, e);
+                    DateTime Date2 = Convert.ToDateTime(Date.Text);
+                    DateTime Data = DateTime.Now;
+                    string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+                    string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+                    var Log2 = new log()
+                    {
+                        username = MainWindow.LogS,
+                        process = "Работал с нарядом",
+                        date = Convert.ToDateTime(formattedDate),
+                        date2 = Convert.ToDateTime(formattedDate2)
+                    };
+                    log_Controller.Insert(Log2);
                 }
             }
         }
@@ -1212,6 +1576,19 @@ namespace B.I.G
             routeADD.ShowDialog();
             journalCollectorController.UpdateJournalBase2(Convert.ToDateTime(Date.Text));
             Search(sender, e);
+
+            DateTime Date2 = Convert.ToDateTime(Date.Text);
+            DateTime Data = DateTime.Now;
+            string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+            string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+            var Log2 = new log()
+            {
+                username = MainWindow.LogS,
+                process = "Работал с нарядом",
+                date = Convert.ToDateTime(formattedDate),
+                date2 = Convert.ToDateTime(formattedDate2)
+            };
+            log_Controller.Insert(Log2);
         }
 
         private void Reserve_Button(object sender, RoutedEventArgs e)
@@ -1230,6 +1607,19 @@ namespace B.I.G
             Search(sender, e);
             // прокручиваем к последней строке
             ScrollToLastRow(dGridCollector);
+
+            DateTime Date2 = Convert.ToDateTime(Date.Text);
+            DateTime Data = DateTime.Now;
+            string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
+            string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
+            var Log2 = new log()
+            {
+                username = MainWindow.LogS,
+                process = "Работал с нарядом",
+                date = Convert.ToDateTime(formattedDate),
+                date2 = Convert.ToDateTime(formattedDate2)
+            };
+            log_Controller.Insert(Log2);
         }
     }
 }

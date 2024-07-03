@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using System.Windows.Navigation;
 using B.I.G.Model;
 using DocumentFormat.OpenXml.Office2010.Excel;
@@ -1924,6 +1925,26 @@ ORDER BY
                             }
                         }
 
+
+                        // Функция для получения новой профессии
+                        string GetNewProfession(string professio)
+                        {
+                            switch (professio)
+                            {
+                                case string s when s.Contains("тарший"):
+                                    return "Cтарший бригады инкассаторов";
+                                case string s when s.Contains("орщик"):
+                                    return "Инкассатор-сборщик";
+                                case string s when s.Contains("омощник"):
+                                    return "Помощник дежурного";                            
+                                default:
+                                    return professio; // Если совпадений нет, возвращаем исходное значение
+                            }
+                        }
+
+                        // Применение функции
+                        profession = GetNewProfession(profession);
+
                         command.Parameters.Add(new SQLiteParameter("@Profession", DbType.String) { Value = profession });
                         command.Parameters.Add(new SQLiteParameter("@Name", DbType.String) { Value = name });
                         command.Parameters.Add(new SQLiteParameter("@Gun", DbType.String) { Value = "" });
@@ -2131,7 +2152,28 @@ ORDER BY
                             }
                         }
 
-                      
+                        // Функция для получения новой профессии
+                        string GetNewProfession(string professio)
+                        {
+                            switch (professio)
+                            {
+                                case string s when s.Contains("тарший"):
+                                    return "Cтарший бригады инкассаторов";
+                                case string s when s.Contains("орщик"):
+                                    return "Инкассатор-сборщик";
+                                case string s when s.Contains("омощник"):
+                                    return "Помощник дежурного";
+                                case "Пом. Деж. инкассатора  (Фабрициуса,8В) ":
+                                    return "Пом.Дежурного (Фабрициуса,8В)";
+                                case "Дежурный инкассатор (Фабрициуса,8В)  ":
+                                    return "Деж.инкассатор (Фабрициуса,8В)";
+                                default:
+                                    return professio; // Если совпадений нет, возвращаем исходное значение
+                            }
+                        }
+
+                        // Применение функции
+                        profession = GetNewProfession(profession);
 
                         command.Parameters.Add(new SQLiteParameter("@Profession", DbType.String) { Value = profession });
                         command.Parameters.Add(new SQLiteParameter("@Name", DbType.String) { Value = name });
