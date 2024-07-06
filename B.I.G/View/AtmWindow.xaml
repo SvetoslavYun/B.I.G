@@ -427,7 +427,7 @@
                 <SolidColorBrush Color="White"/>
             </Button.Foreground>
         </Button>
-        <Button x:Name="BatenOrder"  Content="Загрузить У.С." Margin="0,14,122,0" VerticalAlignment="Top" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel" HorizontalAlignment="Right" Width="109">
+        <Button x:Name="BatenOrder"  Content="Загрузить У.С." Margin="0,14,122,0" VerticalAlignment="Top" BorderBrush="#FF1E1F1D" FontFamily="High Tower Text" Height="28" Click="Button_import_to_excel" HorizontalAlignment="Right" Width="100">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderBrush="#FF1E1F1D" BorderThickness="2" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -468,7 +468,7 @@
             </Button.Foreground>
         </Button>
 
-        <Button Content="" HorizontalAlignment="Left" Margin="517,17,0,0" VerticalAlignment="Top" Click="Button_DelDate" Width="30" Height="29" RenderTransformOrigin="4.423,0.386">
+        <Button Content="" HorizontalAlignment="Left" Margin="542,14,0,0" VerticalAlignment="Top" Click="Button_DelDate" Width="30" Height="29" RenderTransformOrigin="4.423,0.386">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" BorderThickness="1">
@@ -486,10 +486,45 @@
         </Button>
 
 
-        <TextBlock x:Name="Are" HorizontalAlignment="Left" Margin="898,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="228" Height="25" FontSize="20"/>
-        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="710,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="200" Height="25" FontSize="20"/>
-        <TextBlock HorizontalAlignment="Left" Margin="575,10,0,0" TextWrapping="Wrap" Text="Журнал У.С. на" VerticalAlignment="Top" Width="180" Foreground="#FFEDE0D5" FontSize="18"/>
-        <TextBlock HorizontalAlignment="Left" Margin="499,-1,0,0" TextWrapping="Wrap" Text="Удалить У.С." VerticalAlignment="Top" Foreground="#FFF9F6F3"/>
+        <Button Content="" HorizontalAlignment="Left" Margin="495,22,0,0" VerticalAlignment="Top" Height="24" Click="Button_cleaning" Width="28">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderThickness="1">
+                        <Grid>
+                            <Image Source="/Image/Cleaning.png"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value= "#FFADD8E6"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+
+        <Button Content="" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Click="Button_Add" Width="26" Height="26" RenderTransformOrigin="4.423,0.386">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderThickness="1">
+                        <Grid>
+                            <Image Source="/Image/Button-Add-icon-1.png"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FF00FF00"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <TextBlock x:Name="Are" HorizontalAlignment="Left" Margin="913,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="228" Height="25" FontSize="20"/>
+        <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="734,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#FFF3EBE5" Width="200" Height="25" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Margin="602,11,0,0" TextWrapping="Wrap" Text="Журнал У.С. на" VerticalAlignment="Top" Width="127" Foreground="#FFEDE0D5" FontSize="18"/>
+        <TextBlock HorizontalAlignment="Left" Margin="524,0,0,0" TextWrapping="Wrap" Text="Удалить У.С." VerticalAlignment="Top" Foreground="#FFF9F6F3"/>
 
         <ProgressBar x:Name="ProgressBar" Height="20"  Margin="427,248,353,0" VerticalAlignment="Top" Visibility="Collapsed" />
         <TextBlock x:Name="ProgressText" Margin="427,220,798,0" VerticalAlignment="Top"    Text="Загрузка..." Foreground="#FFFBF9F7" Visibility="Collapsed"/>
