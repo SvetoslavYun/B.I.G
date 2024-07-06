@@ -169,13 +169,56 @@ namespace B.I.G.Controller
 
         public void DeleteAfterSixMonthsLog()
         {
-            var commandString = "DELETE FROM logs WHERE date2 <= date('now', '-6 months')";
+            var commandString = "DELETE FROM logs WHERE date2 <= date('now', '-14 days')";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
         }
 
+        public void DeleteLogWork()
+        {
+            var commandString = "DELETE FROM logs WHERE process = 'Работал с нарядом' AND Id NOT IN (SELECT MAX(Id) FROM logs WHERE process = 'Работал с нарядом')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            connection.Open();
+            deleteCommand.ExecuteNonQuery();
+            connection.Close();
+            DeleteLogWork2();
+        }
+
+
+        public void DeleteLogWork2()
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM logs WHERE process = 'Работал с нарядом' AND Id NOT IN (SELECT MAX(Id) FROM logs WHERE process = 'Работал с нарядом')";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            deleteCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
         public void DeleteAfterSixMonthsLog2()
         {

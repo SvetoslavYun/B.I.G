@@ -79,8 +79,8 @@ namespace B.I.G.Controller
 
         public void DeleteRound2(DateTime date)
         {
-            var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND dateWork LIKE '%АТМ%' and date= @Date);";
-            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND (dateWork LIKE '%перевозка%' OR dateWork LIKE '%Перевозка%') and date= @Date);";
+            var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' and CAST(route2 AS INT) >= 52 AND CAST(route2 AS INT) <= 69 and date= @Date);";
+            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND CAST(route2 AS INT) >= 81  and date= @Date);";
             var commandString3 = "DELETE FROM journalCollectors WHERE (profession LIKE 'старший бригады инкассаторов' and route ='') or (profession LIKE 'инкассатор-сборщик' and route ='') or (profession LIKE 'водитель автомобиля' and route ='');";
            
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
@@ -482,6 +482,53 @@ GROUP BY
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            Insert_2(date, area);
+        }
+
+
+        public void Insert_2(DateTime date, string area)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        // Получаем максимальное значение из столбца route2
+                        int maxRoute2 = GetMaxRoute2();
+
+            // Увеличиваем значение на 1
+            int newRoute2 = maxRoute2 + 1;
+
+            // Вставляем новую запись
+            var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('', '', '', '', '', '', '', '', '', '', '', '', '0', 'Резерв', @Date, '00:00', '','" + newRoute2 + "', 'Данные отсутствуют', @Area, @Area )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Area", area)
+    });
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         // Метод для получения максимального значения из столбца route2
@@ -525,6 +572,48 @@ GROUP BY
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            Insert2_2(date, area);
+        }
+
+
+
+        public void Insert2_2(DateTime date, string area)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', '', @Date, 'Резерв', '.','998', '', @Area, @Area )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+              new SQLiteParameter("@Area", area)
+            });
+
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 
@@ -543,6 +632,52 @@ GROUP BY
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            InsertRoute_2(date, area, route, circle);
+        }
+
+
+
+        public void InsertRoute_2(DateTime date, string area, string route, string circle)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('', '', '', '', '', '.', '', '', '', '', '.', '', '0', @Route || '/' || @Circle, @Date, 'Маршрут ' || @Route || '/' || @Circle, '.',@Route2, '', @Area, @Area  )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+             new SQLiteParameter("@Route", route),
+             new SQLiteParameter("@Route2", route),
+             new SQLiteParameter("@Circle", circle),
+              new SQLiteParameter("@Area", area)
+            });
+
+            insertCommand.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public void InsertRoute2(DateTime date, string area, string route, string circle, string dateWorkt)
@@ -564,7 +699,56 @@ GROUP BY
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            InsertRoute2_2(date, area, route, circle, dateWorkt);
         }
+
+
+        public void InsertRoute2_2(DateTime date, string area, string route, string circle, string dateWorkt)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+
+                        // Вставляем новую запись
+                        var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('Старший бригады (инкассатор/водитель/контролер)', '', '', '', '', '', '', '', '', '', '', '', '0', @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route2, 'Данные отсутствуют', @Area , @Area)";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Route", route),
+         new SQLiteParameter("@Route2", route),
+          new SQLiteParameter("@Circle", circle),
+           new SQLiteParameter("@DateWorkt", dateWorkt),
+         new SQLiteParameter("@Area", area)
+    });
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
+
 
         public void InsertRoute3(DateTime date, string area, string route, string circle, string dateWorkt)
         {
@@ -585,6 +769,54 @@ GROUP BY
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            InsertRoute3_2(date, area, route, circle, dateWorkt);
+        }
+
+
+
+
+        public void InsertRoute3_2(DateTime date, string area, string route, string circle, string dateWorkt)
+        {
+
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        // Вставляем новую запись
+                        var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('Инкассатор - сборщик/оператор', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area, @Area  )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Route", route),
+         new SQLiteParameter("@Route2", route),
+          new SQLiteParameter("@Circle", circle),
+          new SQLiteParameter("@DateWorkt", dateWorkt),
+         new SQLiteParameter("@Area", area)
+    });
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 
@@ -607,6 +839,53 @@ GROUP BY
             connection.Open();
             insertCommand.ExecuteNonQuery();
             connection.Close();
+            InsertRoute4_2(date, area, route, circle, dateWorkt);
+        }
+
+
+
+        public void InsertRoute4_2(DateTime date, string area, string route, string circle, string dateWorkt)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+
+                        // Вставляем новую запись
+                        var commandString = "INSERT INTO journalCollectors (profession, name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullname, phone, id2, route, date, dateWork, appropriation, route2, data, area, area2 ) VALUES ('Водитель', '', '', '', '', '', '', '', '', '', '', '', '0',  @Route || '/' || @Circle,@Date, @DateWorkt, '',@Route, 'Данные отсутствуют', @Area, @Area  )";
+            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+
+            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+         new SQLiteParameter("@Route", route),
+         new SQLiteParameter("@Route2", route),
+          new SQLiteParameter("@Circle", circle),
+          new SQLiteParameter("@DateWorkt", dateWorkt),
+         new SQLiteParameter("@Area", area)
+    });
+            insertCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 
@@ -623,7 +902,50 @@ GROUP BY
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            UpdateColumn2(JournalCollector, id);
         }
+
+        public void UpdateColumn2(journalCollector JournalCollector, int id)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE journalCollectors SET profession = @Profession, appropriation = @Appropriation, dateWork=@DateWork WHERE id =@Id ";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Profession", JournalCollector.profession),
+        new SQLiteParameter("@Appropriation", JournalCollector.appropriation),
+         new SQLiteParameter("@DateWork", JournalCollector.dateWork),
+        new SQLiteParameter("@Id",id)
+    });         
+            updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
+
 
         public void UpdateCollector(int id, int id2, DateTime date)
         {
@@ -637,6 +959,45 @@ GROUP BY
             connection.Open();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            UpdateCollector2(id, id2, date);
+        }
+
+        public void UpdateCollector2(int id, int id2, DateTime date)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE journalCollectors SET profession = (SELECT profession FROM cashCollectors WHERE id=@Id) WHERE id =@Id2 and date = @Date and route = 'Резерв'";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+        new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+        new SQLiteParameter("@Id", id),
+        new SQLiteParameter("@Id2", id2)
+    });
+            updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 
@@ -685,11 +1046,87 @@ GROUP BY
             updateCommand.ExecuteNonQuery();
             updateCommand2.ExecuteNonQuery();
             connection.Close();
+            Update2(idColl, idJourn, route, date, profession);
         }
 
 
 
-    
+
+        public void Update2(int idColl, int idJourn, string route, DateTime date, string profession)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE journalCollectors" +
+                " SET name = cashCollectors.name,  gun = cashCollectors.gun," +
+                " automaton_serial = cashCollectors.automaton_serial,  automaton = cashCollectors.automaton, " +
+                " permission = cashCollectors.permission,data ='',  meaning = cashCollectors.meaning," +
+                " certificate = cashCollectors.certificate, token = cashCollectors.token, power = cashCollectors.power," +
+                " fullname = cashCollectors.fullname, phone = cashCollectors.phone, id2 = cashCollectors.id, area2 = (SELECT area FROM cashCollectors WHERE  id=@IdColl) " +
+                " FROM cashCollectors WHERE cashCollectors.id = @IdColl AND journalCollectors.id = @IdJourn  ;";
+            var commandString2 = "UPDATE journalCollectors SET data =''," +
+                " name = (SELECT name FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " gun = (SELECT gun FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " automaton_serial = (SELECT automaton_serial FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " automaton = (SELECT automaton FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " permission = (SELECT permission FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " meaning = (SELECT meaning FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " certificate = (SELECT certificate FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " token = (SELECT token FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " power = (SELECT power FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), " +
+                " fullname = (SELECT fullname FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " phone = (SELECT phone FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date)," +
+                " id2 = (SELECT id2 FROM journalCollectors WHERE route2 = @Route and id = @IdJourn and route !='' and date = @Date), area2 = (SELECT area FROM cashCollectors WHERE  id=@IdColl) " +
+                " WHERE route2 = @Route AND profession = @Profession and date = @Date and route !='' AND route2 != 'РЕЗЕРВ' AND route2 != 'стажер' AND route2 != 'Стажер';";
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@IdColl", idColl),
+             new SQLiteParameter("@IdJourn", idJourn),
+
+
+            });
+
+            updateCommand2.Parameters.AddRange(new SQLiteParameter[] {
+    new SQLiteParameter("@IdJourn", idJourn),
+    new SQLiteParameter("@Route", route),
+    new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),
+     new SQLiteParameter("@IdColl", idColl),
+    new SQLiteParameter("@Profession", profession)
+});
+
+           
+            updateCommand.ExecuteNonQuery();
+            updateCommand2.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
+
+
 
 
         public void EditAutomate(int idColl, string name, DateTime date, string rote)
@@ -730,6 +1167,73 @@ GROUP BY
             updateCommand2.ExecuteNonQuery();
             updateCommand.ExecuteNonQuery();
             connection.Close();
+            EditAutomate2(idColl, name, date, rote);
+        }
+
+
+
+        public void EditAutomate2(int idColl, string name, DateTime date, string rote)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "UPDATE journalCollectors SET " +
+                "automaton_serial = ( SELECT automaton_serial  FROM cashCollectors WHERE cashCollectors.id = @IdColl  ), data ='Автомат не повторяется'," +
+                " automaton = ( SELECT automaton FROM cashCollectors WHERE cashCollectors.id = @IdColl ) " +
+                "WHERE date = @Date and journalCollectors.name = @Name;";
+
+            var commandString2 = "UPDATE journalCollectors SET " +
+               "automaton_serial = ''," +
+               " automaton = '' " +
+               "WHERE date = @Date and route2 = @Route2;";
+
+            var commandString3 = "UPDATE journalCollectors SET " +
+              "data =''" +
+              "WHERE date = @Date and route2 = @Route2 and fullname !='.' AND data != 'Данные отсутствуют';";
+
+
+            SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
+            updateCommand.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@IdColl", idColl),
+             new SQLiteParameter("@Name", name),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+            updateCommand2.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Route2", rote),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
+            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
+            updateCommand3.Parameters.AddRange(new SQLiteParameter[] {
+             new SQLiteParameter("@Route2", rote),
+             new SQLiteParameter("@Date", date.ToString("yyyy-MM-dd")),});
+
+            updateCommand3.ExecuteNonQuery();
+            updateCommand2.ExecuteNonQuery();
+            updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 
@@ -997,6 +1501,67 @@ GROUP BY
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
             connection.Close();
+            UpdateResponsibilities3(date);
+        }
+
+
+
+        public void UpdateResponsibilities3(DateTime date)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString1 = "UPDATE journalCollectors SET data ='' WHERE date = @Date AND data != 'Данные отсутствуют' and data !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
+            var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE (profession NOT LIKE '%одитель%' or profession  LIKE '%арший%') and data !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
+            var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%борщик%' AND date = @Date";
+            var commandString4 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
+            var commandString5 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND data = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
+            var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
+
+
+            SQLiteCommand updateCommand1 = new SQLiteCommand(commandString1, connection);
+            SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
+            SQLiteCommand updateCommand3 = new SQLiteCommand(commandString3, connection);
+            SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
+            SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
+            SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
+
+            updateCommand1.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand3.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand6.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            updateCommand1.ExecuteNonQuery();
+            updateCommand2.ExecuteNonQuery();
+            updateCommand3.ExecuteNonQuery();
+            updateCommand4.ExecuteNonQuery();
+            updateCommand5.ExecuteNonQuery();
+            updateCommand6.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 
@@ -1011,6 +1576,7 @@ GROUP BY
                 connection.Open();
                 deleteCommand.ExecuteNonQuery();
                 connection.Close();
+                Delete2(route, id, date);
             }
             else
             {
@@ -1022,6 +1588,82 @@ GROUP BY
                 connection.Open();
                 deleteCommand2.ExecuteNonQuery();
                 connection.Close();
+                Delete2(route, id, date);
+            }
+        }
+
+
+        public void Delete2(string route, int id, DateTime date)
+        {
+            if (route == "" || route == "РЕЗЕРВ" || route == "резерв" || route == "Резерв" || route == "стажер" || route == "стажер")
+            {
+                string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+                if (!File.Exists(dbPath))
+                {
+
+                    return;
+                }
+
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                    {
+                        connection.Open(); // Открытие соединения с базой данных
+
+                        using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                        {
+                            var commandString = "DELETE FROM journalCollectors WHERE (id = @Id) and date=@Date";
+                SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+
+                deleteCommand.Parameters.AddWithValue("@Id", id);
+                deleteCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                deleteCommand.ExecuteNonQuery();
+                            transaction.Commit();
+                        }
+
+                        connection.Close(); // Закрытие соединения
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            else
+            {
+                string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+                if (!File.Exists(dbPath))
+                {
+
+                    return;
+                }
+
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                    {
+                        connection.Open(); // Открытие соединения с базой данных
+
+                        using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                        {
+                            var commandString2 = "DELETE FROM journalCollectors WHERE (route = @Route and date=@Date)";
+                SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+                deleteCommand2.Parameters.AddWithValue("@Route", route);
+                deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                deleteCommand2.ExecuteNonQuery();
+                            transaction.Commit();
+                        }
+
+                        connection.Close(); // Закрытие соединения
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
 
@@ -1034,8 +1676,42 @@ GROUP BY
                 connection.Open();
                 deleteCommand.ExecuteNonQuery();
                 connection.Close();
-           
-              
+                DeleteNUL2();
+        }
+
+        public void DeleteNUL2()
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString = "DELETE FROM journalCollectors WHERE name IS NULL OR  gun IS NULL OR automaton_serial IS NULL OR automaton IS NULL OR permission IS NULL OR meaning  IS NULL OR certificate  IS NULL OR token IS NULL OR power  IS NULL OR fullname IS NULL OR profession IS NULL OR phone IS NULL OR id2 IS NULL OR route  IS NULL OR date  IS NULL OR dateWork  IS NULL OR appropriation  IS NULL OR   route2 IS NULL OR   area IS NULL OR area2 IS NULL;";
+            SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
+            deleteCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
         }
 
 
@@ -1068,25 +1744,136 @@ GROUP BY
                 connection.Open();
                 updateCommand.ExecuteNonQuery();
                 connection.Close();
-            
+            UpdateNullValues2(date);
+
         }
+
+
+
+        public void UpdateNullValues2(DateTime date)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var updateCommandString = @"UPDATE journalCollectors 
+                                SET name = COALESCE(name, 'Данные отсутствуют'),
+                                    gun = COALESCE(gun, 'Данные отсутствуют'),
+                                    automaton_serial = COALESCE(automaton_serial, 'Данные отсутствуют'),
+                                    automaton = COALESCE(automaton, 'Данные отсутствуют'),
+                                    permission = COALESCE(permission, 'Данные отсутствуют'),
+                                    meaning = COALESCE(meaning, 'Данные отсутствуют'),
+                                    certificate = COALESCE(certificate, 'Данные отсутствуют'),
+                                    token = COALESCE(token, 'Данные отсутствуют'),
+                                    power = COALESCE(power, 'Данные отсутствуют'),
+                                    fullname = COALESCE(fullname, 'Данные отсутствуют'),
+                                    profession = COALESCE(profession, 'Данные отсутствуют'),
+                                    phone = COALESCE(phone, 'Данные отсутствуют'),
+                                    id2 = COALESCE(id2, 0),
+                                    route = COALESCE(route, 'Данные отсутствуют'),
+                                    date = COALESCE(date, @Date),
+                                    dateWork = COALESCE(dateWork, 'Данные отсутствуют'),
+                                    appropriation = COALESCE(appropriation, 'Данные отсутствуют'),
+                                    route2 = COALESCE(route2, 'Данные отсутствуют'),
+                                    data = COALESCE(data, ''), area = COALESCE(area, '') , area2 = COALESCE(area2, '');";
+
+            SQLiteCommand updateCommand = new SQLiteCommand(updateCommandString, connection);
+            updateCommand.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+
+            updateCommand.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
+
 
 
         public void DeleteToDate(DateTime date, string area)
         {
-            string area2="";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
-            var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date) and (area = @Area or area = @Area2)";
-                SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+            string area2 = "";
+            if (area == "Все")
+            {
+                area = "пр.Дзержинского, 69";
+                area2 = "ул.Фабрициуса, 8б";
+            }
+            else
+            {
+                area2 = area; // Устанавливаем area2 равным area, если area не равно "Все"
+            }
 
-                deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
-               deleteCommand2.Parameters.AddWithValue("@Area", area);
+            var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date) and (area = @Area or area = @Area2)";
+            SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+            deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            deleteCommand2.Parameters.AddWithValue("@Area", area);
             deleteCommand2.Parameters.AddWithValue("@Area2", area2);
 
             connection.Open();
-                deleteCommand2.ExecuteNonQuery();
-                connection.Close();          
+            deleteCommand2.ExecuteNonQuery();
+            connection.Close();
+
+            DeleteToDate3(date, area, area2); // Передача уже измененных значений area и area2
         }
+
+        public void DeleteToDate3(DateTime date, string area, string area2)
+        {
+            string dbPath = Path.Combine(MainWindow.puth, "B.I.G.db");
+
+            if (!File.Exists(dbPath))
+            {
+                return;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open(); // Открытие соединения с базой данных
+
+                    using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
+                    {
+                        var commandString2 = "DELETE FROM journalCollectors WHERE (date = @Date) and (area = @Area or area = @Area2)";
+                        SQLiteCommand deleteCommand2 = new SQLiteCommand(commandString2, connection);
+
+                        deleteCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+                        deleteCommand2.Parameters.AddWithValue("@Area", area);
+                        deleteCommand2.Parameters.AddWithValue("@Area2", area2);
+
+                        deleteCommand2.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+
+                    connection.Close(); // Закрытие соединения
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка исключения (если необходимо)
+            }
+        }
+
+
 
 
         public void DeleteToDate2(DateTime date, string area)

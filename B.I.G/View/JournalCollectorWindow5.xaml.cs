@@ -375,17 +375,17 @@ namespace B.I.G
 
              
                 // Добавление данных
-                for (int i = 1; i < dGridCollector.Items.Count; i++)
+                for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {
                     var collectorItem = (journalCollector)dGridCollector.Items[i];
 
                     // Создание строки
-                    var row = worksheet.Row(i + 3);
+                    var row = worksheet.Row(i + 4);
 
                     row.Height = 22;
-                    worksheet.Cells[i + 3, 1].Value = collectorItem.route2;
-                    worksheet.Cells[i + 3, 2].Value = collectorItem.name;
-                    worksheet.Cells[i + 3, 4].Value = collectorItem.name2;
+                    worksheet.Cells[i + 4, 1].Value = collectorItem.route2;
+                    worksheet.Cells[i + 4, 2].Value = collectorItem.name;
+                    worksheet.Cells[i + 4, 4].Value = collectorItem.name2;
                     I=i;
                 }
 

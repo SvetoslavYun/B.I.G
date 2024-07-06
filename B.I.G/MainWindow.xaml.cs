@@ -343,7 +343,7 @@ namespace B.I.G
                         user_AccountController.MainPhoto(LogS);
                         puth_Controller.CreateEmptyPuthIfNotExists2();
                         await OverwriteDatabaseAsync();
-                        log_Controller.DeleteAfterSixMonthsLog();
+                      
                         atm_Controller.DeleteAfterSixMonthsLog();
                         journalCollectorController.DeleteAfterSixMonthsLog();
                         JournalCollectorWindow2 journalCollectorWindow = new JournalCollectorWindow2(area);
