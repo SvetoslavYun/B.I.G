@@ -104,7 +104,7 @@ namespace B.I.G.Controller
         {
           
             var commandString4 = "UPDATE journalCollectors SET area ='ул.Фабрициуса, 8б' WHERE CAST(route2 AS INT) >= 70  AND date = @Date AND profession NOT LIKE '%РЕЗЕРВ%'  AND profession NOT LIKE '%Стажер%' AND dateWork NOT LIKE '%РЕЗЕРВ%';";
-            var commandString5 = "UPDATE journalCollectors SET area = area2  WHERE profession NOT LIKE '%одитель%'  AND profession NOT LIKE '%арший%' and profession NOT LIKE '%орщик%' AND date= @Date and dateWork NOT LIKE '%Маршрут%' and dateWork NOT LIKE '%РЕЗЕРВ%' and area2 !='';";
+            var commandString5 = "UPDATE journalCollectors SET area = area2  WHERE (profession NOT LIKE '%одитель%' or profession LIKE '%Дежурный водитель%')  AND profession NOT LIKE '%арший%' and profession NOT LIKE '%орщик%' AND date= @Date and dateWork NOT LIKE '%Маршрут%' and dateWork NOT LIKE '%РЕЗЕРВ%' and area2 !='';";
            
             SQLiteCommand deleteCommand4 = new SQLiteCommand(commandString4, connection);
             SQLiteCommand deleteCommand5 = new SQLiteCommand(commandString5, connection);
@@ -529,6 +529,7 @@ GROUP BY
             {
 
             }
+
         }
 
         // Метод для получения максимального значения из столбца route2
@@ -1478,6 +1479,7 @@ GROUP BY
             var commandString4 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
             var commandString5 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND data = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
+            var commandString7 = "UPDATE journalCollectors SET area = area2  WHERE (profession NOT LIKE '%одитель%' or profession LIKE '%Дежурный водитель%')  AND profession NOT LIKE '%арший%' and profession NOT LIKE '%орщик%' AND date= @Date and dateWork NOT LIKE '%Маршрут%' and dateWork NOT LIKE '%РЕЗЕРВ%' and area2 !='';";
 
             connection.Open();
             SQLiteCommand updateCommand1 = new SQLiteCommand(commandString1, connection);
@@ -1486,6 +1488,7 @@ GROUP BY
             SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
             SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
             SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
+            SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
 
             updateCommand1.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -1493,6 +1496,7 @@ GROUP BY
             updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand6.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand7.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
             updateCommand1.ExecuteNonQuery();
             updateCommand2.ExecuteNonQuery();
@@ -1500,6 +1504,7 @@ GROUP BY
             updateCommand4.ExecuteNonQuery();
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
+            updateCommand7.ExecuteNonQuery();
             connection.Close();
             UpdateResponsibilities3(date);
         }
@@ -1524,13 +1529,13 @@ GROUP BY
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString1 = "UPDATE journalCollectors SET data ='' WHERE date = @Date AND data != 'Данные отсутствуют' and data !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
+            var commandString1 = "UPDATE journalCollectors SET data ='' WHERE date = @Date AND data != 'Данные отсутствуют' and data !='Автомат не повторяется' AND dateWork != 'РЕЗЕРВ' and Route != 'стажер ' and Route != 'стажер' and  SUBSTRING(dateWork, 1, 7) != 'Маршрут' ";
             var commandString2 = "UPDATE journalCollectors SET automaton_serial='', automaton='' WHERE (profession NOT LIKE '%одитель%' or profession  LIKE '%арший%') and data !='Автомат не повторяется' and profession != 'Дежурный водитель № 1' and profession != 'Дежурный водитель № 2'AND date = @Date";
             var commandString3 = "UPDATE journalCollectors SET meaning='' WHERE profession NOT LIKE '%борщик%' AND date = @Date";
             var commandString4 = "UPDATE journalCollectors AS j1 SET data = 'Повтор автомата' WHERE j1.automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE automaton_serial != '' and date = @Date GROUP BY automaton_serial  HAVING COUNT(DISTINCT name) > 1);";
             var commandString5 = "UPDATE journalCollectors AS j1 SET data = data || ' М.' || (SELECT route2 || ' ' || name FROM journalCollectors AS j2   WHERE j1.automaton_serial = j2.automaton_serial AND j2.name <> j1.name AND j2.date = j1.date) WHERE data = 'Повтор автомата' AND automaton_serial IN (SELECT automaton_serial FROM journalCollectors  WHERE date = @Date AND data = 'Повтор автомата'  GROUP BY automaton_serial HAVING COUNT(DISTINCT name) > 1);";
             var commandString6 = "UPDATE journalCollectors SET permission = '.', appropriation='.', fullname ='.' WHERE SUBSTRING(dateWork, 1, 7) = 'Маршрут' OR SUBSTRING(dateWork, 1, 7) = 'РЕЗЕРВ' and date = @Date";
-
+            var commandString7 = "UPDATE journalCollectors SET area = area2  WHERE (profession NOT LIKE '%одитель%' or profession LIKE '%Дежурный водитель%')  AND profession NOT LIKE '%арший%' and profession NOT LIKE '%орщик%' AND date= @Date and dateWork NOT LIKE '%Маршрут%' and dateWork NOT LIKE '%РЕЗЕРВ%' and area2 !='';";
 
             SQLiteCommand updateCommand1 = new SQLiteCommand(commandString1, connection);
             SQLiteCommand updateCommand2 = new SQLiteCommand(commandString2, connection);
@@ -1538,6 +1543,7 @@ GROUP BY
             SQLiteCommand updateCommand4 = new SQLiteCommand(commandString4, connection);
             SQLiteCommand updateCommand5 = new SQLiteCommand(commandString5, connection);
             SQLiteCommand updateCommand6 = new SQLiteCommand(commandString6, connection);
+            SQLiteCommand updateCommand7 = new SQLiteCommand(commandString7, connection);
 
             updateCommand1.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand2.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
@@ -1545,6 +1551,7 @@ GROUP BY
             updateCommand4.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand5.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
             updateCommand6.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
+            updateCommand7.Parameters.AddWithValue("@Date", date.ToString("yyyy-MM-dd"));
 
             updateCommand1.ExecuteNonQuery();
             updateCommand2.ExecuteNonQuery();
@@ -1552,6 +1559,7 @@ GROUP BY
             updateCommand4.ExecuteNonQuery();
             updateCommand5.ExecuteNonQuery();
             updateCommand6.ExecuteNonQuery();
+            updateCommand7.ExecuteNonQuery();
                         transaction.Commit();
                     }
 

@@ -34,6 +34,7 @@ namespace B.I.G
     /// </summary>
     public partial class Add_СashCollector : Window
     {
+        private bool foto = false;
         private Log_Controller log_Controller;
         ObservableCollection<log> Logs;
         private string originalName;
@@ -161,7 +162,10 @@ namespace B.I.G
                     CashCollectorWindow.CashCollector.certificate = Certificate.Text;
                     CashCollectorWindow.CashCollector.token = Token.Text;
                     CashCollectorWindow.CashCollector.power = Power.Text;
+                if (foto)
+                {
                     CashCollectorWindow.CashCollector.image = image_bytes;
+                }
 
                     if (!cashCollectorController.IsCashCollectorExists(CashCollectorWindow.CashCollector.name, CashCollectorWindow.CashCollector.id))
                     {
@@ -240,6 +244,7 @@ namespace B.I.G
                             {
                                 croppedImage.Save(ms, ImageFormat.Jpeg); // Замените Jpeg на нужный вам формат
                                 image_bytes = ms.ToArray();
+                                foto = true;
                             }
                         }
 

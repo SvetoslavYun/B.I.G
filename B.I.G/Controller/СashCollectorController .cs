@@ -472,9 +472,9 @@ namespace B.I.G.Controller
             return count > 0;
         }
 
+     
 
-
-        public void SearchFoto(int id)
+        public byte[] SearchFoto(int id)
         {
             connection.Open();
             var commandString = "SELECT image FROM cashCollectors WHERE id = @id;";
@@ -491,6 +491,7 @@ namespace B.I.G.Controller
             }
 
             connection.Close();
+            return null;
         }
 
 

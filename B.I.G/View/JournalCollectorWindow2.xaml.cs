@@ -35,7 +35,7 @@ namespace B.I.G
 {
     public partial class JournalCollectorWindow2 : System.Windows.Window
     {
-        private static System.Timers.Timer checkChangesTimer;
+      
         private Puth_Controller puth_Controller;
         public static journalCollector JournalCollector;
         ObservableCollection<journalCollector> JournalCollectors;
@@ -108,118 +108,9 @@ namespace B.I.G
             RouteButton.IsEnabled = false;
             ReserveButton.Visibility = Visibility.Collapsed;
             ReserveButton.IsEnabled = false;           
-            StartCheckingForChangesAsync();
-            Closed += Window_Closed;
+         
            
         }
-
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            checkChangesTimer.Stop();
-        }
-
-
-        private async Task StartCheckingForChangesAsync()
-        {
-            checkChangesTimer = new System.Timers.Timer(10000); // Проверять каждые 1 секунду
-            checkChangesTimer.Elapsed += async (sender, e) => await OnTimerElapsedAsync(sender, e);
-            checkChangesTimer.AutoReset = true;
-            checkChangesTimer.Enabled = true;
-        }
-
-        private async Task OnTimerElapsedAsync(object sender, ElapsedEventArgs e)
-        {
-            checkChangesTimer.Stop(); // Остановить таймер
-            try
-            {              
-                await CheckAndOverwriteDatabaseAsync();
-                log_Controller.DeleteLogWork();
-            }
-            finally
-            {
-                checkChangesTimer.Start(); // Запустить таймер снова
-            }
-        }
-
-        private async Task CheckAndOverwriteDatabaseAsync()
-        {
-            string sourceDirectory = MainWindow.puth;
-            string sourcePath = Path.Combine(sourceDirectory, "B.I.G.db");
-            string destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "B.I.G.db");
-
-            using (var sourceConnection = new SQLiteConnection($"Data Source={sourcePath};Version=3;"))
-            using (var destinationConnection = new SQLiteConnection($"Data Source={destinationPath};Version=3;"))
-            {
-                await sourceConnection.OpenAsync();
-                await destinationConnection.OpenAsync();
-
-                // Запрос для source и destination баз данных
-                string query = "SELECT MAX(date) as maxDate FROM logs WHERE process = 'Работал с нарядом'";
-
-                var sourceMaxDate = await GetMaxDateAsync(sourceConnection, query);
-                var destinationMaxDate = await GetMaxDateAsync(destinationConnection, query);
-
-                // Сравниваем максимальные даты
-                if (sourceMaxDate != destinationMaxDate)
-                {
-                    await CheckAndOverwriteDatabaseAsync2(sourceConnection, destinationConnection);
-
-                    // Переключение на поток UI перед вызовом OverwriteDatabaseAsync
-                    App.Current.Dispatcher.Invoke(async () => await OverwriteDatabaseAsync());
-                }
-            }
-        }
-
-        private async Task CheckAndOverwriteDatabaseAsync2(SQLiteConnection sourceConnection, SQLiteConnection destinationConnection)
-        {
-            // Запрос для source базы данных
-            string query = "SELECT * FROM logs WHERE process = 'Работал с нарядом'";
-
-            SQLiteCommand selectCommand = new SQLiteCommand(query, sourceConnection);
-
-            SQLiteDataReader reader = (SQLiteDataReader)await selectCommand.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-            {
-                string username = reader.GetString(reader.GetOrdinal("username"));
-                string process = reader.GetString(reader.GetOrdinal("process"));
-                string date = reader.GetString(reader.GetOrdinal("date"));
-                string date2 = reader.GetString(reader.GetOrdinal("date2"));              
-                // Вставляем строку в destination базу данных
-                string insertQuery = "INSERT INTO logs (username, process, date, date2) VALUES (@username, @process, @date, @date2)";
-                SQLiteCommand insertCommand = new SQLiteCommand(insertQuery, destinationConnection);
-
-                insertCommand.Parameters.AddWithValue("@username", username);
-                insertCommand.Parameters.AddWithValue("@process", process);
-                insertCommand.Parameters.AddWithValue("@date", date);
-                insertCommand.Parameters.AddWithValue("@date2", date2);
-
-                await insertCommand.ExecuteNonQueryAsync();
-            }
-
-            reader.Close();
-        }
-
-
-
-
-
-        private async Task<DateTime?> GetMaxDateAsync(SQLiteConnection connection, string query)
-        {
-            using (var command = new SQLiteCommand(query, connection))
-            {
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (await reader.ReadAsync())
-                    {
-                        return reader.IsDBNull(0) ? (DateTime?)null : reader.GetDateTime(0);
-                    }
-                }
-            }
-            return null;
-        }
-
 
         // Event handler for preventing text input
         private void Area_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -387,12 +278,12 @@ namespace B.I.G
                 var id = ((journalCollector)dGridCollector.SelectedItem).id;
                 var selectedCollector = (journalCollector)dGridCollector.SelectedItem;
                 JournalCollector = selectedCollector;
-                checkChangesTimer.Stop();
+
                 LookCollector lookCollector = new LookCollector(selectedCollector, id);
-              
+
                 lookCollector.ShowDialog();
                 journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
-                journalCollectorController.DeleteNUL();             
+                journalCollectorController.DeleteNUL();
                 Search(sender, e);
                 JournalCollector = null;
 
@@ -400,17 +291,9 @@ namespace B.I.G
                 DateTime Data = DateTime.Now;
                 string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
                 string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-                var Log2 = new log()
-                {
-                    username = MainWindow.LogS,
-                    process = "Работал с нарядом",
-                    date = Convert.ToDateTime(formattedDate),
-                    date2 = Convert.ToDateTime(formattedDate2)
-                };
-             
-                log_Controller.Insert(Log2);
-                checkChangesTimer.Start();
+               
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -425,7 +308,7 @@ namespace B.I.G
                 if (AccesText.Text != "Пользователь")
                 {
                     if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                    checkChangesTimer.Stop();
+                  
                     var Id = ((journalCollector)dGridCollector.SelectedItem).id;
                     var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
                     var Profession = ((journalCollector)dGridCollector.SelectedItem).profession;
@@ -445,16 +328,8 @@ namespace B.I.G
                     DateTime Data = DateTime.Now;
                     string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
                     string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-                    var Log2 = new log()
-                    {
-                        username = MainWindow.LogS,
-                        process = "Работал с нарядом",
-                        date = Convert.ToDateTime(formattedDate),
-                        date2 = Convert.ToDateTime(formattedDate2)
-                    };
-                 
-                    log_Controller.Insert(Log2);
-                    checkChangesTimer.Start();
+                   
+                   
                 }
             }
             catch (Exception h)
@@ -472,7 +347,7 @@ namespace B.I.G
                 if (AccesText.Text != "Пользователь")
                 {
                     if (dGridCollector.SelectedItem == null) throw new Exception("Не выбрана строка, произведите выбор");
-                    checkChangesTimer.Stop();
+                  
                     var Id = ((journalCollector)dGridCollector.SelectedItem).id2;
                     var Name = ((journalCollector)dGridCollector.SelectedItem).name;
                     var Route2 = ((journalCollector)dGridCollector.SelectedItem).route2;
@@ -491,16 +366,7 @@ namespace B.I.G
                         DateTime Data = DateTime.Now;
                         string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
                         string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-                        var Log2 = new log()
-                        {
-                            username = MainWindow.LogS,
-                            process = "Работал с нарядом",
-                            date = Convert.ToDateTime(formattedDate),
-                            date2 = Convert.ToDateTime(formattedDate2)
-                        };
-                      
-                        log_Controller.Insert(Log2);
-                        checkChangesTimer.Start();
+                     
                     }
                     else { MessageBox.Show("Данные по сотруднику отсутствуют"); }
                 }
@@ -521,7 +387,7 @@ namespace B.I.G
                     var result = MessageBox.Show("Вы уверены?", "Удалить запись", MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.Yes)
                     { // получение выбранных строк
-                        checkChangesTimer.Stop();
+                       
                         List<journalCollector> journalCollectors = dGridCollector.SelectedItems.Cast<journalCollector>().ToList();
                         {
                             // проход по списку выбранных строк
@@ -539,20 +405,12 @@ namespace B.I.G
                                 DateTime Data = DateTime.Now;
                                 string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
                                 string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-                                var Log2 = new log()
-                                {
-                                    username = MainWindow.LogS,
-                                    process = "Работал с нарядом",
-                                    date = Convert.ToDateTime(formattedDate),
-                                    date2 = Convert.ToDateTime(formattedDate2)
-                                };
-                              
-                                log_Controller.Insert(Log2);
+                             
                                 Search(sender, e);
                                 
                             }
                         }
-                        checkChangesTimer.Start();
+                    
                     }
                 }
             }
@@ -617,7 +475,7 @@ namespace B.I.G
             DateTime Date2 = Convert.ToDateTime(Date.Text);
             try
             {
-                checkChangesTimer.Stop();
+               
                 DateTime Date = DateTime.Now;
                 string formattedDate = Date.ToString("dd.MM.yyyy HH:mm");
                 string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
@@ -635,7 +493,7 @@ namespace B.I.G
                 var worksheet = excelPackage.Workbook.Worksheets.Add("Наряд на работу");
 
                 // Установка стилей для линий ячеек, ширины колонок и выравнивания
-                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 1, dGridCollector.Columns.Count])
+                using (var cells = worksheet.Cells[1, 1, dGridCollector.Items.Count + 2, dGridCollector.Columns.Count])
                 {
                     cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -705,51 +563,51 @@ namespace B.I.G
 
                 int I = 0;
                 // Добавление данных
-                for (int i = 1; i < dGridCollector.Items.Count; i++)
+                for (int i = 0; i < dGridCollector.Items.Count; i++)
                 {
                     var collectorItem = (journalCollector)dGridCollector.Items[i];
 
                     // Создание строки
                     var row = worksheet.Row(i + 3);
                     row.Height = 12;
-                    worksheet.Cells[i + 2, 3].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 4].Style.Font.Size = 10;
-                    worksheet.Cells[i + 2, 4].Style.Font.Name = "Times New Roman";
-                    worksheet.Cells[i + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                    worksheet.Cells[i + 2, 4].Style.Font.Bold = true;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.dateWork;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.appropriation;
+                    worksheet.Cells[i + 3, 3].Value = collectorItem.profession;
+                    worksheet.Cells[i + 3, 4].Value = collectorItem.name;
+                    worksheet.Cells[i + 3, 4].Style.Font.Size = 10;
+                    worksheet.Cells[i + 3, 4].Style.Font.Name = "Times New Roman";
+                    worksheet.Cells[i + 3, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    worksheet.Cells[i + 3, 4].Style.Font.Bold = true;
+                    worksheet.Cells[i + 3, 5].Value = collectorItem.dateWork;
+                    worksheet.Cells[i + 3, 8].Value = collectorItem.appropriation;
                     I = i;
 
                     for (int col = 2; col <= 7; col++)
                     {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 7; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 3, col].Style.Font.Size = 7; // Установите нужный размер шрифта
                     }
 
                     // Добавьте условие для проверки значения collectorItem.fullname
                     if (collectorItem.fullname == ".")
                     {
-                        worksheet.Cells[i + 2, 3].Style.Font.Size = 8; // Установите нужный размер шрифта
+                        worksheet.Cells[i + 3, 3].Style.Font.Size = 8; // Установите нужный размер шрифта
                         row.Height = 13;
-                        worksheet.Cells[i + 2, 3].Value = worksheet.Cells[i + 2, 5].Value;
-                        worksheet.Cells[i + 2, 3, i + 2, 8].Merge = true;
+                        worksheet.Cells[i + 3, 3].Value = worksheet.Cells[i + 3, 5].Value;
+                        worksheet.Cells[i + 3, 3, i + 3, 8].Merge = true;
                         // Установите стиль заливки для первых семь колонок
                         for (int col = 2; col <= 8; col++)
                         {
-                            worksheet.Cells[i + 2, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[i + 2, col].Style.Fill.BackgroundColor.SetColor(Color.White);
-                            worksheet.Cells[i + 2, col].Style.Font.Color.SetColor(Color.Black);
+                            worksheet.Cells[i + 3, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[i + 3, col].Style.Fill.BackgroundColor.SetColor(Color.White);
+                            worksheet.Cells[i + 3, col].Style.Font.Color.SetColor(Color.Black);
 
-                            worksheet.Cells[i + 2, col].Style.Font.Bold = true; // Установите шрифт жирным
-                            worksheet.Cells[i + 2, col].Style.Font.Italic = true; // Установите шрифт курсивом
+                            worksheet.Cells[i + 3, col].Style.Font.Bold = true; // Установите шрифт жирным
+                            worksheet.Cells[i + 3, col].Style.Font.Italic = true; // Установите шрифт курсивом
                         }
                     }
                 }
 
 
 
-                I = I + 4;
+                I = I + 5;
 
                 worksheet.Cells[I, 1, I, 8].Merge = true;
                 string Spaces = new string(' ', 116);
@@ -786,7 +644,7 @@ namespace B.I.G
                 }
 
                 Search(sender, e);
-                checkChangesTimer.Start();
+           
             }
 
             catch (Exception ex)
@@ -953,7 +811,7 @@ namespace B.I.G
             LogWindow logWindow = new LogWindow(Convert.ToDateTime(Date.Text), Area.Text);
             logWindow.Show();
             var currentWindow = Window.GetWindow(this);
-            checkChangesTimer.Stop();
+  
             // Закрыть текущее окно
             currentWindow.Close();
         }
@@ -963,7 +821,7 @@ namespace B.I.G
             UsersWindow usersWindow = new UsersWindow(Convert.ToDateTime(Date.Text), Area.Text);
             usersWindow.Show();
             var currentWindow = Window.GetWindow(this);
-            checkChangesTimer.Stop();
+       
             // Закрыть текущее окно
             currentWindow.Close();
         }
@@ -992,7 +850,7 @@ namespace B.I.G
         {
             try
             {
-                checkChangesTimer.Stop();
+             
                 string area=Area.Text;
                 
                 DateTime date = DateTime.Now;
@@ -1023,7 +881,7 @@ namespace B.I.G
                         journalCollectorController.UpdateJournalBase2(date);
                         Date.Text = date.ToString("yyyy-MM-dd");
                         FillData();
-                        checkChangesTimer.Start();
+                 
                     }
                     Calendar2.Visibility = Visibility.Collapsed;
                     Calendar2.IsEnabled = false;
@@ -1063,7 +921,7 @@ namespace B.I.G
                             journalCollectorController.UpdateNullValues(Convert.ToDateTime(Date.Text));
                             journalCollectorController.DeleteNUL();
                             FillData();
-                            checkChangesTimer.Start();
+        
                         }
                         Calendar2.Visibility = Visibility.Collapsed;
                         Calendar2.IsEnabled = false;
@@ -1179,8 +1037,7 @@ namespace B.I.G
 
         private void StartImport(string filePath, DateTime date)
         {
-            // Заблокировать все кнопки
-            checkChangesTimer.Stop();
+
             SetButtonsEnabled(this, false);
             ProgressBar.Visibility = Visibility.Visible;
             ProgressText.Visibility = Visibility.Visible;
@@ -1241,14 +1098,15 @@ namespace B.I.G
                     journalCollectorController.UpdateResponsibilities22(date, area);
                     journalCollectorController.UpdateRoute2(date);
                     journalCollectorController.DeleteRound22(date);
+
                 }
                 else
                 {
                     journalCollectorController.UpdateResponsibilities(date, area);
 
                 }
-                    journalCollectorController.UpdateJournalBase2(date);
                     journalCollectorController.DeleteRound2(date);
+                    journalCollectorController.UpdateJournalBase2(date);
                 Date.Text = date.ToString("yyyy-MM-dd");
                 // Разблокировать все кнопки
                 SetButtonsEnabled(this, true);
@@ -1262,13 +1120,13 @@ namespace B.I.G
                 var Log2 = new log()
                 {
                     username = MainWindow.LogS,
-                    process = "Работал с нарядом",
+                    process = "Загрузил наряд",
                     date = Convert.ToDateTime(formattedDate),
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
               
                 log_Controller.Insert(Log2);
-                checkChangesTimer.Start();
+ 
             };
 
             backgroundWorker.RunWorkerAsync(new { filePath, date });
@@ -1304,7 +1162,7 @@ namespace B.I.G
             CashCollectorWindow cashCollectorWindow = new CashCollectorWindow(Convert.ToDateTime(Date.Text), Area.Text);
             cashCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
-            checkChangesTimer.Stop();
+
             // Закрыть текущее окно
             currentWindow.Close();
         }
@@ -1314,7 +1172,7 @@ namespace B.I.G
             JournalCollectorWindow journalCollectorWindow = new JournalCollectorWindow(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
             var currentWindow = Window.GetWindow(this);
-            checkChangesTimer.Stop();
+
             // Закрыть текущее окно
             currentWindow.Close();
         }
@@ -1323,7 +1181,7 @@ namespace B.I.G
         {
             JournalCollectorWindow3 journalCollectorWindow = new JournalCollectorWindow3(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
-            checkChangesTimer.Stop();
+        
             Close();
         }
 
@@ -1331,7 +1189,7 @@ namespace B.I.G
         {
             JournalCollectorWindow4 journalCollectorWindow = new JournalCollectorWindow4(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
-            checkChangesTimer.Stop();
+  
             Close();
         }
 
@@ -1339,7 +1197,7 @@ namespace B.I.G
         {
             JournalCollectorWindow5 journalCollectorWindow = new JournalCollectorWindow5(Convert.ToDateTime(Date.Text), Area.Text);
             journalCollectorWindow.Show();
-            checkChangesTimer.Stop();
+  
             Close();
 
         }
@@ -1351,23 +1209,15 @@ namespace B.I.G
                 var result = MessageBox.Show("Вы уверены?", "Удалить наряд на " + Date.Text, MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
-                    checkChangesTimer.Stop();
+   
                     journalCollectorController.DeleteToDate(Convert.ToDateTime(Date.Text),Area.Text);
                     Search(sender, e);
                     DateTime Date2 = Convert.ToDateTime(Date.Text);
                     DateTime Data = DateTime.Now;
                     string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
                     string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-                    var Log2 = new log()
-                    {
-                        username = MainWindow.LogS,
-                        process = "Работал с нарядом",
-                        date = Convert.ToDateTime(formattedDate),
-                        date2 = Convert.ToDateTime(formattedDate2)
-                    };
                   
-                    log_Controller.Insert(Log2);
-                    checkChangesTimer.Start();
+  
                 }
             }
         }
@@ -1411,7 +1261,7 @@ namespace B.I.G
         {
             AtmWindow atmWindow = new AtmWindow(Convert.ToDateTime(Date.Text), Area.Text);
             atmWindow.Show();
-            checkChangesTimer.Stop();
+ 
             Close();
         }
 
@@ -1473,7 +1323,7 @@ namespace B.I.G
 
         private void Route_Button(object sender, RoutedEventArgs e)
         {
-            checkChangesTimer.Stop();
+   
             RouteButton.Visibility = Visibility.Collapsed;
             RouteButton.IsEnabled = false;
             ReserveButton.Visibility = Visibility.Collapsed;
@@ -1487,21 +1337,12 @@ namespace B.I.G
             DateTime Data = DateTime.Now;
             string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
             string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-            var Log2 = new log()
-            {
-                username = MainWindow.LogS,
-                process = "Работал с нарядом",
-                date = Convert.ToDateTime(formattedDate),
-                date2 = Convert.ToDateTime(formattedDate2)
-            };
-         
-            log_Controller.Insert(Log2);
-            checkChangesTimer.Start();
+          
         }
 
         private void Reserve_Button(object sender, RoutedEventArgs e)
         {
-            checkChangesTimer.Stop();
+        
             RouteButton.Visibility = Visibility.Collapsed;
             RouteButton.IsEnabled = false;
             ReserveButton.Visibility = Visibility.Collapsed;
@@ -1520,15 +1361,7 @@ namespace B.I.G
             DateTime Data = DateTime.Now;
             string formattedDate = Data.ToString("dd.MM.yyyy HH:mm:ss");
             string formattedDate2 = Date2.ToString("dd.MM.yyyy") + " " + Date2.ToString("dddd", new System.Globalization.CultureInfo("ru-RU"));
-            var Log2 = new log()
-            {
-                username = MainWindow.LogS,
-                process = "Работал с нарядом",
-                date = Convert.ToDateTime(formattedDate),
-                date2 = Convert.ToDateTime(formattedDate2)
-            };          
-            log_Controller.Insert(Log2);
-            checkChangesTimer.Start();
+          
         }
     }
 }

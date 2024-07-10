@@ -397,9 +397,11 @@ namespace B.I.G
                 // Автоподгон ширины колонок
                 worksheet.Cells.AutoFitColumns();
                 worksheet.Column(1).Width = 9;
-                worksheet.Column(2).Width = 22;
+                worksheet.Column(2).Width = 21;
+                worksheet.Column(3).Width = 25;
                 worksheet.Column(5).Width = 0;
                 worksheet.Column(7).Width = 9;
+                worksheet.Column(6).Width = 16;
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Журнал оружия и боеприпасов " + formattedDate2;
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
