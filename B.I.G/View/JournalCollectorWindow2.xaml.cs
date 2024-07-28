@@ -101,7 +101,7 @@ namespace B.I.G
             X.Visibility = Visibility.Collapsed;
             X.IsEnabled = false;
             Area.Items.Add("пр.Дзержинского, 69");
-            Area.Items.Add("ул.Фабрициуса, 8б");
+            Area.Items.Add("ул.Фабрициуса, 8в");
             Area.Items.Add("Все");
             Area.Items.Add("Загрузить наряд");
             RouteButton.Visibility = Visibility.Collapsed;

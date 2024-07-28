@@ -79,8 +79,8 @@ namespace B.I.G.Controller
 
         public void DeleteRound2(DateTime date)
         {
-            var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' and CAST(route2 AS INT) >= 52 AND CAST(route2 AS INT) <= 69 and date= @Date);";
-            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE route LIKE '%/2%' AND CAST(route2 AS INT) >= 81  and date= @Date);";
+            var commandString = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE (route LIKE '%/2%' or route LIKE '%/3%' )  and CAST(route2 AS INT) >= 52 AND CAST(route2 AS INT) <= 69 and date= @Date);";
+            var commandString2 = "DELETE FROM journalCollectors WHERE route IN (SELECT route FROM journalCollectors  WHERE (route LIKE '%/2%' or route LIKE '%/3%' ) AND CAST(route2 AS INT) >= 81  and date= @Date);";
             var commandString3 = "DELETE FROM journalCollectors WHERE (profession LIKE 'старший бригады инкассаторов' and route ='') or (profession LIKE 'инкассатор-сборщик' and route ='') or (profession LIKE 'водитель автомобиля' and route ='');";
            
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);
@@ -103,7 +103,7 @@ namespace B.I.G.Controller
         public void DeleteRound22(DateTime date)
         {
           
-            var commandString4 = "UPDATE journalCollectors SET area ='ул.Фабрициуса, 8б' WHERE CAST(route2 AS INT) >= 70  AND date = @Date AND profession NOT LIKE '%РЕЗЕРВ%'  AND profession NOT LIKE '%Стажер%' AND dateWork NOT LIKE '%РЕЗЕРВ%';";
+            var commandString4 = "UPDATE journalCollectors SET area ='ул.Фабрициуса, 8в' WHERE CAST(route2 AS INT) >= 70  AND date = @Date AND profession NOT LIKE '%РЕЗЕРВ%'  AND profession NOT LIKE '%Стажер%' AND dateWork NOT LIKE '%РЕЗЕРВ%';";
             var commandString5 = "UPDATE journalCollectors SET area = area2  WHERE (profession NOT LIKE '%одитель%' or profession LIKE '%Дежурный водитель%')  AND profession NOT LIKE '%арший%' and profession NOT LIKE '%орщик%' AND date= @Date and dateWork NOT LIKE '%Маршрут%' and dateWork NOT LIKE '%РЕЗЕРВ%' and area2 !='';";
            
             SQLiteCommand deleteCommand4 = new SQLiteCommand(commandString4, connection);
@@ -121,7 +121,7 @@ namespace B.I.G.Controller
         public IEnumerable<journalCollector> GetAllCashCollectors0(DateTime date, string area)
         {
             string area2="";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and (jc.area2 = @Area or jc.dateWork LIKE '%аршрут%' or jc.dateWork LIKE '%РЕЗЕРВ%') ORDER BY CAST(jc.route2 AS INT)";
@@ -195,7 +195,7 @@ namespace B.I.G.Controller
          
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
             string area2 = "";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var commandString = @"SELECT jc.*, CASE WHEN cc.image IS NULL THEN @DefaultImage ELSE cc.image END AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.date= @Date AND (jc.area = @Area or jc.area = @Area2  or jc.dateWork LIKE '%РЕЗЕРВ%') ORDER BY CAST(jc.route2 AS INT)";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
@@ -265,7 +265,7 @@ namespace B.I.G.Controller
         public IEnumerable<journalCollector> GetAllCashCollectors3(DateTime date, string area)
         {
             string area2 = "";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"
@@ -351,7 +351,7 @@ namespace B.I.G.Controller
         public IEnumerable<journalCollector> GetAllCashCollectors4(DateTime date, string area)
         {
             string area2 = "";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT 
@@ -1823,7 +1823,7 @@ GROUP BY
             if (area == "Все")
             {
                 area = "пр.Дзержинского, 69";
-                area2 = "ул.Фабрициуса, 8б";
+                area2 = "ул.Фабрициуса, 8в";
             }
             else
             {
@@ -1997,7 +1997,7 @@ GROUP BY
 
             connection.Close();
             string area2 = "";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date AND jc.route LIKE @Route and (jc.area = @Area or jc.area = @Area2 or jc.dateWork LIKE '%РЕЗЕРВ%') ORDER BY CAST(jc.route2 AS INT);";
@@ -2092,7 +2092,7 @@ GROUP BY
             connection.Close();
 
             string area2 = "";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var defaultImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image", "NoFoto.jpg");
 
             var commandString = @"SELECT  jc.*, COALESCE(cc.image, @DefaultImage) AS image FROM journalCollectors jc LEFT JOIN cashCollectors cc ON jc.id2 = cc.id WHERE jc.name LIKE @Name AND jc.date= @Date and jc.route NOT LIKE '%/2%' and jc.route NOT LIKE '%\2%' AND jc.route LIKE @Route  AND (jc.area = @Area or jc.area = @Area2 or jc.area2 = @Area) and (jc.area2 = @Area or jc.dateWork LIKE '%аршрут%' or jc.dateWork LIKE '%РЕЗЕРВ%') ORDER BY CAST(jc.route2 AS INT)";
@@ -2310,7 +2310,7 @@ GROUP BY
         {
             connection.Close();
             string area2 = "";
-            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8б"; }
+            if (area == "Все") { area = "пр.Дзержинского, 69"; area2 = "ул.Фабрициуса, 8в"; }
             var commandString = @"SELECT route2,
        COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%тарший%' THEN name END), '') AS names_starshego,
        COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN profession LIKE '%борщик%' THEN name END), '') AS names_sborschika
@@ -2958,10 +2958,10 @@ ORDER BY
                                     return "Инкассатор-сборщик";
                                 case string s when s.Contains("омощник"):
                                     return "Помощник дежурного";
-                                case "Пом. Деж. инкассатора  (Фабрициуса,8В) ":
-                                    return "Пом.Дежурного (Фабрициуса,8В)";
-                                case "Дежурный инкассатор (Фабрициуса,8В)  ":
-                                    return "Деж.инкассатор (Фабрициуса,8В)";
+                                case "Пом. Деж. инкассатора  (Фабрициуса,8в) ":
+                                    return "Пом.Дежурного (Фабрициуса,8в)";
+                                case "Дежурный инкассатор (Фабрициуса,8в)  ":
+                                    return "Деж.инкассатор (Фабрициуса,8в)";
                                 default:
                                     return professio; // Если совпадений нет, возвращаем исходное значение
                             }

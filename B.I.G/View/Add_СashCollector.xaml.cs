@@ -64,7 +64,7 @@ namespace B.I.G
             Profession.Items.Add("Инкассатор");
             Profession.Items.Add("Водитель");
             Area.Items.Add("пр.Дзержинского, 69");
-            Area.Items.Add("ул.Фабрициуса, 8б");
+            Area.Items.Add("ул.Фабрициуса, 8в");
         }
         private void Button_Save(object sender, RoutedEventArgs e)
         {

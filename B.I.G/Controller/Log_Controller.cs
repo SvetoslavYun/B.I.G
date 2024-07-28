@@ -174,6 +174,7 @@ namespace B.I.G.Controller
             connection.Open();
             deleteCommand.ExecuteNonQuery();
             connection.Close();
+            DeleteAfterSixMonthsLog2();
         }
 
         public void DeleteLogWork()
@@ -238,7 +239,7 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "DELETE FROM logs WHERE date2 <= date('now', '-6 months')";
+                        var commandString = "DELETE FROM logs WHERE date2 <= date('now', '-14 days')";
             SQLiteCommand deleteCommand = new SQLiteCommand(commandString, connection);          
             deleteCommand.ExecuteNonQuery();
 

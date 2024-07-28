@@ -28,7 +28,7 @@
         </Grid.ColumnDefinitions>
         <TextBox x:Name="Name" Text="{Binding Path=name}" HorizontalAlignment="Left" Margin="350,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Fullname" Text="{Binding Path=fullname}" HorizontalAlignment="Left" Margin="350,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <ComboBox x:Name="Profession" Text="{Binding Path=profession}" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <ComboBox x:Name="Profession" Text="{Binding Path=profession}" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1" IsEditable="True"/>
         <TextBox x:Name="Phone" Text="{Binding Path=phone}" HorizontalAlignment="Left" Margin="350,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Gun" Text="{Binding Path=gun}" HorizontalAlignment="Left" Margin="350,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Automaton_serial" Text="{Binding Path=automaton_serial}" HorizontalAlignment="Left" Margin="350,170,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
@@ -38,7 +38,7 @@
         <TextBox x:Name="Certificate" Text="{Binding Path=certificate}" HorizontalAlignment="Left" Margin="350,290,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Token" Text="{Binding Path=token}" HorizontalAlignment="Left" Margin="350,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Power" Text="{Binding Path=power}" HorizontalAlignment="Left" Margin="350,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <ComboBox x:Name="Area" Text="{Binding Path=area}" HorizontalAlignment="Left" Margin="350,380,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <ComboBox x:Name="Area" Text="{Binding Path=area}" HorizontalAlignment="Left" Margin="350,380,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1" IsEditable="True"/>
         <Button Content="Сохранить" Margin="0,331,0,0" VerticalAlignment="Top" FontFamily="Century" Height="27" Click="Button_Save" Grid.Column="1" HorizontalAlignment="Left" Width="233">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
