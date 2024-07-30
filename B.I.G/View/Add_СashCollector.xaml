@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Редактор сотрудника" Height="460" Width="605" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="Редактор сотрудника" Height="480" Width="605" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+    
     <Window.Icon>
         <BitmapImage UriSource="/image/edit2.png"/>
     </Window.Icon>
@@ -33,12 +34,13 @@
         <TextBox x:Name="Gun" Text="{Binding Path=gun}" HorizontalAlignment="Left" Margin="350,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Automaton_serial" Text="{Binding Path=automaton_serial}" HorizontalAlignment="Left" Margin="350,170,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
         <TextBox x:Name="Automaton" Text="{Binding Path=automaton}" HorizontalAlignment="Left" Margin="350,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <TextBox x:Name="Permission" Text="{Binding Path=permission}" HorizontalAlignment="Left" Margin="350,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <TextBox x:Name="Meaning" Text="{Binding Path=meaning}" HorizontalAlignment="Left" Margin="350,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <TextBox x:Name="Certificate" Text="{Binding Path=certificate}" HorizontalAlignment="Left" Margin="350,290,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <TextBox x:Name="Token" Text="{Binding Path=token}" HorizontalAlignment="Left" Margin="350,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <TextBox x:Name="Power" Text="{Binding Path=power}" HorizontalAlignment="Left" Margin="350,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
-        <ComboBox x:Name="Area" Text="{Binding Path=area}" HorizontalAlignment="Left" Margin="350,380,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1" IsEditable="True"/>
+        <TextBox x:Name="Permission" Text="{Binding Path=permission}" HorizontalAlignment="Left" Margin="350,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="medical" Text="{Binding Path=medical_certificate}" HorizontalAlignment="Left" Margin="350,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Meaning" Text="{Binding Path=meaning}" HorizontalAlignment="Left" Margin="350,290,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Certificate" Text="{Binding Path=certificate}" HorizontalAlignment="Left" Margin="350,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Token" Text="{Binding Path=token}" HorizontalAlignment="Left" Margin="350,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <TextBox x:Name="Power" Text="{Binding Path=power}" HorizontalAlignment="Left" Margin="350,380,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1"/>
+        <ComboBox x:Name="Area" Text="{Binding Path=area}" HorizontalAlignment="Left" Margin="350,410,0,0" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2" Height="22" Grid.Column="1" IsEditable="True"/>
         <Button Content="Сохранить" Margin="0,331,0,0" VerticalAlignment="Top" FontFamily="Century" Height="27" Click="Button_Save" Grid.Column="1" HorizontalAlignment="Left" Width="233">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -58,11 +60,12 @@
         <TextBlock HorizontalAlignment="Left" Margin="247,173,0,0" TextWrapping="Wrap" Text="Номер автомата" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,203,0,0" TextWrapping="Wrap" Text="Автомат" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
         <TextBlock HorizontalAlignment="Left" Margin="247,233,0,0" TextWrapping="Wrap" Text="Разрешение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="247,263,0,0" TextWrapping="Wrap" Text="Доверенность" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="247,293,0,0" TextWrapping="Wrap" Text="Удостоверение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="247,323,0,0" TextWrapping="Wrap" Text="Номер жетона" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="247,353,0,0" TextWrapping="Wrap" Text="Бронежилет" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="247,383,0,0" TextWrapping="Wrap" Text="Площадка" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,263,0,0" TextWrapping="Wrap" Text="Мед.справка" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,293,0,0" TextWrapping="Wrap" Text="Доверенность" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,323,0,0" TextWrapping="Wrap" Text="Удостоверение" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,353,0,0" TextWrapping="Wrap" Text="Номер жетона" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,383,0,0" TextWrapping="Wrap" Text="Бронежилет" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="247,413,0,0" TextWrapping="Wrap" Text="Площадка" VerticalAlignment="Top" Height="16" Width="121" Grid.ColumnSpan="2" Foreground="#FFF9E8E8" Grid.Column="1"/>
 
 
         <Button Content="Загрузить фото" Margin="0,280,0,0" VerticalAlignment="Top" Click="Button_Foto" Grid.Column="1" Height="27" HorizontalAlignment="Left" Width="233" FontFamily="Century">
@@ -92,6 +95,27 @@
         </Button>
         <Image HorizontalAlignment="Left" Height="266" VerticalAlignment="Top" Width="233" Source="/image/NoFoto.jpg" Grid.Column="1" Margin="0,24,0,0"/>
         <Image x:Name="imgBox" Height="235" Margin="0,23,0,0" Source="{Binding Path=image}"  VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Width="234"/>
+      <DatePicker x:Name="date"
+            SelectedDate="{Binding Path=data, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Loaded="DatePicker_Loaded"
+            GotFocus="DatePicker_GotFocus"
+            LostFocus="DatePicker_LostFocus"
+            MouseEnter="DatePicker_MouseEnter"
+            Grid.Column="2"
+            Margin="40,230,64,0"
+            VerticalAlignment="Top"
+            Height="22" />
+
+<DatePicker x:Name="date2"
+            SelectedDate="{Binding Path=data2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Loaded="DatePicker_Loaded"
+            GotFocus="DatePicker_GotFocus"
+            LostFocus="DatePicker_LostFocus"
+            MouseEnter="DatePicker_MouseEnter"
+            Grid.Column="2"
+            Margin="40,260,64,0"
+            VerticalAlignment="Top"
+            Height="22" />
 
 
     </Grid>

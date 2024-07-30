@@ -15,6 +15,7 @@ using System.Data.SQLite;
 using System.Data;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace B.I.G
 
@@ -69,8 +70,31 @@ namespace B.I.G
 
         private void dGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
+            cashCollector rowContext = e.Row.DataContext as cashCollector;
+            if (rowContext != null)
+            {
+                SolidColorBrush backgroundBrush = new SolidColorBrush(Colors.White);
+
+                switch (rowContext.DaysUntilDate)
+                {
+                    case int days when days <= 1:
+                        backgroundBrush = new SolidColorBrush(Colors.Red);
+                        break;
+                    case int days when days <= 10:
+                        backgroundBrush = new SolidColorBrush(Colors.RosyBrown);
+                        break;
+                    case int days when days <= 30:
+                        backgroundBrush = new SolidColorBrush(Colors.Orange);
+                        break;
+                    default:
+                        backgroundBrush = new SolidColorBrush(Colors.White);
+                        break;
+                }
+
+                e.Row.Background = backgroundBrush;
+            }
             e.Row.Header = e.Row.GetIndex() + 1;
-        }      
+        }
 
         public void FillData()
         {
@@ -225,7 +249,7 @@ namespace B.I.G
                     date2 = Convert.ToDateTime(formattedDate2)
                 };
                 log_Controller.Insert(Log2);
-               
+
                 var excelPackage = new ExcelPackage();
                 var worksheet = excelPackage.Workbook.Worksheets.Add("cashCollector");
 
@@ -238,45 +262,51 @@ namespace B.I.G
                     cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
 
                     cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center; // Выравнивание по середине
+                    cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
-                    cells.Style.Font.Size = 12; // Установите нужный размер шрифта
-
+                    cells.Style.Font.Size = 8;
                 }
 
-                // Добавление заголовков столбцов и порядковых номеров
-
-                for (int i = 1; i <= dGridCollector.Columns.Count; i++)
+                // Добавление заголовков столбцов
+                for (int i = 0; i < dGridCollector.Columns.Count; i++)
                 {
-                    worksheet.Cells[1, i].Value = dGridCollector.Columns[i - 1].Header;
+                    worksheet.Cells[1, i + 1].Value = dGridCollector.Columns[i].Header;
                 }
 
-             
                 // Добавление данных
                 for (int i = 0; i < dGridCollector.Items.Count; i++)
-                {               
+                {
                     var collectorItem = (cashCollector)dGridCollector.Items[i];
-                    worksheet.Cells[i + 2, 2].Value = collectorItem.name;
-                    worksheet.Cells[i + 2, 3].Value = collectorItem.fullname;
-                    worksheet.Cells[i + 2, 4].Value = collectorItem.phone;
-                    worksheet.Cells[i + 2, 5].Value = collectorItem.profession;
-                    worksheet.Cells[i + 2, 6].Value = collectorItem.gun;
-                    worksheet.Cells[i + 2, 7].Value = collectorItem.automaton_serial;
-                    worksheet.Cells[i + 2, 8].Value = collectorItem.automaton;
-                    worksheet.Cells[i + 2, 9].Value = collectorItem.permission;
+                    worksheet.Cells[i + 2, 2].Value = collectorItem.area;
+                    worksheet.Cells[i + 2, 3].Value = collectorItem.name;
+                    worksheet.Cells[i + 2, 4].Value = collectorItem.fullname;
+                    worksheet.Cells[i + 2, 5].Value = collectorItem.phone;
+                    worksheet.Cells[i + 2, 6].Value = collectorItem.profession;
+                    worksheet.Cells[i + 2, 7].Value = collectorItem.gun;
+                    worksheet.Cells[i + 2, 8].Value = collectorItem.automaton_serial;
+                    worksheet.Cells[i + 2, 9].Value = collectorItem.automaton;
                     worksheet.Cells[i + 2, 10].Value = collectorItem.meaning;
                     worksheet.Cells[i + 2, 11].Value = collectorItem.certificate;
                     worksheet.Cells[i + 2, 12].Value = collectorItem.token;
                     worksheet.Cells[i + 2, 13].Value = collectorItem.power;
-                    for (int col = 2; col <= 13; col++)
-                    {
-                        worksheet.Cells[i + 2, col].Style.Font.Size = 10; // Установите нужный размер шрифта
-                    }
+                    worksheet.Cells[i + 2, 14].Value = collectorItem.permission;
+                    worksheet.Cells[i + 2, 15].Value = collectorItem.DaysUntilDate;
+                    worksheet.Cells[i + 2, 16].Value = collectorItem.Date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i + 2, 17].Value = collectorItem.medical_certificate;
+                    worksheet.Cells[i + 2, 18].Value = collectorItem.DaysUntilDate2;
+                    worksheet.Cells[i + 2, 19].Value = collectorItem.Date2.ToString("dd.MM.yyyy");
 
+                    // Стилизация шрифта для ячеек
+                    for (int col = 1; col <= 19; col++)
+                    {
+                        worksheet.Cells[i + 2, col].Style.Font.Size = 8;
+                    }
                 }
                 worksheet.DeleteColumn(1);
-                // Автоподгон ширины колонок
+                // Автоподгон ширины колонок               
                 worksheet.Cells.AutoFitColumns();
+                worksheet.Column(6).Width = 15;
+                worksheet.Column(8).Width = 13;
                 worksheet.HeaderFooter.OddFooter.LeftAlignedText = "&\"Arial\"&06&K000000 Сформировал: " + MainWindow.LogS + ". " + Date;
                 worksheet.HeaderFooter.OddHeader.CenteredText = "&\"Arial,Bold Italic\"&10&K000000 Список инкассаторов и водителей 'B.I.G'";
                 worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
@@ -292,8 +322,8 @@ namespace B.I.G
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     SaveExcelWithPageLayoutView(excelPackage, saveFileDialog.FileName);
-                }             
-               
+                }
+
                 Search(sender, e);
             }
             catch (Exception ex)
@@ -305,8 +335,6 @@ namespace B.I.G
 
 
 
-
-      
 
         private void SaveExcelWithPageLayoutView(ExcelPackage excelPackage, string filePath)
         {

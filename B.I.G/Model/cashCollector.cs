@@ -24,5 +24,15 @@ namespace B.I.G.Model
         public byte[] image { get; set; }
         public string cc_power { get; set; }
         public String area { get; set; }
+        public String medical_certificate { get; set; }
+        public DateTime date { get; set; }
+        public DateTime date2 { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime Date2 { get; set; }
+
+        public DateTime data { get; set; }
+        public DateTime data2 { get; set; }
+        public int DaysUntilDate { get; set; }
+        public int DaysUntilDate2 { get; set; }
     }
 }

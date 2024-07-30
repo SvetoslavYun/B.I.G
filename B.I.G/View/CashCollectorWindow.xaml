@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:B.I.G"
         mc:Ignorable="d"
-        Title="Инкассаторы и водители 'B.I.G'" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Foreground="#FFD88947">
+        Title="Инкассаторы и водители 'B.I.G'" Height="720" Width="1500" WindowStartupLocation="CenterScreen" Foreground="#FFD88947">
+    
     <Window.Icon>
         <BitmapImage UriSource="/image/B.I.G.png"/>
     </Window.Icon>
@@ -59,11 +60,18 @@
                 <DataGridTextColumn Header="Пистолет" Binding="{Binding gun}" Width="*"/>
                 <DataGridTextColumn Header="№Автомат" Binding="{Binding automaton_serial}" Width="*"/>
                 <DataGridTextColumn Header="Автомат" Binding="{Binding automaton}" Width="*"/>
-                <DataGridTextColumn Header="Разрешение" Binding="{Binding permission}" Width="*"/>
+               
                 <DataGridTextColumn Header="Доверенность" Binding="{Binding meaning}" Width="*"/>
                 <DataGridTextColumn Header="Удостоверение" Binding="{Binding certificate}" Width="*"/>
                 <DataGridTextColumn Header="Жетон" Binding="{Binding token}" Width="*"/>
                 <DataGridTextColumn Header="Бронежилет" Binding="{Binding power}" Width="*"/>
+
+                <DataGridTextColumn Header="Разрешение" Binding="{Binding permission}" Width="*"/>
+                <DataGridTextColumn Header="Разрешение дни" Binding="{Binding DaysUntilDate}" Width="100"/>
+                <DataGridTextColumn Header="Разрешение до" Binding="{Binding Date, StringFormat=dd.MM.yyyy}" Width="100"/>
+                <DataGridTextColumn Header="Мед.справка" Binding="{Binding medical_certificate}" Width="80"/>
+                <DataGridTextColumn Header="Мед.справка дни" Binding="{Binding DaysUntilDate2}" Width="103"/>
+                <DataGridTextColumn Header="Мед.справка до" Binding="{Binding Date2, StringFormat=dd.MM.yyyy}" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
         <TextBox x:Name="Name" Margin="311,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="174" Height="22"/>

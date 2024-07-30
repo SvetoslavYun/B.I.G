@@ -26,6 +26,7 @@ using Rectangle = System.Drawing.Rectangle;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using Microsoft.Graph.Models;
 using DocumentFormat.OpenXml.Math;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace B.I.G
 {
@@ -85,7 +86,20 @@ namespace B.I.G
                 if (string.IsNullOrWhiteSpace(Area.Text)) { Name.BorderBrush = Brushes.Red; } else { Area.BorderBrush = Brushes.Black; }
                 return;
             }
+            if (date.Text == "")
+            {
+                MessageBox.Show("Введите дату.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                date.BorderBrush = Brushes.Red;
+             
+                return;
+            }
+            if (date2.Text == "")
+            {
+                MessageBox.Show("Введите дату.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                date.BorderBrush = Brushes.Red;
 
+                return;
+            }
             if (CashCollectorWindow.flag)
                 {
                     if (image_bytes == null)
@@ -119,6 +133,9 @@ namespace B.I.G
                         power = Power.Text,
                         image = image_bytes,
                         area = Area.Text,
+                        date = Convert.ToDateTime(date.Text),
+                        date2 = Convert.ToDateTime(date2.Text),
+                        medical_certificate = medical.Text
                     };
 
                     if (!cashCollectorController.IsCashCollectorExists(CashCollector.name))
@@ -162,6 +179,9 @@ namespace B.I.G
                     CashCollectorWindow.CashCollector.certificate = Certificate.Text;
                     CashCollectorWindow.CashCollector.token = Token.Text;
                     CashCollectorWindow.CashCollector.power = Power.Text;
+                    CashCollectorWindow.CashCollector.date = Convert.ToDateTime(date.Text);
+                    CashCollectorWindow.CashCollector.date2 = Convert.ToDateTime(date2.Text);
+                    CashCollectorWindow.CashCollector.medical_certificate = medical.Text;
                 if (foto)
                 {
                     CashCollectorWindow.CashCollector.image = image_bytes;
@@ -261,6 +281,109 @@ namespace B.I.G
                     MessageBox.Show("Ошибка при обработке изображения: " + ex.Message);
                 }
             }
+        }
+
+        private void DatePicker_Loaded(object sender, RoutedEventArgs e)
+        {
+            var datePicker = sender as DatePicker;
+            if (datePicker != null)
+            {
+                var textBox = GetDatePickerTextBox(datePicker);
+                if (textBox != null)
+                {
+                    textBox.PreviewTextInput += OnTextBoxPreviewTextInput;
+                    DataObject.AddPastingHandler(textBox, OnTextBoxPaste);
+                }
+            }
+        }
+
+
+        private void DatePicker_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var datePicker = sender as DatePicker;
+            if (datePicker != null)
+            {
+                var textBox = FindVisualChild<TextBox>(datePicker);
+                if (textBox != null)
+                {
+                    textBox.SelectAll(); // Выбираем весь текст при получении фокуса
+                }
+            }
+        }
+
+        private void DatePicker_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var datePicker = sender as DatePicker;
+            if (datePicker != null)
+            {
+                var textBox = FindVisualChild<TextBox>(datePicker);
+                if (textBox != null)
+                {
+                    textBox.SelectionLength = 0; // Отменяем выделение при потере фокуса
+                }
+            }
+        }
+
+        private void DatePicker_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var datePicker = sender as DatePicker;
+            if (datePicker != null)
+            {
+                var textBox = FindVisualChild<TextBox>(datePicker);
+                if (textBox != null)
+                {
+                    textBox.Focus(); // Устанавливаем фокус на TextBox
+                }
+            }
+        }
+
+        private TextBox GetDatePickerTextBox(DatePicker datePicker)
+        {
+            // Получаем TextBox из шаблона DatePicker
+            return datePicker.Template.FindName("PART_TextBox", datePicker) as TextBox;
+        }
+
+        private void OnTextBoxPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Разрешаем только цифры и точки
+            e.Handled = !IsValidInput(e.Text);
+        }
+
+        private void OnTextBoxPaste(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(DataFormats.Text))
+            {
+                string text = (string)e.DataObject.GetData(DataFormats.Text);
+                if (!IsValidInput(text))
+                {
+                    e.CancelCommand();
+                }
+            }
+        }
+
+        private bool IsValidInput(string text)
+        {
+            // Разрешаем только цифры и точки
+            return Regex.IsMatch(text, @"^[0-9.]*$");
+        }
+
+        // Вспомогательный метод для поиска визуального дочернего элемента
+        private static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T t)
+                {
+                    return t;
+                }
+                var result = FindVisualChild<T>(child);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
         }
 
 

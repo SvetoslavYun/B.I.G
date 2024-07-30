@@ -25,7 +25,7 @@ namespace B.I.G.Controller
 
         public IEnumerable<cashCollector> GetAllCashCollectors()
         {
-            var commandString = "SELECT * FROM cashCollectors";
+            var commandString = "SELECT * FROM cashCollectors ORDER BY date";
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             connection.Open();
 
@@ -49,6 +49,14 @@ namespace B.I.G.Controller
                 var Image = (byte[])reader.GetValue(13);
                 var Area = reader.GetString(14);
 
+                var Medical_certificate = reader.GetString(15);
+                var Date = reader.GetDateTime(16).AddYears(5); // Увеличиваем на 5 лет
+                var Date2 = reader.GetDateTime(17).AddYears(5); // Увеличиваем на 5 лет
+                var daysUntilDate = (Date - DateTime.Now).Days; // Вычисляем дни до Date
+                var daysUntilDate2 = (Date2 - DateTime.Now).Days; // Вычисляем дни до Date2
+                var Data = Date.AddYears(-5); // Увеличиваем на 5 лет
+                var Data2 = Date2.AddYears(-5); // Увеличиваем на 5 лет
+
                 var CashCollector = new cashCollector
                 {
                     id = Id,
@@ -65,7 +73,16 @@ namespace B.I.G.Controller
                     profession = Profession,
                     phone = Phone,
                     image = Image,
-                    area = Area
+                    area = Area,
+                    medical_certificate = Medical_certificate,
+                    date = Date,
+                    date2 = Date2,
+                    Date = Date, // Сохраняем исходное значение
+                    Date2 = Date2, // Сохраняем исходное значение
+                    DaysUntilDate = daysUntilDate, // Дни до Date
+                    DaysUntilDate2 = daysUntilDate2, // Дни до Date2
+                    data = Data,
+                    data2 = Data2,
                 };
 
                 yield return CashCollector;
@@ -75,11 +92,13 @@ namespace B.I.G.Controller
         }
 
 
-      
+
+
+
 
         public void Insert(cashCollector CashCollector)
         {
-            var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image, area) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image, @Area)";
+            var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image, area, date , date2, medical_certificate) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image, @Area, @Date , @Date2, @Medical_certificate)";
             SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
             insertCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -97,6 +116,9 @@ namespace B.I.G.Controller
         new SQLiteParameter("Phone", CashCollector.phone),
         new SQLiteParameter("Image", CashCollector.image),
         new SQLiteParameter("Area", CashCollector.area),
+        new SQLiteParameter("Date", CashCollector.date),
+        new SQLiteParameter("Date2", CashCollector.date2),
+        new SQLiteParameter("Medical_certificate", CashCollector.medical_certificate),
     });
 
             connection.Open();
@@ -124,10 +146,10 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image, area) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image, @Area)";
-            SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
+                        var commandString = "INSERT INTO cashCollectors (name, gun, automaton_serial, automaton, permission, meaning, certificate, token, power, fullName, profession, phone, image, area, date , date2, medical_certificate) VALUES (@Name, @Gun, @AutomatonSerial, @Automaton, @Permission, @Meaning, @Certificate, @Token, @Power, @FullName, @Profession, @Phone, @Image, @Area, @Date , @Date2, @Medical_certificate)";
+                        SQLiteCommand insertCommand = new SQLiteCommand(commandString, connection);
 
-            insertCommand.Parameters.AddRange(new SQLiteParameter[] {
+                        insertCommand.Parameters.AddRange(new SQLiteParameter[] {
         new SQLiteParameter("Name", CashCollector.name),
         new SQLiteParameter("Gun", CashCollector.gun),
         new SQLiteParameter("AutomatonSerial", CashCollector.automaton_serial),
@@ -141,7 +163,10 @@ namespace B.I.G.Controller
         new SQLiteParameter("Profession", CashCollector.profession),
         new SQLiteParameter("Phone", CashCollector.phone),
         new SQLiteParameter("Image", CashCollector.image),
-         new SQLiteParameter("Area", CashCollector.area),
+        new SQLiteParameter("Area", CashCollector.area),
+        new SQLiteParameter("Date", CashCollector.date),
+        new SQLiteParameter("Date2", CashCollector.date2),
+        new SQLiteParameter("Medical_certificate", CashCollector.medical_certificate),
     });
 
             insertCommand.ExecuteNonQuery();
@@ -160,7 +185,7 @@ namespace B.I.G.Controller
 
         public void Update(cashCollector CashCollector)
         {
-            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image, area=@Area WHERE id = @Id";
+            var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image, area=@Area, date = @Date, date2 = @Date2, medical_certificate=@Medical_certificate WHERE id = @Id";
             SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
             updateCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -179,6 +204,9 @@ namespace B.I.G.Controller
         new SQLiteParameter("Image", CashCollector.image),
         new SQLiteParameter("Id", CashCollector.id),
         new SQLiteParameter("Area", CashCollector.area),
+        new SQLiteParameter("Date", CashCollector.date.ToString("yyyy-MM-dd")),
+        new SQLiteParameter("Date2", CashCollector.date2.ToString("yyyy-MM-dd")),
+        new SQLiteParameter("Medical_certificate", CashCollector.medical_certificate),
     });
 
             connection.Open();
@@ -206,7 +234,7 @@ namespace B.I.G.Controller
 
                     using (SQLiteTransaction transaction = connection.BeginTransaction()) // Начало транзакции
                     {
-                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image, area=@Area WHERE id = @Id";
+                        var commandString = "UPDATE cashCollectors SET name=@Name, gun=@Gun, automaton_serial=@AutomatonSerial, automaton=@Automaton, permission=@Permission, meaning=@Meaning, certificate=@Certificate, token=@Token, power=@Power, fullName=@FullName, profession=@Profession, phone=@Phone, image=@Image, area=@Area, date = @Date, date2 = @Date2, medical_certificate=@Medical_certificate WHERE id = @Id";
                         SQLiteCommand updateCommand = new SQLiteCommand(commandString, connection);
 
                         updateCommand.Parameters.AddRange(new SQLiteParameter[] {
@@ -225,6 +253,9 @@ namespace B.I.G.Controller
         new SQLiteParameter("Image", CashCollector.image),
         new SQLiteParameter("Id", CashCollector.id),
         new SQLiteParameter("Area", CashCollector.area),
+        new SQLiteParameter("Date", CashCollector.date.ToString("yyyy-MM-dd")),
+        new SQLiteParameter("Date2", CashCollector.date2.ToString("yyyy-MM-dd")),
+        new SQLiteParameter("Medical_certificate", CashCollector.medical_certificate),
     });
 
             updateCommand.ExecuteNonQuery();
@@ -393,7 +424,7 @@ namespace B.I.G.Controller
                 name = char.ToUpper(name[0]) + name.Substring(1);
             }
             connection.Close();
-            var commandString = "SELECT * FROM cashCollectors WHERE name LIKE @Name;";
+            var commandString = "SELECT * FROM cashCollectors WHERE name LIKE @Name ORDER BY date;";
 
             SQLiteCommand getAllCommand = new SQLiteCommand(commandString, connection);
             getAllCommand.Parameters.AddWithValue("@Name", "%" + name + "%");
@@ -413,11 +444,19 @@ namespace B.I.G.Controller
                 var Certificate = reader.GetString(7);
                 var Token = reader.GetString(8);
                 var Power = reader.GetString(9);
-                var Fullname = reader.GetString(10);
+                var FullName = reader.GetString(10);
                 var Profession = reader.GetString(11);
                 var Phone = reader.GetString(12);
                 var Image = (byte[])reader.GetValue(13);
                 var Area = reader.GetString(14);
+
+                var Medical_certificate = reader.GetString(15);
+                var Date = reader.GetDateTime(16).AddYears(5); // Увеличиваем на 5 лет
+                var Date2 = reader.GetDateTime(17).AddYears(5); // Увеличиваем на 5 лет
+                var daysUntilDate = (Date - DateTime.Now).Days; // Вычисляем дни до Date
+                var daysUntilDate2 = (Date2 - DateTime.Now).Days; // Вычисляем дни до Date2
+                var Data = Date.AddYears(-5); // Увеличиваем на 5 лет
+                var Data2 = Date2.AddYears(-5); // Увеличиваем на 5 лет
 
                 var CashCollector = new cashCollector
                 {
@@ -431,11 +470,20 @@ namespace B.I.G.Controller
                     certificate = Certificate,
                     token = Token,
                     power = Power,
-                    fullname = Fullname,
+                    fullname = FullName,
                     profession = Profession,
                     phone = Phone,
                     image = Image,
                     area = Area,
+                    medical_certificate = Medical_certificate,
+                    date = Date,
+                    date2 = Date2,
+                    Date = Date, // Сохраняем исходное значение
+                    Date2 = Date2, // Сохраняем исходное значение
+                    DaysUntilDate = daysUntilDate, // Дни до Date
+                    DaysUntilDate2 = daysUntilDate2, // Дни до Date2
+                    data = Data,
+                    data2 = Data2,
                 };
 
                 yield return CashCollector;
